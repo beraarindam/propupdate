@@ -2537,6 +2537,16 @@ body.homepage1-body {
   filter: drop-shadow(0 28px 48px rgba(0, 31, 63, 0.2));
 }
 
+/* Rectangular stock / studio photos (non-transparent) */
+.pu-founder__photo--photo {
+  border-radius: 18px;
+  border: 4px solid var(--pu-white);
+  box-shadow:
+    0 28px 56px rgba(0, 31, 63, 0.18),
+    0 0 0 1px rgba(0, 31, 63, 0.06);
+  filter: none;
+}
+
 @media (min-width: 992px) {
   .pu-founder__photo {
     max-width: min(105%, 520px);

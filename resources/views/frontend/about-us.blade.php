@@ -88,14 +88,16 @@
       <div class="col-lg-6 order-1 order-lg-2">
         <div class="pu-founder__visual">
           <div class="pu-founder__visual-glow" aria-hidden="true"></div>
+          {{-- Professional portrait via Unsplash (replace with your own photo anytime) --}}
           <img
-            class="pu-founder__photo"
-            src="{{ asset('frontend/assets/img/founder-roshan-kumar.png') }}"
-            alt="Roshan Kumar, founder of PropUpdate Realty"
-            width="580"
-            height="720"
+            class="pu-founder__photo pu-founder__photo--photo"
+            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&amp;fit=crop&amp;w=900&amp;q=80"
+            alt="Professional portrait representing PropUpdate Realty leadership"
+            width="600"
+            height="750"
             loading="lazy"
             decoding="async"
+            referrerpolicy="no-referrer-when-downgrade"
           >
         </div>
       </div>
