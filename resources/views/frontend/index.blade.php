@@ -271,4 +271,99 @@
     </div>
   </div>
 </section>
+
+<section class="pu-launches" id="pre-register" aria-labelledby="pu-launches-heading">
+  <div class="pu-launches__bg" aria-hidden="true"></div>
+  <div class="container position-relative">
+    @if (session('pre_register_status'))
+      <div class="alert alert-success pu-launches__alert" role="status">
+        {{ session('pre_register_status') }}
+      </div>
+    @endif
+    @if ($errors->has('name') || $errors->has('email') || $errors->has('message'))
+      <div class="alert alert-danger pu-launches__alert" role="alert">
+        @foreach ($errors->all() as $err)
+          <div>{{ $err }}</div>
+        @endforeach
+      </div>
+    @endif
+
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-6">
+        <div class="pu-launches-copy">
+          <h2 id="pu-launches-heading" class="pu-launches__title">
+            Explore new property launches across Bangalore
+          </h2>
+          <p class="pu-launches__lead">
+            Get early visibility on upcoming projects—pricing bands, floor plans, and launch offers—before they go wide to the market.
+          </p>
+          <h3 class="pu-launches__sub">Benefits of booking in the pre-launch stage</h3>
+          <ul class="pu-launches-benefits">
+            <li>
+              <span class="pu-launches-benefits__icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
+              <div>
+                <strong>Lowest entry price</strong>
+                <span>Early-bird tiers typically offer the sharpest pricing before escalations at launch.</span>
+              </div>
+            </li>
+            <li>
+              <span class="pu-launches-benefits__icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+              <div>
+                <strong>Best choice of inventory</strong>
+                <span>Pick preferred floors, views, and unit types while the full stack is still available.</span>
+              </div>
+            </li>
+            <li>
+              <span class="pu-launches-benefits__icon" aria-hidden="true"><i class="fa-solid fa-rocket"></i></span>
+              <div>
+                <strong>Higher appreciation potential</strong>
+                <span>Buy closer to developer pricing and benefit as the project matures and the micro-market grows.</span>
+              </div>
+            </li>
+            <li>
+              <span class="pu-launches-benefits__icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+              <div>
+                <strong>RERA, launch &amp; construction clarity</strong>
+                <span>We help you track approvals, launch milestones, construction progress, and realistic possession timelines.</span>
+              </div>
+            </li>
+          </ul>
+          <p class="pu-launches__cta-line">
+            Pre-launch is where informed buyers create maximum value:
+            <strong>right pricing, right unit, right timing.</strong>
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="pu-launches-aside">
+          <p class="pu-launches-aside__intro">
+            Pre-register to get early access to <strong>pricing, floor plans</strong> and <strong>exclusive launch offers</strong>.
+          </p>
+          <div class="pu-launches-form-card">
+            <h3 class="pu-launches-form-card__title">Contact form</h3>
+            <form class="pu-launches-form" action="{{ route('lead.pre-register') }}" method="post" novalidate>
+              @csrf
+              <div class="pu-launches-field">
+                <label for="launch-name">Name</label>
+                <input type="text" id="launch-name" name="name" value="{{ old('name') }}" placeholder="Your name" autocomplete="name" required>
+              </div>
+              <div class="pu-launches-field">
+                <label for="launch-email">Email address</label>
+                <input type="email" id="launch-email" name="email" value="{{ old('email') }}" placeholder="you@example.com" autocomplete="email" required>
+              </div>
+              <div class="pu-launches-field">
+                <label for="launch-message">Leave a message</label>
+                <textarea id="launch-message" name="message" rows="4" placeholder="Project preferences, budget range, timeline…">{{ old('message') }}</textarea>
+              </div>
+              <button type="submit" class="pu-launches-submit">Submit</button>
+              <p class="pu-launches-form__note">
+                We respect your privacy. Your details are used only to respond to this enquiry—never for spam.
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 @endsection
