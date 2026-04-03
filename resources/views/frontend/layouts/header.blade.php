@@ -2,13 +2,13 @@
 <div class="pu-header-wrap">
   <div class="pu-preheader">
     <div class="pu-preheader-inner">
-      <span class="pu-preheader-call">Call us at <a href="tel:+917204362646">7204362646</a></span>
+      <span class="pu-preheader-call">Call us at <a href="{{ $siteSettings?->telHref() ?? 'tel:+917204362646' }}">{{ $siteSettings?->phone ?? '7204362646' }}</a></span>
       <ul class="pu-preheader-social">
-        <li><a href="#" class="pi-fb" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
-        <li><a href="#" class="pi-ig" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
-        <li><a href="#" class="pi-yt" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a></li>
-        <li><a href="#" class="pi-li" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
-        <li><a href="#" class="pi-x" aria-label="X"><i class="fa-brands fa-twitter"></i></a></li>
+        <li><a href="{{ $siteSettings?->facebook_url ?: '#' }}" class="pi-fb" aria-label="Facebook" @if(!($siteSettings?->facebook_url)) aria-disabled="true" @endif rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+        <li><a href="{{ $siteSettings?->instagram_url ?: '#' }}" class="pi-ig" aria-label="Instagram" @if(!($siteSettings?->instagram_url)) aria-disabled="true" @endif rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+        <li><a href="{{ $siteSettings?->youtube_url ?: '#' }}" class="pi-yt" aria-label="YouTube" @if(!($siteSettings?->youtube_url)) aria-disabled="true" @endif rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-youtube"></i></a></li>
+        <li><a href="{{ $siteSettings?->linkedin_url ?: '#' }}" class="pi-li" aria-label="LinkedIn" @if(!($siteSettings?->linkedin_url)) aria-disabled="true" @endif rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+        <li><a href="{{ $siteSettings?->twitter_url ?: '#' }}" class="pi-x" aria-label="X" @if(!($siteSettings?->twitter_url)) aria-disabled="true" @endif rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-twitter"></i></a></li>
       </ul>
     </div>
   </div>
@@ -17,15 +17,19 @@
     <div class="pu-main-header-inner">
       <a href="{{ url('/') }}" class="pu-brand">
         <span class="pu-brand-icon" aria-hidden="true">
+          @if($siteSettings?->logoUrl())
+            <img src="{{ $siteSettings->logoUrl() }}" alt="" width="48" height="48" style="object-fit:contain;max-height:48px;">
+          @else
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 20L24 8L40 20V40H30V28H18V40H8V20Z" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/>
             <path d="M14 22L24 14L34 22" stroke="#1d4ed8" stroke-width="1.5" stroke-linecap="round"/>
             <path d="M20 40V30H28V40" stroke="#3b82f6" stroke-width="1.5"/>
           </svg>
+          @endif
         </span>
         <span class="pu-brand-text">
-          <span class="pu-brand-name">PROPUPDATE</span>
-          <span class="pu-brand-tag">UPDATE YOUR PROPERTY SEARCH</span>
+          <span class="pu-brand-name">{{ strtoupper($siteSettings?->site_name ?? 'PROPUPDATE') }}</span>
+          <span class="pu-brand-tag">{{ strtoupper($siteSettings?->tagline ?? 'UPDATE YOUR PROPERTY SEARCH') }}</span>
         </span>
       </a>
 
@@ -40,8 +44,8 @@
 
       <div class="pu-header-cta d-none d-lg-flex">
         <a href="{{ url('/#exclusive-resale') }}" class="pu-btn-outline">Exclusive Resale</a>
-        <a href="https://wa.me/917204362646" class="pu-icon-circle pu-icon-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-        <a href="mailto:info@propupdate.com" class="pu-icon-circle pu-icon-mail" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+        <a href="{{ $siteSettings?->whatsappHref() ?? 'https://wa.me/917204362646' }}" class="pu-icon-circle pu-icon-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="{{ $siteSettings?->mailtoHref() ?? 'mailto:info@propupdate.com' }}" class="pu-icon-circle pu-icon-mail" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
       </div>
 
       <button type="button" class="pu-burger d-lg-none mobile-nav-icon" aria-label="Open menu">
@@ -74,8 +78,8 @@
     <div class="allmobilesection" style="padding: 1rem 1.25rem;">
       <a href="{{ url('/#exclusive-resale') }}" class="pu-btn-outline d-inline-block w-100 mb-3 text-center">Exclusive Resale</a>
       <div class="d-flex gap-2 justify-content-center">
-        <a href="https://wa.me/917204362646" class="pu-icon-circle pu-icon-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-        <a href="mailto:info@propupdate.com" class="pu-icon-circle pu-icon-mail" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+        <a href="{{ $siteSettings?->whatsappHref() ?? 'https://wa.me/917204362646' }}" class="pu-icon-circle pu-icon-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="{{ $siteSettings?->mailtoHref() ?? 'mailto:info@propupdate.com' }}" class="pu-icon-circle pu-icon-mail" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
       </div>
     </div>
   </div>

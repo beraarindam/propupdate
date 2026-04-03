@@ -5,10 +5,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title')</title>
+  <title>@yield('title')@if(!empty($siteSettings?->meta_title)) — {{ $siteSettings->meta_title }} @endif</title>
+
+  @if(!empty($siteSettings?->meta_description))
+  <meta name="description" content="{{ $siteSettings->meta_description }}">
+  @endif
 
   <!--=====FAB ICON=======-->
-  <link rel="shortcut icon" href="{{ asset('frontend/assets/img/logo/fav-logo1.png') }}" type="image/x-icon">
+  <link rel="shortcut icon" href="{{ $siteSettings?->faviconUrl() ?? asset('frontend/assets/img/logo/fav-logo1.png') }}" type="image/x-icon">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

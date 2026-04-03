@@ -8,25 +8,29 @@
           <div class="pu-footer-brand">
             <a href="{{ url('/') }}" class="pu-footer-brand__link">
               <span class="pu-footer-brand__icon" aria-hidden="true">
+                @if($siteSettings?->logoUrl())
+                  <img src="{{ $siteSettings->logoUrl() }}" alt="" width="44" height="44" style="object-fit:contain;">
+                @else
                 <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="44" height="44">
                   <path d="M8 20L24 8L40 20V40H30V28H18V40H8V20Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                   <path d="M14 22L24 14L34 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
                   <path d="M20 40V30H28V40" stroke="currentColor" stroke-width="1.5" opacity="0.85"/>
                 </svg>
+                @endif
               </span>
               <span class="pu-footer-brand__text">
-                <span class="pu-footer-brand__name">PROPUPDATE</span>
-                <span class="pu-footer-brand__tag">Update your property search</span>
+                <span class="pu-footer-brand__name">{{ strtoupper($siteSettings?->site_name ?? 'PROPUPDATE') }}</span>
+                <span class="pu-footer-brand__tag">{{ $siteSettings?->tagline ?? 'Update your property search' }}</span>
               </span>
             </a>
             <p class="pu-footer-brand__desc">
-              Decisions informed, not influenced. Curated resale and new launches across Bangalore with transparent guidance for homeowners and investors.
+              {{ $siteSettings?->footer_text ?? 'Decisions informed, not influenced. Curated resale and new launches across Bangalore with transparent guidance for homeowners and investors.' }}
             </p>
             <ul class="pu-footer-social">
-              <li><a href="#" class="pu-footer-social__link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
-              <li><a href="#" class="pu-footer-social__link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
-              <li><a href="#" class="pu-footer-social__link" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a></li>
-              <li><a href="#" class="pu-footer-social__link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
+              <li><a href="{{ $siteSettings?->facebook_url ?: '#' }}" class="pu-footer-social__link" aria-label="Facebook" rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+              <li><a href="{{ $siteSettings?->instagram_url ?: '#' }}" class="pu-footer-social__link" aria-label="Instagram" rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+              <li><a href="{{ $siteSettings?->youtube_url ?: '#' }}" class="pu-footer-social__link" aria-label="YouTube" rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-youtube"></i></a></li>
+              <li><a href="{{ $siteSettings?->linkedin_url ?: '#' }}" class="pu-footer-social__link" aria-label="LinkedIn" rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
             </ul>
           </div>
         </div>
@@ -49,19 +53,23 @@
           <ul class="pu-footer-contact">
             <li>
               <span class="pu-footer-contact__icon" aria-hidden="true"><i class="fa-solid fa-phone"></i></span>
-              <a href="tel:+917204362646">7204362646</a>
+              <a href="{{ $siteSettings?->telHref() ?? 'tel:+917204362646' }}">{{ $siteSettings?->phone ?? '7204362646' }}</a>
             </li>
             <li>
               <span class="pu-footer-contact__icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
-              <a href="mailto:info@propupdate.com">info@propupdate.com</a>
+              <a href="{{ $siteSettings?->mailtoHref() ?? 'mailto:info@propupdate.com' }}">{{ $siteSettings?->email ?? 'info@propupdate.com' }}</a>
             </li>
             <li>
               <span class="pu-footer-contact__icon" aria-hidden="true"><i class="fa-solid fa-globe"></i></span>
-              <a href="https://www.propupdate.com" target="_blank" rel="noopener noreferrer">www.propupdate.com</a>
+              @php
+                $footerWeb = $siteSettings?->website_url ?? 'https://www.propupdate.com';
+                $footerWebLabel = parse_url($footerWeb, PHP_URL_HOST) ?? preg_replace('#^https?://#i', '', $footerWeb);
+              @endphp
+              <a href="{{ $footerWeb }}" target="_blank" rel="noopener noreferrer">{{ $footerWebLabel }}</a>
             </li>
             <li>
               <span class="pu-footer-contact__icon" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></span>
-              <span class="pu-footer-contact__text">North Bangalore, Karnataka, India</span>
+              <span class="pu-footer-contact__text">{{ $siteSettings?->address ?? 'North Bangalore, Karnataka, India' }}</span>
             </li>
           </ul>
         </div>
