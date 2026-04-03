@@ -8,7 +8,11 @@
   <title>@yield('title')</title>
 
   <!--=====FAB ICON=======-->
-  <link rel="shortcut icon" href="assets/img/logo/fav-logo1.png" type="image/x-icon">
+  <link rel="shortcut icon" href="{{ asset('frontend/assets/img/logo/fav-logo1.png') }}" type="image/x-icon">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!--===== CSS LINK =======-->
   <link rel="stylesheet" href="{{asset('frontend/assets/css/plugins/bootstrap.min.css')}}">
@@ -22,9 +26,10 @@
   <link rel="stylesheet" href="{{asset('frontend/assets/css/plugins/nice-select.css')}}">
   <link rel="stylesheet" href="{{asset('frontend/assets/css/plugins/swiper-slider.css')}}">
   <link rel="stylesheet" href="{{asset('frontend/assets/css/main.css')}}">
+  <link rel="stylesheet" href="{{ asset('frontend/assets/css/propupdate.css') }}">
 
   <!--=====  JS SCRIPT LINK =======-->
-  <script src="assets/js/plugins/jquery-3-7-1.min.js"></script>
+  <script src="{{ asset('frontend/assets/js/plugins/jquery-3-7-1.min.js') }}"></script>
 </head>
 
 <body class="homepage1-body">
