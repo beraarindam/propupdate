@@ -1,33 +1,25 @@
 @extends('frontend.layouts.master')
-@section('title', 'About Us')
+@section('title', $page?->browserTitle() ?? 'About us')
 
 @section('content')
-<header class="pu-page-banner">
-  <div
-    class="pu-page-banner__img"
-    role="img"
-    aria-hidden="true"
-    style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&amp;fit=crop&amp;w=1920&amp;q=80');"
-  ></div>
-  <div class="pu-page-banner__scrim"></div>
-  <div class="container">
-    <nav class="pu-breadcrumb" aria-label="Breadcrumb">
-      <ol class="pu-breadcrumb__list">
-        <li class="pu-breadcrumb__item">
-          <a href="{{ route('home') }}">Home</a>
-        </li>
-        <li class="pu-breadcrumb__sep" aria-hidden="true"><i class="fa-solid fa-angle-right"></i></li>
-        <li class="pu-breadcrumb__item pu-breadcrumb__item--current" aria-current="page">About us</li>
-      </ol>
-    </nav>
-    <h1 class="pu-page-banner__title">About PropUpdate</h1>
-    <p class="pu-page-banner__lead">
-      Where every property decision is <strong>informed</strong>, not influenced — serving serious buyers and investors across Bangalore.
-    </p>
-  </div>
-</header>
+@include('frontend.partials.page-banner', [
+  'title' => $page?->banner_title ?? 'About PropUpdate',
+  'crumbCurrent' => $page?->name ?? 'About us',
+  'lead' => $page?->banner_lead ?? 'Where every property decision is <strong>informed</strong>, not influenced — serving serious buyers and investors across Bangalore.',
+  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80',
+])
 
-<section class="pu-about-page-intro">
+@if(filled($page?->body_html))
+<section class="pu-about-page-intro pt-0">
+  <div class="container">
+    <div class="pu-legal__inner pu-page-body-cms">
+      {!! $page->body_html !!}
+    </div>
+  </div>
+</section>
+@endif
+
+<section class="pu-about-page-intro @if(filled($page?->body_html)) pt-4 pt-lg-5 @endif">
   <div class="container">
     <div class="row align-items-center g-5">
       <div class="col-lg-6">

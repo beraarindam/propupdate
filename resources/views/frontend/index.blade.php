@@ -1,5 +1,14 @@
 @extends('frontend.layouts.master')
-@section('title', 'Home')
+@php
+  $homePage = $page ?? null;
+  $heroBgDefault = 'https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80';
+  $heroBg = $homePage?->hero('bg_url') ?: $heroBgDefault;
+  $heroLine1 = $homePage?->hero('line1') ?: 'Update your property search with';
+  $heroLine2 = $homePage?->hero('line2') ?: 'PropUpdate Realty';
+  $heroSubtitle = $homePage?->hero('subtitle') ?: 'where decisions are informed, not influenced';
+  $heroSearchPh = $homePage?->hero('search_placeholder') ?: 'Location | Project | Builder';
+@endphp
+@section('title', $homePage?->browserTitle() ?? 'Home')
 
 @section('content')
 <div class="pu-hero-stack">
@@ -8,7 +17,7 @@
       class="pu-hero__bg"
       role="img"
       aria-label="Modern residential high-rise buildings at dusk"
-      style="background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&amp;fit=crop&amp;w=1920&amp;q=80');"
+      style="background-image: url('{{ $heroBg }}');"
     ></div>
     <div class="pu-hero__gradient" aria-hidden="true"></div>
     <div class="pu-hero__inner">
@@ -16,14 +25,14 @@
         <form class="pu-hero-search" action="#" method="get" role="search">
           <div class="input-wrap">
             <i class="fa-solid fa-search" aria-hidden="true"></i>
-            <input type="search" name="q" placeholder="Location | Project | Builder" autocomplete="off">
+            <input type="search" name="q" placeholder="{{ $heroSearchPh }}" autocomplete="off">
           </div>
         </form>
         <h1 class="pu-hero__title">
-          <span class="pu-hero__line">Update your property search with</span>
-          <span class="pu-hero__brand">PropUpdate Realty</span>
+          <span class="pu-hero__line">{{ $heroLine1 }}</span>
+          <span class="pu-hero__brand">{{ $heroLine2 }}</span>
         </h1>
-        <p class="pu-hero__subtitle">where decisions are informed, not influenced</p>
+        <p class="pu-hero__subtitle">{{ $heroSubtitle }}</p>
       </div>
     </div>
   </section>
@@ -271,6 +280,33 @@
     </div>
   </div>
 </section>
+
+@if(isset($services) && $services->isNotEmpty())
+<section class="pu-services" id="services" aria-labelledby="pu-services-heading">
+  <div class="container">
+    <p class="pu-services__kicker">What we do</p>
+    <h2 id="pu-services-heading" class="pu-services__title">Our services</h2>
+    <p class="pu-services__lead">Practical support across the property journey — from first brief to documentation.</p>
+    <div class="row g-4 pu-services__grid">
+      @foreach($services as $svc)
+        <div class="col-sm-6 col-lg-3">
+          <div class="pu-service-card">
+            <div class="pu-service-card__icon" aria-hidden="true">
+              @if($svc->icon_class)
+                <i class="{{ $svc->icon_class }}"></i>
+              @else
+                <i class="fa-solid fa-circle-check"></i>
+              @endif
+            </div>
+            <h3 class="pu-service-card__title">{{ $svc->name }}</h3>
+            <p class="pu-service-card__text">{{ $svc->summary }}</p>
+          </div>
+        </div>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endif
 
 <section class="pu-launches" id="pre-register" aria-labelledby="pu-launches-heading">
   <div class="pu-launches__bg" aria-hidden="true"></div>

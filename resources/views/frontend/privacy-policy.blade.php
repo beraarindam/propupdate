@@ -1,16 +1,21 @@
 @extends('frontend.layouts.master')
-@section('title', 'Privacy Policy')
+@section('title', $page?->browserTitle() ?? 'Privacy policy')
 
 @section('content')
 @include('frontend.partials.page-banner', [
-  'title' => 'Privacy policy',
-  'crumbCurrent' => 'Privacy policy',
-  'lead' => 'How PropUpdate Realty collects, uses, and protects your <strong>personal information</strong> on this website.',
-  'bgImage' => 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80',
+  'title' => $page?->banner_title ?? 'Privacy policy',
+  'crumbCurrent' => $page?->name ?? 'Privacy policy',
+  'lead' => $page?->banner_lead ?? 'How PropUpdate Realty collects, uses, and protects your <strong>personal information</strong> on this website.',
+  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80',
 ])
 
 <article class="pu-legal">
   <div class="container">
+    @if(filled($page?->body_html))
+    <div class="pu-legal__inner pu-page-body-cms">
+      {!! $page->body_html !!}
+    </div>
+    @else
     <div class="pu-legal__inner">
       <p class="pu-legal__meta">Last updated: {{ date('F j, Y') }}</p>
 
@@ -81,6 +86,7 @@
         For questions about privacy, email <a href="mailto:info@propupdate.com">info@propupdate.com</a> or call <a href="tel:+917204362646">7204362646</a>.
       </p>
     </div>
+    @endif
   </div>
 </article>
 @endsection

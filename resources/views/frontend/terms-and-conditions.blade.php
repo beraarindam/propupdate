@@ -1,16 +1,21 @@
 @extends('frontend.layouts.master')
-@section('title', 'Terms and Conditions')
+@section('title', $page?->browserTitle() ?? 'Terms & conditions')
 
 @section('content')
 @include('frontend.partials.page-banner', [
-  'title' => 'Terms & conditions',
-  'crumbCurrent' => 'Terms & conditions',
-  'lead' => 'Rules for using this website and our <strong>information services</strong>. Please read before you submit enquiries or rely on published content.',
-  'bgImage' => 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1920&q=80',
+  'title' => $page?->banner_title ?? 'Terms & conditions',
+  'crumbCurrent' => $page?->name ?? 'Terms & conditions',
+  'lead' => $page?->banner_lead ?? 'Rules for using this website and our <strong>information services</strong>. Please read before you submit enquiries or rely on published content.',
+  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1920&q=80',
 ])
 
 <article class="pu-legal">
   <div class="container">
+    @if(filled($page?->body_html))
+    <div class="pu-legal__inner pu-page-body-cms">
+      {!! $page->body_html !!}
+    </div>
+    @else
     <div class="pu-legal__inner">
       <p class="pu-legal__meta">Last updated: {{ date('F j, Y') }}</p>
 
@@ -81,6 +86,7 @@
         Our <a href="{{ route('pages.privacy') }}">Privacy policy</a> explains how we handle personal data.
       </p>
     </div>
+    @endif
   </div>
 </article>
 @endsection

@@ -23,6 +23,58 @@
 				<div class="menu-title">Site settings</div>
 			</a>
 		</li>
+		<li class="{{ request()->routeIs('admin.pages.*') ? 'mm-active' : '' }}">
+			<a href="javascript:;" class="has-arrow">
+				<div class="parent-icon"><i class='bx bx-book-content'></i></div>
+				<div class="menu-title">Pages</div>
+			</a>
+			<ul>
+				<li class="{{ request()->routeIs('admin.pages.index') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.pages.index') }}"><i class='bx bx-radio-circle'></i>Manage pages</a>
+				</li>
+			</ul>
+		</li>
+		<li class="{{ request()->routeIs('admin.properties.*', 'admin.property_categories.*', 'admin.property_types.*') ? 'mm-active' : '' }}">
+			<a href="javascript:;" class="has-arrow">
+				<div class="parent-icon"><i class='bx bx-buildings'></i></div>
+				<div class="menu-title">Properties</div>
+			</a>
+			<ul>
+				<li class="{{ request()->routeIs('admin.properties.*') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.properties.index') }}"><i class='bx bx-radio-circle'></i>Listings</a>
+				</li>
+				<li class="{{ request()->routeIs('admin.property_categories.*') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.property_categories.index') }}"><i class='bx bx-radio-circle'></i>Categories</a>
+				</li>
+				<li class="{{ request()->routeIs('admin.property_types.*') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.property_types.index') }}"><i class='bx bx-radio-circle'></i>Types</a>
+				</li>
+			</ul>
+		</li>
+		<li class="{{ request()->routeIs('admin.services.*') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.services.index') }}">
+				<div class="parent-icon"><i class='bx bx-briefcase-alt-2'></i></div>
+				<div class="menu-title">Services</div>
+			</a>
+		</li>
+		<li class="{{ request()->routeIs('admin.blogs.*') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.blogs.index') }}">
+				<div class="parent-icon"><i class='bx bx-news'></i></div>
+				<div class="menu-title">Blog</div>
+			</a>
+		</li>
+		<li class="{{ request()->routeIs('admin.faqs.*') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.faqs.index') }}">
+				<div class="parent-icon"><i class='bx bx-help-circle'></i></div>
+				<div class="menu-title">FAQs</div>
+			</a>
+		</li>
+		<li class="{{ request()->routeIs('admin.enquiries.*') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.enquiries.index') }}">
+				<div class="parent-icon"><i class='bx bx-mail-send'></i></div>
+				<div class="menu-title">Enquiries</div>
+			</a>
+		</li>
 	</ul>
 	<!--end navigation-->
 </div>

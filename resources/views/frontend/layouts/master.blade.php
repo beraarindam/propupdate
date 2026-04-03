@@ -5,10 +5,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title')@if(!empty($siteSettings?->meta_title)) — {{ $siteSettings->meta_title }} @endif</title>
+  <title>@yield('title')@if($siteSettings?->site_name) | {{ $siteSettings->site_name }} @endif</title>
 
-  @if(!empty($siteSettings?->meta_description))
-  <meta name="description" content="{{ $siteSettings->meta_description }}">
+  @php
+    $__pg = $page ?? null;
+    $__post = $post ?? null;
+    $__property = $property ?? null;
+    $__seoDesc = $__post?->meta_description ?? $__property?->meta_description ?? $__pg?->meta_description ?? $siteSettings?->meta_description ?? null;
+    $__seoKw = $__post?->meta_keywords ?? $__property?->meta_keywords ?? $__pg?->meta_keywords ?? null;
+  @endphp
+  @if(!empty($__seoDesc))
+  <meta name="description" content="{{ $__seoDesc }}">
+  @endif
+  @if(!empty($__seoKw))
+  <meta name="keywords" content="{{ $__seoKw }}">
   @endif
 
   <!--=====FAB ICON=======-->

@@ -1,6 +1,11 @@
 $(function() {
     "use strict";
 
+	// Dashboard-only: skip when canvas widgets are absent so admin pages still load app.js (metisMenu, etc.).
+	if (!document.getElementById("chart1")) {
+		return;
+	}
+
 	
 // chart 1
 

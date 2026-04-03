@@ -1,12 +1,12 @@
 @extends('frontend.layouts.master')
-@section('title', 'Contact Us')
+@section('title', $page?->browserTitle() ?? 'Contact us')
 
 @section('content')
 @include('frontend.partials.page-banner', [
-  'title' => 'Contact us',
-  'crumbCurrent' => 'Contact us',
-  'lead' => 'Questions about <strong>resale</strong>, <strong>launches</strong>, or <strong>investments</strong>? We reply within one business day.',
-  'bgImage' => 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80',
+  'title' => $page?->banner_title ?? 'Contact us',
+  'crumbCurrent' => $page?->name ?? 'Contact us',
+  'lead' => $page?->banner_lead ?? 'Questions about <strong>resale</strong>, <strong>launches</strong>, or <strong>investments</strong>? We reply within one business day.',
+  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80',
 ])
 
 <section class="pu-contact">
@@ -33,9 +33,15 @@
       <div class="col-lg-5">
         <p class="pu-contact__kicker">Talk to PropUpdate</p>
         <h2 class="pu-contact__h2">We’re here in Bangalore</h2>
+        @if(filled($page?->body_html))
+        <div class="pu-contact__intro">
+          {!! $page->body_html !!}
+        </div>
+        @else
         <p class="pu-contact__intro">
           Share your brief — budget, locality, timeline — and we’ll route you to the right specialist.
         </p>
+        @endif
         <ul class="pu-contact__channels">
           <li class="pu-contact__channel">
             <span class="pu-contact__channel-icon" aria-hidden="true"><i class="fa-solid fa-phone"></i></span>

@@ -1,8 +1,9 @@
 $(function() {
 	"use strict";
-	new PerfectScrollbar(".app-container"),
-	new PerfectScrollbar(".header-message-list"),
-	new PerfectScrollbar(".header-notifications-list"),
+	// Only init when nodes exist — missing selectors throw and prevent metisMenu / sidebar dropdowns.
+	document.querySelector(".app-container") && new PerfectScrollbar(".app-container"),
+	document.querySelector(".header-message-list") && new PerfectScrollbar(".header-message-list"),
+	document.querySelector(".header-notifications-list") && new PerfectScrollbar(".header-notifications-list"),
 
 
 	    $(".mobile-search-icon").on("click", function() {
