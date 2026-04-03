@@ -32,7 +32,7 @@
       <nav class="pu-main-nav d-none d-lg-flex" aria-label="Primary">
         <a href="{{ url('/') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
         <a href="#">New Launches</a>
-        <a href="{{ url('/#about') }}">About Us</a>
+        <a href="{{ route('pages.about') }}" class="{{ request()->routeIs('pages.about') ? 'is-active' : '' }}">About Us</a>
         <a href="#">Properties</a>
         <a href="#">Projects</a>
       </nav>
@@ -65,7 +65,7 @@
     <ul class="mobile-nav-list nav-list1">
       <li><a href="{{ url('/') }}">Home</a></li>
       <li><a href="#">New Launches</a></li>
-      <li><a href="{{ url('/#about') }}">About Us</a></li>
+      <li><a href="{{ route('pages.about') }}">About Us</a></li>
       <li><a href="#">Properties</a></li>
       <li><a href="#">Projects</a></li>
     </ul>

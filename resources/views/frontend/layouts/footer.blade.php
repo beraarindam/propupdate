@@ -35,7 +35,7 @@
           <h3 class="pu-footer-heading">Quick links</h3>
           <ul class="pu-footer-links">
             <li><a href="{{ url('/') }}">Home</a></li>
-            <li><a href="{{ url('/#about') }}">About us</a></li>
+            <li><a href="{{ route('pages.about') }}">About us</a></li>
             <li><a href="{{ url('/#exclusive-resale') }}">Exclusive resale</a></li>
             <li><a href="{{ url('/#why-propupdate') }}">Why PropUpdate</a></li>
             <li><a href="#">Properties</a></li>

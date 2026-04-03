@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\PagesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('frontend.index');
 })->name('home');
+
+Route::get('/about-us', [PagesController::class, 'about'])->name('pages.about');
 
 Route::post('/lead/pre-register', function (\Illuminate\Http\Request $request) {
     $request->validate([
