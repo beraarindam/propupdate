@@ -33,6 +33,7 @@
         <a href="{{ url('/') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
         <a href="#">New Launches</a>
         <a href="{{ route('pages.about') }}" class="{{ request()->routeIs('pages.about') ? 'is-active' : '' }}">About Us</a>
+        <a href="{{ route('pages.contact') }}" class="{{ request()->routeIs('pages.contact') ? 'is-active' : '' }}">Contact</a>
         <a href="#">Properties</a>
         <a href="#">Projects</a>
       </nav>
@@ -66,6 +67,7 @@
       <li><a href="{{ url('/') }}">Home</a></li>
       <li><a href="#">New Launches</a></li>
       <li><a href="{{ route('pages.about') }}">About Us</a></li>
+      <li><a href="{{ route('pages.contact') }}">Contact</a></li>
       <li><a href="#">Properties</a></li>
       <li><a href="#">Projects</a></li>
     </ul>

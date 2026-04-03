@@ -36,6 +36,7 @@
           <ul class="pu-footer-links">
             <li><a href="{{ url('/') }}">Home</a></li>
             <li><a href="{{ route('pages.about') }}">About us</a></li>
+            <li><a href="{{ route('pages.contact') }}">Contact us</a></li>
             <li><a href="{{ url('/#exclusive-resale') }}">Exclusive resale</a></li>
             <li><a href="{{ url('/#why-propupdate') }}">Why PropUpdate</a></li>
             <li><a href="#">Properties</a></li>
@@ -83,9 +84,18 @@
 
   <div class="pu-footer__bottom">
     <div class="container">
-      <p class="pu-footer__copy">
-        &copy; {{ date('Y') }} PropUpdate Realty. All rights reserved.
-      </p>
+      <div class="pu-footer__bottom-row">
+        <p class="pu-footer__copy">
+          &copy; {{ date('Y') }} PropUpdate Realty. All rights reserved.
+        </p>
+        <nav class="pu-footer__legal-nav" aria-label="Legal">
+          <a href="{{ route('pages.contact') }}">Contact</a>
+          <span class="pu-footer__legal-sep" aria-hidden="true">·</span>
+          <a href="{{ route('pages.privacy') }}">Privacy</a>
+          <span class="pu-footer__legal-sep" aria-hidden="true">·</span>
+          <a href="{{ route('pages.terms') }}">Terms</a>
+        </nav>
+      </div>
     </div>
   </div>
 </footer>
