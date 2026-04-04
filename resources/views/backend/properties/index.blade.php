@@ -23,7 +23,7 @@
 
 		<div class="card radius-10">
 			<div class="card-body">
-				<p class="text-secondary small mb-3">Manage inventory with categories, types, pricing, and SEO. Search and paging are server-side.</p>
+				<p class="text-secondary small mb-3">Manage inventory with categories, pricing, and SEO. Search and paging are server-side.</p>
 				<div class="table-responsive">
 					<table class="table table-hover align-middle mb-0 w-100" id="propertiesTable" style="width:100%">
 						<thead class="table-light">
@@ -31,7 +31,6 @@
 								<th>Order</th>
 								<th>Title</th>
 								<th>Category</th>
-								<th>Type</th>
 								<th>Deal</th>
 								<th>Price</th>
 								<th>Location</th>
@@ -58,12 +57,12 @@ $(function () {
 		processing: true,
 		serverSide: true,
 		ajax: @json(route('admin.properties.data')),
-		order: [[8, 'desc']],
+		order: [[7, 'desc']],
 		pageLength: 25,
 		lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
 		columnDefs: [
-			{ orderable: false, targets: 9 },
-			{ className: 'text-end', targets: 9 }
+			{ orderable: false, targets: 8 },
+			{ className: 'text-end', targets: 8 }
 		],
 		autoWidth: false
 	});

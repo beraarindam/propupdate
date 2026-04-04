@@ -27,15 +27,6 @@
 						</select>
 					</div>
 					<div class="col-md-6 col-lg-4">
-						<label class="form-label">Type</label>
-						<select name="property_type_id" class="form-select">
-							<option value="">— None —</option>
-							@foreach($types as $t)
-								<option value="{{ $t->id }}" @selected(old('property_type_id', $property->property_type_id) == $t->id)>{{ $t->name }}</option>
-							@endforeach
-						</select>
-					</div>
-					<div class="col-md-6 col-lg-4">
 						<label class="form-label">Listing</label>
 						<select name="listing_type" class="form-select" required>
 							@foreach($listingOpts as $val => $label)

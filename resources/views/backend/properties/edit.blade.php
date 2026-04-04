@@ -31,7 +31,7 @@
 		<form id="property_form" action="{{ route('admin.properties.update', $property) }}" method="post" enctype="multipart/form-data">
 			@csrf
 			@method('PUT')
-			@include('backend.properties._form', ['property' => $property, 'categories' => $categories, 'types' => $types])
+			@include('backend.properties._form', ['property' => $property, 'categories' => $categories])
 			<div class="mt-3">
 				<button type="submit" class="btn btn-primary px-4">Save changes</button>
 			</div>

@@ -9,29 +9,31 @@
   $masterUrl = $property->masterPlanUrl();
 @endphp
 
-<div class="pu-proj-microsite">
+<div class="pu-proj-microsite pu-proj-microsite--detail">
   @if($property->published_at)
-    <p class="pu-proj-meta text-muted small mb-4">
-      <time datetime="{{ $property->published_at->toIso8601String() }}">Updated {{ $property->published_at->format('F j, Y') }}</time>
+    <p class="pu-proj-meta mb-4">
+      <time class="pu-proj-meta__time" datetime="{{ $property->published_at->toIso8601String() }}">
+        <i class="fa-regular fa-calendar-check me-2" aria-hidden="true"></i>Updated {{ $property->published_at->format('F j, Y') }}
+      </time>
     </p>
   @endif
 
   @if($property->summary)
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Overview</h2>
-      <div class="pu-proj-lead text-secondary">{!! nl2br(e($property->summary)) !!}</div>
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Overview</h2>
+      <div class="pu-proj-lead">{!! nl2br(e($property->summary)) !!}</div>
     </section>
   @endif
 
   @if(count($cfgRows))
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Configuration</h2>
-      <div class="table-responsive">
-        <table class="table table-bordered table-sm align-middle pu-proj-table">
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Configuration</h2>
+      <div class="pu-proj-table-wrap">
+        <table class="table table-sm align-middle pu-proj-table pu-proj-table--kv mb-0">
           <tbody>
             @foreach($cfgRows as $row)
               <tr>
-                <th scope="row" class="bg-light text-dark w-25">{{ $row['label'] }}</th>
+                <th scope="row">{{ $row['label'] }}</th>
                 <td>{{ $row['value'] }}</td>
               </tr>
             @endforeach
@@ -42,11 +44,11 @@
   @endif
 
   @if(count($unitMix))
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Unit mix &amp; indicative pricing</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm align-middle pu-proj-table">
-          <thead class="table-light">
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Unit mix &amp; indicative pricing</h2>
+      <div class="pu-proj-table-wrap">
+        <table class="table table-sm align-middle pu-proj-table pu-proj-table--data mb-0">
+          <thead>
             <tr>
               <th>Unit type</th>
               <th>Size (sq.ft)</th>
@@ -65,41 +67,43 @@
         </table>
       </div>
       @if($property->price_disclaimer)
-        <div class="alert alert-light border small mb-0 mt-3">{!! nl2br(e($property->price_disclaimer)) !!}</div>
+        <div class="pu-proj-callout mt-3 mb-0">{!! nl2br(e($property->price_disclaimer)) !!}</div>
       @endif
     </section>
   @elseif($property->price_disclaimer)
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Pricing notes</h2>
-      <div class="alert alert-light border small mb-0">{!! nl2br(e($property->price_disclaimer)) !!}</div>
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Pricing notes</h2>
+      <div class="pu-proj-callout mb-0">{!! nl2br(e($property->price_disclaimer)) !!}</div>
     </section>
   @endif
 
   @if($property->maps_link_url)
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Location</h2>
-      <p class="mb-2">
-        <a href="{{ $property->maps_link_url }}" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+    <section class="pu-proj-section pu-proj-card pu-proj-card--maps mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Location</h2>
+      <p class="mb-0">
+        <a href="{{ $property->maps_link_url }}" class="pu-proj-maps-btn" target="_blank" rel="noopener noreferrer">
+          <i class="fa-solid fa-map-location-dot me-2" aria-hidden="true"></i>Open in Google Maps
+        </a>
       </p>
     </section>
   @endif
 
   @if($masterUrl || count($floorUrls))
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Plans</h2>
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Plans</h2>
       @if($masterUrl)
-        <h3 class="h6 text-uppercase text-muted mt-3 mb-2">Master plan</h3>
-        <div class="border rounded overflow-hidden mb-4">
-          <img src="{{ $masterUrl }}" alt="Master plan" class="img-fluid w-100" style="max-height: 520px; object-fit: contain; background: #f8fafc;">
+        <h3 class="pu-proj-subhead">Master plan</h3>
+        <div class="pu-proj-plan-frame mb-4">
+          <img src="{{ $masterUrl }}" alt="Master plan" class="img-fluid w-100 pu-proj-plan-img">
         </div>
       @endif
       @if(count($floorUrls))
-        <h3 class="h6 text-uppercase text-muted mb-2">Floor plans</h3>
+        <h3 class="pu-proj-subhead">Floor plans</h3>
         <div class="row g-3">
           @foreach($floorUrls as $fu)
             <div class="col-6 col-md-4 col-lg-3">
-              <a href="{{ $fu }}" class="d-block border rounded overflow-hidden pu-proj-zoom" target="_blank" rel="noopener noreferrer">
-                <img src="{{ $fu }}" alt="Floor plan" class="w-100" style="max-height: 200px; object-fit: cover;">
+              <a href="{{ $fu }}" class="pu-proj-plan-thumb pu-proj-zoom d-block" target="_blank" rel="noopener noreferrer">
+                <img src="{{ $fu }}" alt="Floor plan" class="w-100 pu-proj-plan-thumb__img">
               </a>
             </div>
           @endforeach
@@ -109,22 +113,22 @@
   @endif
 
   @if($property->description)
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">More about this project</h2>
-      <div class="pu-blog-article__content pu-page-body-cms">{!! $property->description !!}</div>
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">More about this project</h2>
+      <div class="pu-blog-article__content pu-page-body-cms pu-proj-body">{!! $property->description !!}</div>
     </section>
   @endif
 
   @if(count($specRows))
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Specifications</h2>
-      <div class="table-responsive">
-        <table class="table table-bordered table-sm align-middle pu-proj-table">
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Specifications</h2>
+      <div class="pu-proj-table-wrap">
+        <table class="table table-sm align-middle pu-proj-table pu-proj-table--kv mb-0">
           <tbody>
             @foreach($specRows as $row)
               @if(!empty($row['label']))
                 <tr>
-                  <th scope="row" class="bg-light w-25">{{ $row['label'] }}</th>
+                  <th scope="row">{{ $row['label'] }}</th>
                   <td>{{ $row['value'] ?? '' }}</td>
                 </tr>
               @endif
@@ -136,38 +140,47 @@
   @endif
 
   @if(is_array($property->amenities) && count($property->amenities))
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Amenities</h2>
-      <ul class="row row-cols-1 row-cols-md-2 row-cols-lg-3 small list-unstyled pu-proj-amenities">
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Amenities</h2>
+      <ul class="row row-cols-1 row-cols-md-2 row-cols-lg-3 list-unstyled pu-proj-amenities mb-0">
         @foreach($property->amenities as $am)
-          <li class="col mb-2 px-2"><span class="text-success me-1">✓</span>{{ $am }}</li>
+          <li class="col mb-2">
+            <span class="pu-proj-amenity">
+              <span class="pu-proj-amenity__icon" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+              <span class="pu-proj-amenity__text">{{ $am }}</span>
+            </span>
+          </li>
         @endforeach
       </ul>
     </section>
   @endif
 
   @if(count($pros) || count($cons))
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Expert notes</h2>
-      <div class="row g-4">
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Expert notes</h2>
+      <div class="row g-3 g-lg-4">
         @if(count($pros))
           <div class="col-md-6">
-            <h3 class="h6 text-success">Highlights</h3>
-            <ul class="small mb-0">
-              @foreach($pros as $li)
-                <li class="mb-2">{{ $li }}</li>
-              @endforeach
-            </ul>
+            <div class="pu-proj-insight pu-proj-insight--pro h-100">
+              <h3 class="pu-proj-insight__title"><i class="fa-solid fa-circle-check me-2" aria-hidden="true"></i>Highlights</h3>
+              <ul class="pu-proj-insight__list mb-0">
+                @foreach($pros as $li)
+                  <li>{{ $li }}</li>
+                @endforeach
+              </ul>
+            </div>
           </div>
         @endif
         @if(count($cons))
           <div class="col-md-6">
-            <h3 class="h6 text-warning">Points to consider</h3>
-            <ul class="small mb-0">
-              @foreach($cons as $li)
-                <li class="mb-2">{{ $li }}</li>
-              @endforeach
-            </ul>
+            <div class="pu-proj-insight pu-proj-insight--con h-100">
+              <h3 class="pu-proj-insight__title"><i class="fa-solid fa-circle-exclamation me-2" aria-hidden="true"></i>Points to consider</h3>
+              <ul class="pu-proj-insight__list mb-0">
+                @foreach($cons as $li)
+                  <li>{{ $li }}</li>
+                @endforeach
+              </ul>
+            </div>
           </div>
         @endif
       </div>
@@ -175,34 +188,34 @@
   @endif
 
   @if($property->developer_name || $property->developer_description)
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">About the developer</h2>
+    <section class="pu-proj-section pu-proj-card pu-proj-developer mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">About the developer</h2>
       @if($property->developer_name)
-        <p class="fw-semibold mb-2">{{ $property->developer_name }}</p>
+        <p class="pu-proj-developer__name mb-2">{{ $property->developer_name }}</p>
       @endif
       @if($property->rera_number)
-        <p class="small text-muted mb-2">RERA: {{ $property->rera_number }}</p>
+        <p class="pu-proj-developer__rera small mb-3"><i class="fa-solid fa-shield-halved me-2" aria-hidden="true"></i>RERA: {{ $property->rera_number }}</p>
       @endif
       @if($property->developer_description)
-        <div class="small text-secondary">{!! nl2br(e($property->developer_description)) !!}</div>
+        <div class="pu-proj-developer__bio">{!! nl2br(e($property->developer_description)) !!}</div>
       @endif
     </section>
   @endif
 
   @if(count($faqs))
-    <section class="pu-proj-section mb-5">
-      <h2 class="h4 pu-proj-heading">Frequently asked questions</h2>
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+      <h2 class="pu-proj-heading h4 mb-3">Frequently asked questions</h2>
       <div class="accordion accordion-flush pu-proj-faq" id="propertyFaqAccordion">
         @foreach($faqs as $idx => $faq)
           @php($fid = 'faq-'.$property->id.'-'.$idx)
-          <div class="accordion-item border">
+          <div class="accordion-item pu-proj-faq__item">
             <h3 class="accordion-header m-0" id="heading-{{ $fid }}">
-              <button class="accordion-button collapsed py-3 small" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $fid }}" aria-expanded="false" aria-controls="collapse-{{ $fid }}">
+              <button class="accordion-button collapsed pu-proj-faq__btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $fid }}" aria-expanded="false" aria-controls="collapse-{{ $fid }}">
                 {{ $faq['question'] ?? 'Question' }}
               </button>
             </h3>
             <div id="collapse-{{ $fid }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $fid }}" data-bs-parent="#propertyFaqAccordion">
-              <div class="accordion-body small">{!! nl2br(e($faq['answer'] ?? '')) !!}</div>
+              <div class="accordion-body pu-proj-faq__body">{!! nl2br(e($faq['answer'] ?? '')) !!}</div>
             </div>
           </div>
         @endforeach

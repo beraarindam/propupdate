@@ -128,10 +128,29 @@ class Property extends Model
     public function featuredBannerUrl(): ?string
     {
         if ($this->featured_image_path) {
-            return SiteSetting::resolvePublicUrl($this->featured_image_path);
+            return static::resolveStorageOrRemoteUrl($this->featured_image_path);
         }
 
         return $this->featured_image_url ? (string) $this->featured_image_url : null;
+    }
+
+    /**
+     * Public URL for a stored path or an absolute http(s) string (e.g. CDN / Unsplash in JSON).
+     */
+    protected static function resolveStorageOrRemoteUrl(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+        $v = trim($value);
+        if ($v === '') {
+            return null;
+        }
+        if (preg_match('/\Ahttps?:\/\//i', $v)) {
+            return $v;
+        }
+
+        return SiteSetting::resolvePublicUrl($v);
     }
 
     /**
@@ -149,7 +168,7 @@ class Property extends Model
             if (! is_string($path) || $path === '') {
                 continue;
             }
-            $u = SiteSetting::resolvePublicUrl($path);
+            $u = static::resolveStorageOrRemoteUrl($path);
             if ($u) {
                 $urls[] = $u;
             }
@@ -160,7 +179,7 @@ class Property extends Model
 
     public function masterPlanUrl(): ?string
     {
-        return $this->master_plan_path ? SiteSetting::resolvePublicUrl($this->master_plan_path) : null;
+        return $this->master_plan_path ? static::resolveStorageOrRemoteUrl($this->master_plan_path) : null;
     }
 
     /**
@@ -177,7 +196,7 @@ class Property extends Model
             if (! is_string($path) || $path === '') {
                 continue;
             }
-            $u = SiteSetting::resolvePublicUrl($path);
+            $u = static::resolveStorageOrRemoteUrl($path);
             if ($u) {
                 $urls[] = $u;
             }

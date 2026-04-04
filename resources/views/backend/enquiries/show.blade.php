@@ -21,6 +21,16 @@
 						<p class="text-muted small mb-1">Received</p>
 						<p class="mb-0">{{ $enquiry->created_at->format('l, F j, Y \a\t g:i A') }}</p>
 					</div>
+					@if($enquiry->property)
+						<div class="col-12">
+							<p class="text-muted small mb-1">Related listing</p>
+							<p class="mb-0">
+								<a href="{{ route('admin.properties.edit', $enquiry->property) }}">{{ $enquiry->property->title }}</a>
+								<span class="text-muted small ms-2">·</span>
+								<a href="{{ route('properties.show', $enquiry->property) }}" target="_blank" rel="noopener" class="small">View on site</a>
+							</p>
+						</div>
+					@endif
 					<div class="col-md-6">
 						<p class="text-muted small mb-1">Name</p>
 						<p class="mb-0">{{ $enquiry->name }}</p>

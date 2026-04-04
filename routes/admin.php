@@ -8,7 +8,6 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PropertyCategoryController;
 use App\Http\Controllers\Admin\PropertyController;
-use App\Http\Controllers\Admin\PropertyTypeController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use Illuminate\Support\Facades\Route;
@@ -57,14 +56,6 @@ Route::middleware('auth')->group(function () {
     Route::get('property-categories/{property_category}/edit', [PropertyCategoryController::class, 'edit'])->name('property_categories.edit');
     Route::put('property-categories/{property_category}', [PropertyCategoryController::class, 'update'])->name('property_categories.update');
     Route::delete('property-categories/{property_category}', [PropertyCategoryController::class, 'destroy'])->name('property_categories.destroy');
-
-    Route::get('property-types/data', [PropertyTypeController::class, 'data'])->name('property_types.data');
-    Route::get('property-types', [PropertyTypeController::class, 'index'])->name('property_types.index');
-    Route::get('property-types/create', [PropertyTypeController::class, 'create'])->name('property_types.create');
-    Route::post('property-types', [PropertyTypeController::class, 'store'])->name('property_types.store');
-    Route::get('property-types/{property_type}/edit', [PropertyTypeController::class, 'edit'])->name('property_types.edit');
-    Route::put('property-types/{property_type}', [PropertyTypeController::class, 'update'])->name('property_types.update');
-    Route::delete('property-types/{property_type}', [PropertyTypeController::class, 'destroy'])->name('property_types.destroy');
 
     Route::get('properties/data', [PropertyController::class, 'data'])->name('properties.data');
     Route::post('properties/tinymce-upload', [PropertyController::class, 'tinymceUpload'])->name('properties.tinymce-upload');

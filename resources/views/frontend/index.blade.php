@@ -37,20 +37,37 @@
     </div>
   </section>
 
+  @php
+    $puCatFallbacks = [
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
+    ];
+  @endphp
   <section class="pu-categories-wrap" aria-label="Property categories">
     <div class="pu-categories">
-      <a href="#" class="pu-cat-card" style="background-image: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&amp;fit=crop&amp;w=900&amp;q=80');">
-        <span class="pu-cat-label">Apartments</span>
-      </a>
-      <a href="#" class="pu-cat-card" style="background-image: url('https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&amp;fit=crop&amp;w=900&amp;q=80');">
-        <span class="pu-cat-label">Villas</span>
-      </a>
-      <a href="#" class="pu-cat-card" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&amp;fit=crop&amp;w=900&amp;q=80');">
-        <span class="pu-cat-label">Commercial</span>
-      </a>
-      <a href="#" class="pu-cat-card" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&amp;fit=crop&amp;w=900&amp;q=80');">
-        <span class="pu-cat-label">Plots</span>
-      </a>
+      @if(isset($homeCategories) && $homeCategories->isNotEmpty())
+        @foreach($homeCategories as $idx => $cat)
+          @php($catBg = $cat->bannerImageUrl() ?? ($puCatFallbacks[$idx] ?? $puCatFallbacks[0]))
+          <a href="{{ route('properties.index', ['category_id' => $cat->id]) }}" class="pu-cat-card" style="background-image: url('{{ e($catBg) }}');">
+            <span class="pu-cat-label">{{ $cat->name }}</span>
+          </a>
+        @endforeach
+      @else
+        <a href="{{ route('properties.index') }}" class="pu-cat-card" style="background-image: url('{{ e($puCatFallbacks[0]) }}');">
+          <span class="pu-cat-label">Apartments</span>
+        </a>
+        <a href="{{ route('properties.index') }}" class="pu-cat-card" style="background-image: url('{{ e($puCatFallbacks[1]) }}');">
+          <span class="pu-cat-label">Villas</span>
+        </a>
+        <a href="{{ route('properties.index') }}" class="pu-cat-card" style="background-image: url('{{ e($puCatFallbacks[2]) }}');">
+          <span class="pu-cat-label">Commercial</span>
+        </a>
+        <a href="{{ route('properties.index') }}" class="pu-cat-card" style="background-image: url('{{ e($puCatFallbacks[3]) }}');">
+          <span class="pu-cat-label">Plots</span>
+        </a>
+      @endif
     </div>
   </section>
 </div>
