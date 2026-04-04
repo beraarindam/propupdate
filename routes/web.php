@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PropertyListingController;
 use App\Models\Enquiry;
@@ -41,6 +42,8 @@ Route::get('/', function () {
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{blog}', [BlogController::class, 'show'])->name('blog.show');
+
+Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
 
 Route::get('/properties', [PropertyListingController::class, 'index'])->name('properties.index');
 Route::post('/properties/{property}/enquiry', [PropertyListingController::class, 'submitEnquiry'])

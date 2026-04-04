@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(PropertyDummyDataSeeder::class);
+        $this->call(GalleryDummyDataSeeder::class);
     }
 }

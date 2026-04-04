@@ -60,6 +60,12 @@
 				<div class="menu-title">Blog</div>
 			</a>
 		</li>
+		<li class="{{ request()->routeIs('admin.gallery_items.*') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.gallery_items.index') }}">
+				<div class="parent-icon"><i class='bx bx-images'></i></div>
+				<div class="menu-title">Gallery</div>
+			</a>
+		</li>
 		<li class="{{ request()->routeIs('admin.faqs.*') ? 'mm-active' : '' }}">
 			<a href="{{ route('admin.faqs.index') }}">
 				<div class="parent-icon"><i class='bx bx-help-circle'></i></div>

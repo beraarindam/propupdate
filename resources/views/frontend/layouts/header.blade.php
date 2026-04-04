@@ -39,6 +39,7 @@
         <a href="{{ route('pages.about') }}" class="{{ request()->routeIs('pages.about') ? 'is-active' : '' }}">About Us</a>
           <a href="{{ route('pages.contact') }}" class="{{ request()->routeIs('pages.contact') ? 'is-active' : '' }}">Contact</a>
         <a href="{{ route('properties.index') }}" class="{{ request()->routeIs('properties.*') ? 'is-active' : '' }}">Properties</a>
+        <a href="{{ route('gallery.index') }}" class="{{ request()->routeIs('gallery.*') ? 'is-active' : '' }}">Gallery</a>
         <a href="#">Projects</a>
       </nav>
 
@@ -75,6 +76,7 @@
       <li><a href="{{ route('blog.index') }}">Blog</a></li>
       <li><a href="{{ route('pages.contact') }}">Contact</a></li>
       <li><a href="{{ route('properties.index') }}">Properties</a></li>
+      <li><a href="{{ route('gallery.index') }}">Gallery</a></li>
       <li><a href="#">Projects</a></li>
     </ul>
     <div class="allmobilesection" style="padding: 1rem 1.25rem;">

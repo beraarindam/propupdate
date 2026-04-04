@@ -42,10 +42,11 @@
             <li><a href="{{ route('pages.about') }}">About us</a></li>
             <li><a href="{{ route('home') }}#services">Services</a></li>
             <li><a href="{{ route('blog.index') }}">Blog</a></li>
+            <li><a href="{{ route('gallery.index') }}">Gallery</a></li>
             <li><a href="{{ route('pages.contact') }}">Contact us</a></li>
             <li><a href="{{ url('/#exclusive-resale') }}">Exclusive resale</a></li>
             <li><a href="{{ url('/#why-propupdate') }}">Why PropUpdate</a></li>
-            <li><a href="#">Properties</a></li>
+            <li><a href="{{ route('properties.index') }}">Properties</a></li>
             <li><a href="#">New launches</a></li>
           </ul>
         </div>

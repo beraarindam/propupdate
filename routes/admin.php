@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\GalleryItemController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PropertyCategoryController;
 use App\Http\Controllers\Admin\PropertyController;
@@ -48,6 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::get('blogs/{blog}/edit', [BlogPostController::class, 'edit'])->name('blogs.edit');
     Route::put('blogs/{blog}', [BlogPostController::class, 'update'])->name('blogs.update');
     Route::delete('blogs/{blog}', [BlogPostController::class, 'destroy'])->name('blogs.destroy');
+
+    Route::get('gallery-items/data', [GalleryItemController::class, 'data'])->name('gallery_items.data');
+    Route::get('gallery-items', [GalleryItemController::class, 'index'])->name('gallery_items.index');
+    Route::get('gallery-items/create', [GalleryItemController::class, 'create'])->name('gallery_items.create');
+    Route::post('gallery-items', [GalleryItemController::class, 'store'])->name('gallery_items.store');
+    Route::get('gallery-items/{gallery_item}/edit', [GalleryItemController::class, 'edit'])->name('gallery_items.edit');
+    Route::put('gallery-items/{gallery_item}', [GalleryItemController::class, 'update'])->name('gallery_items.update');
+    Route::delete('gallery-items/{gallery_item}', [GalleryItemController::class, 'destroy'])->name('gallery_items.destroy');
 
     Route::get('property-categories/data', [PropertyCategoryController::class, 'data'])->name('property_categories.data');
     Route::get('property-categories', [PropertyCategoryController::class, 'index'])->name('property_categories.index');
