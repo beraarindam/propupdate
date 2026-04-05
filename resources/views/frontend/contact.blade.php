@@ -6,7 +6,7 @@
   'title' => $page?->banner_title ?? 'Contact us',
   'crumbCurrent' => $page?->name ?? 'Contact us',
   'lead' => $page?->banner_lead ?? 'Questions about <strong>resale</strong>, <strong>launches</strong>, or <strong>investments</strong>? We reply within one business day.',
-  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80',
+  'bgImage' => $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80',
 ])
 
 <section class="pu-contact">

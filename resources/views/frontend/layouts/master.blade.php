@@ -11,8 +11,9 @@
     $__pg = $page ?? null;
     $__post = $post ?? null;
     $__property = $property ?? null;
-    $__seoDesc = $__post?->meta_description ?? $__property?->meta_description ?? $__pg?->meta_description ?? $siteSettings?->meta_description ?? null;
-    $__seoKw = $__post?->meta_keywords ?? $__property?->meta_keywords ?? $__pg?->meta_keywords ?? null;
+    $__project = $project ?? null;
+    $__seoDesc = $__post?->meta_description ?? $__property?->meta_description ?? $__project?->meta_description ?? $__pg?->meta_description ?? $siteSettings?->meta_description ?? null;
+    $__seoKw = $__post?->meta_keywords ?? $__property?->meta_keywords ?? $__project?->meta_keywords ?? $__pg?->meta_keywords ?? null;
   @endphp
   @if(!empty($__seoDesc))
   <meta name="description" content="{{ $__seoDesc }}">
@@ -55,6 +56,7 @@
   @include('frontend.layouts.header')
     @yield('content')
   @include('frontend.layouts.footer')
+  @include('frontend.partials.promo-popup')
   @stack('scripts')
 
   </body>

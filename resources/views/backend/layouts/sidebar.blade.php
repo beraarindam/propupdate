@@ -34,7 +34,7 @@
 				</li>
 			</ul>
 		</li>
-		<li class="{{ request()->routeIs('admin.properties.*', 'admin.property_categories.*') ? 'mm-active' : '' }}">
+		<li class="{{ request()->routeIs('admin.properties.*', 'admin.property_categories.*', 'admin.projects.*', 'admin.exclusive_resale_listings.*') ? 'mm-active' : '' }}">
 			<a href="javascript:;" class="has-arrow">
 				<div class="parent-icon"><i class='bx bx-buildings'></i></div>
 				<div class="menu-title">Properties</div>
@@ -46,6 +46,12 @@
 				<li class="{{ request()->routeIs('admin.property_categories.*') ? 'mm-active' : '' }}">
 					<a href="{{ route('admin.property_categories.index') }}"><i class='bx bx-radio-circle'></i>Categories</a>
 				</li>
+				<li class="{{ request()->routeIs('admin.projects.*') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.projects.index') }}"><i class='bx bx-radio-circle'></i>Projects</a>
+				</li>
+				<li class="{{ request()->routeIs('admin.exclusive_resale_listings.*') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.exclusive_resale_listings.index') }}"><i class='bx bx-radio-circle'></i>Exclusive resale</a>
+				</li>
 			</ul>
 		</li>
 		<li class="{{ request()->routeIs('admin.services.*') ? 'mm-active' : '' }}">
@@ -55,10 +61,15 @@
 			</a>
 		</li>
 		<li class="{{ request()->routeIs('admin.blogs.*') ? 'mm-active' : '' }}">
-			<a href="{{ route('admin.blogs.index') }}">
+			<a href="javascript:;" class="has-arrow">
 				<div class="parent-icon"><i class='bx bx-news'></i></div>
 				<div class="menu-title">Blog</div>
 			</a>
+			<ul>
+				<li class="{{ request()->routeIs('admin.blogs.index') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.blogs.index') }}"><i class='bx bx-radio-circle'></i>Manage posts</a>
+				</li>
+			</ul>
 		</li>
 		<li class="{{ request()->routeIs('admin.gallery_items.*') ? 'mm-active' : '' }}">
 			<a href="{{ route('admin.gallery_items.index') }}">

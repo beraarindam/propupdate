@@ -84,6 +84,7 @@ class EnquiryController extends Controller
 
     public function show(Enquiry $enquiry): View
     {
+        $enquiry->load(['property', 'exclusiveResaleListing', 'project']);
         $enquiry->markRead();
 
         return view('backend.enquiries.show', compact('enquiry'));

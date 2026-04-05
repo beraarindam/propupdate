@@ -9,6 +9,13 @@ class SiteSetting extends Model
 {
     protected $table = 'site_settings';
 
+    protected function casts(): array
+    {
+        return [
+            'promo_popup_enabled' => 'boolean',
+        ];
+    }
+
     protected $fillable = [
         'site_name',
         'tagline',
@@ -27,6 +34,10 @@ class SiteSetting extends Model
         'meta_title',
         'meta_description',
         'footer_text',
+        'promo_popup_enabled',
+        'promo_popup_image_path',
+        'promo_popup_image_url',
+        'promo_popup_link_url',
     ];
 
     /**
@@ -77,6 +88,35 @@ class SiteSetting extends Model
     public function faviconUrl(): ?string
     {
         return static::resolvePublicUrl($this->favicon_path);
+    }
+
+    /**
+     * Promo modal image: uploaded file first, then external URL.
+     */
+    public function promoPopupBannerUrl(): ?string
+    {
+        $fromPath = static::resolvePublicUrl($this->promo_popup_image_path);
+        if ($fromPath) {
+            return $fromPath;
+        }
+        $u = $this->promo_popup_image_url ? trim((string) $this->promo_popup_image_url) : '';
+
+        return $u !== '' ? $u : null;
+    }
+
+    /**
+     * Stable id for localStorage: changing image/link shows the popup again for returning visitors.
+     */
+    public function promoPopupDismissSignature(): string
+    {
+        $raw = implode('|', [
+            (string) ($this->promo_popup_image_path ?? ''),
+            trim((string) ($this->promo_popup_image_url ?? '')),
+            trim((string) ($this->promo_popup_link_url ?? '')),
+            (string) ($this->id ?? '0'),
+        ]);
+
+        return hash('sha256', $raw);
     }
 
     public function telHref(): ?string

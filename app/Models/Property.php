@@ -74,6 +74,7 @@ class Property extends Model
         'gallery_paths',
         'is_published',
         'is_featured',
+        'is_new_launch',
         'sort_order',
         'published_at',
     ];
@@ -101,6 +102,7 @@ class Property extends Model
             'gallery_paths' => 'array',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
+            'is_new_launch' => 'boolean',
             'published_at' => 'datetime',
         ];
     }
@@ -328,6 +330,11 @@ class Property extends Model
     {
         return $query->where('is_published', true)
             ->whereNotNull('published_at');
+    }
+
+    public function scopeNewLaunch(Builder $query): Builder
+    {
+        return $query->where('is_new_launch', true);
     }
 
     public static function listingTypeOptions(): array

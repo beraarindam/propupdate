@@ -2,24 +2,37 @@
 
 @php
   use App\Models\Property;
-  $page = null;
   $f = $filters ?? [];
+  $listingRouteName = $listingRoute ?? 'properties.index';
   $listingLabels = Property::listingTypeOptions();
+  $bannerBg = $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80';
+  $bannerTitle = $page?->banner_title ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
+  $crumbLabel = $page?->name ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
 @endphp
 
-@section('title', 'Properties')
+@section('title', $page?->browserTitle() ?? 'Properties')
 
 @section('content')
 @include('frontend.partials.page-banner', [
-  'title' => 'Properties',
-  'crumbCurrent' => 'Properties',
-  'lead' => 'Refine by <strong>deal type</strong>, location, and size — then explore listings tailored to you.',
-  'bgImage' => 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80',
+  'title' => $bannerTitle,
+  'crumbCurrent' => $crumbLabel,
+  'lead' => $page?->banner_lead ?? 'Refine by <strong>deal type</strong>, location, and size — then explore listings tailored to you.',
+  'bgImage' => $bannerBg,
 ])
 
-<section class="pu-pl-page">
+@if(filled($page?->body_html))
+<section class="pu-page-intro-cms pt-0">
+  <div class="container py-3 py-lg-4">
+    <div class="pu-legal__inner pu-page-body-cms">
+      {!! $page->body_html !!}
+    </div>
+  </div>
+</section>
+@endif
+
+<section class="pu-pl-page @if(filled($page?->body_html)) pt-0 @endif">
   <div class="container py-4 py-lg-5">
-    <form method="get" action="{{ route('properties.index') }}" class="pu-pl-form" id="pu-property-filters">
+    <form method="get" action="{{ route($listingRouteName) }}" class="pu-pl-form" id="pu-property-filters">
       <input type="hidden" name="view" value="{{ $f['view'] ?? 'grid' }}" id="pu-pl-view-input">
 
       <div class="row g-4 pu-pl-layout">
@@ -27,8 +40,8 @@
         <div class="col-lg-4 col-xl-3">
           <aside class="pu-pl-sidebar">
             <div class="pu-pl-sidebar__head">
-              <h2 class="pu-pl-sidebar__title">Find your space</h2>
-              <p class="pu-pl-sidebar__lead text-muted small mb-0">Filters apply instantly when you search.</p>
+              <h2 class="pu-pl-sidebar__title">{{ $page?->listingIndex('sidebar_title') ?: 'Find your space' }}</h2>
+              <p class="pu-pl-sidebar__lead text-muted small mb-0">{{ $page?->listingIndex('sidebar_lead') ?: 'Filters apply instantly when you search.' }}</p>
             </div>
 
             <div class="pu-pl-deal" role="group" aria-label="Deal type">
@@ -62,8 +75,14 @@
               </div>
               <div class="pu-pl-field">
                 <label class="pu-pl-label" for="pu-cat">Category</label>
+                @php($catParent = $categoryDropdownParent ?? null)
                 <select name="category_id" id="pu-cat" class="pu-pl-select">
-                  <option value="">All categories</option>
+                  <option value="" @selected(($f['category_id'] ?? '') === '')>All categories</option>
+                  @if($catParent)
+                    <option value="{{ $catParent->id }}" @selected((string)($f['category_id'] ?? '') === (string) $catParent->id)>
+                      All in {{ $catParent->name }}
+                    </option>
+                  @endif
                   @foreach($filterCategories as $cat)
                     <option value="{{ $cat->id }}" @selected((string)($f['category_id'] ?? '') === (string) $cat->id)>{{ $cat->name }}</option>
                   @endforeach
@@ -91,7 +110,7 @@
 
             <div class="pu-pl-sidebar__actions">
               <button type="submit" class="pu-pl-btn pu-pl-btn--primary w-100">Search properties</button>
-              <a href="{{ route('properties.index') }}" class="pu-pl-btn pu-pl-btn--ghost w-100 text-center">Reset all</a>
+              <a href="{{ route($listingRouteName) }}" class="pu-pl-btn pu-pl-btn--ghost w-100 text-center">Reset all</a>
             </div>
           </aside>
         </div>
@@ -100,7 +119,7 @@
         <div class="col-lg-8 col-xl-9">
           <div class="pu-pl-toolbar">
             <div class="pu-pl-toolbar__left">
-              <h1 class="pu-pl-count">Properties <span class="pu-pl-count__n">({{ $properties->total() }})</span></h1>
+              <h1 class="pu-pl-count">{{ $bannerTitle }} <span class="pu-pl-count__n">({{ $properties->total() }})</span></h1>
             </div>
             <div class="pu-pl-toolbar__right">
               <div class="pu-pl-view-toggle" role="group" aria-label="Layout">
@@ -132,8 +151,18 @@
           @if($properties->isEmpty())
             <div class="pu-pl-empty">
               <div class="pu-pl-empty__icon" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></div>
-              <h2 class="h5 pu-pl-empty__title">No listings match</h2>
-              <p class="text-muted mb-3">Try widening your filters or <a href="{{ route('properties.index') }}">clear them</a> to see all published properties.</p>
+              <h2 class="h5 pu-pl-empty__title">{{ $page?->listingIndex('empty_title') ?: 'No listings match' }}</h2>
+              <p class="text-muted mb-3">
+                @if(filled($page?->listingIndex('empty_message')))
+                  {!! $page->listingIndex('empty_message') !!}
+                @else
+                  @if($listingRouteName === 'new-launches.index')
+                    Try widening your filters or <a href="{{ route('properties.index') }}">browse all properties</a>.
+                  @else
+                    Try widening your filters or <a href="{{ route($listingRouteName) }}">clear them</a> to see all published properties.
+                  @endif
+                @endif
+              </p>
             </div>
           @else
             <div class="row g-4 pu-pl-grid @if(($f['view'] ?? 'grid') === 'list') pu-pl-grid--list @endif">
@@ -155,6 +184,9 @@
                       <div class="pu-pl-card__badges">
                         @if($item->is_featured)
                           <span class="pu-pl-badge pu-pl-badge--feat">Featured</span>
+                        @endif
+                        @if($item->is_new_launch)
+                          <span class="pu-pl-badge pu-pl-badge--launch">New launch</span>
                         @endif
                         <span class="pu-pl-badge pu-pl-badge--deal">{{ $dealLabel }}</span>
                       </div>

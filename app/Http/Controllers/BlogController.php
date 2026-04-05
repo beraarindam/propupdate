@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
+use App\Models\Page;
 use Illuminate\View\View;
 
 class BlogController extends Controller
@@ -15,7 +16,10 @@ class BlogController extends Controller
             ->orderByDesc('id')
             ->paginate(12);
 
-        return view('frontend.blog.index', compact('posts'));
+        return view('frontend.blog.index', [
+            'page' => Page::bySlug('blog'),
+            'posts' => $posts,
+        ]);
     }
 
     public function show(BlogPost $blog): View

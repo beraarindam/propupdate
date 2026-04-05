@@ -7,7 +7,7 @@
   'title' => $page?->banner_title ?? $page?->name ?? 'Gallery',
   'crumbCurrent' => $page?->name ?? 'Gallery',
   'lead' => $page?->banner_lead ?? ($page?->meta_description ? strip_tags($page->meta_description) : 'A curated look at projects, spaces, and places we work with.'),
-  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1920&q=80',
+  'bgImage' => $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1920&q=80',
 ])
 
 <section class="pu-site-gallery py-4 py-lg-5">

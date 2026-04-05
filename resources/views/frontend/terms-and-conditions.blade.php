@@ -6,7 +6,7 @@
   'title' => $page?->banner_title ?? 'Terms & conditions',
   'crumbCurrent' => $page?->name ?? 'Terms & conditions',
   'lead' => $page?->banner_lead ?? 'Rules for using this website and our <strong>information services</strong>. Please read before you submit enquiries or rely on published content.',
-  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1920&q=80',
+  'bgImage' => $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1920&q=80',
 ])
 
 <article class="pu-legal">

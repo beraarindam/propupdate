@@ -38,6 +38,11 @@ class SiteSettingsController extends Controller
             'footer_text' => 'nullable|string|max:5000',
             'logo' => 'nullable|image|max:4096|mimes:jpeg,png,jpg,gif,webp,svg',
             'favicon' => 'nullable|file|max:1024|mimes:png,jpg,jpeg,gif,svg,ico,x-icon',
+            'promo_popup_enabled' => 'nullable|boolean',
+            'promo_popup_image_url' => 'nullable|string|max:2000',
+            'promo_popup_link_url' => 'nullable|string|max:500',
+            'promo_popup_image' => 'nullable|image|max:5120|mimes:jpeg,png,jpg,gif,webp',
+            'remove_promo_popup_image' => 'nullable|boolean',
         ]);
 
         $settings = SiteSetting::current();
@@ -56,6 +61,20 @@ class SiteSettingsController extends Controller
             $settings->favicon_path = $request->file('favicon')->store('site', 'public');
         }
 
+        if ($request->boolean('remove_promo_popup_image')) {
+            if ($settings->promo_popup_image_path) {
+                Storage::disk('public')->delete($settings->promo_popup_image_path);
+            }
+            $settings->promo_popup_image_path = null;
+        }
+
+        if ($request->hasFile('promo_popup_image')) {
+            if ($settings->promo_popup_image_path) {
+                Storage::disk('public')->delete($settings->promo_popup_image_path);
+            }
+            $settings->promo_popup_image_path = $request->file('promo_popup_image')->store('site/promo', 'public');
+        }
+
         $settings->fill([
             'site_name' => $validated['site_name'] ?? null,
             'tagline' => $validated['tagline'] ?? null,
@@ -72,6 +91,9 @@ class SiteSettingsController extends Controller
             'meta_title' => $validated['meta_title'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'footer_text' => $validated['footer_text'] ?? null,
+            'promo_popup_enabled' => $request->boolean('promo_popup_enabled'),
+            'promo_popup_image_url' => $validated['promo_popup_image_url'] ?? null,
+            'promo_popup_link_url' => $validated['promo_popup_link_url'] ?? null,
         ]);
 
         $settings->save();
@@ -103,5 +125,17 @@ class SiteSettingsController extends Controller
         }
 
         return redirect()->route('admin.site-settings')->with('site_settings_status', 'Favicon removed.');
+    }
+
+    public function destroyPromoPopupImage(): RedirectResponse
+    {
+        $settings = SiteSetting::current();
+        if ($settings->promo_popup_image_path) {
+            Storage::disk('public')->delete($settings->promo_popup_image_path);
+            $settings->promo_popup_image_path = null;
+            $settings->save();
+        }
+
+        return redirect()->route('admin.site-settings')->with('site_settings_status', 'Promo popup image removed.');
     }
 }

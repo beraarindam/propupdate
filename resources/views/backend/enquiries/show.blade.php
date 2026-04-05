@@ -31,6 +31,26 @@
 							</p>
 						</div>
 					@endif
+					@if($enquiry->exclusiveResaleListing)
+						<div class="col-12">
+							<p class="text-muted small mb-1">Exclusive resale card</p>
+							<p class="mb-0">
+								<a href="{{ route('admin.exclusive_resale_listings.edit', $enquiry->exclusiveResaleListing) }}">{{ $enquiry->exclusiveResaleListing->displayCode() }} — {{ $enquiry->exclusiveResaleListing->title }}</a>
+								<span class="text-muted small ms-2">·</span>
+								<a href="{{ route('exclusive-resale.index') }}#er-{{ $enquiry->exclusiveResaleListing->id }}" target="_blank" rel="noopener" class="small">View on site</a>
+							</p>
+						</div>
+					@endif
+					@if($enquiry->project)
+						<div class="col-12">
+							<p class="text-muted small mb-1">Related project</p>
+							<p class="mb-0">
+								<a href="{{ route('admin.projects.edit', $enquiry->project) }}">{{ $enquiry->project->title }}</a>
+								<span class="text-muted small ms-2">·</span>
+								<a href="{{ route('projects.show', $enquiry->project) }}" target="_blank" rel="noopener" class="small">View on site</a>
+							</p>
+						</div>
+					@endif
 					<div class="col-md-6">
 						<p class="text-muted small mb-1">Name</p>
 						<p class="mb-0">{{ $enquiry->name }}</p>

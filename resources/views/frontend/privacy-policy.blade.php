@@ -6,7 +6,7 @@
   'title' => $page?->banner_title ?? 'Privacy policy',
   'crumbCurrent' => $page?->name ?? 'Privacy policy',
   'lead' => $page?->banner_lead ?? 'How PropUpdate Realty collects, uses, and protects your <strong>personal information</strong> on this website.',
-  'bgImage' => $page?->banner_image_url ?? 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80',
+  'bgImage' => $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80',
 ])
 
 <article class="pu-legal">

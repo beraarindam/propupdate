@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enquiry;
+use App\Models\Page;
 use App\Models\Property;
 use App\Models\PropertyCategory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -14,6 +16,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class PropertyListingController extends Controller
 {
     public function index(Request $request): View
+    {
+        return $this->renderPropertyIndex($request, false);
+    }
+
+    /**
+     * Published properties flagged as new launch (subset of the main directory).
+     */
+    public function newLaunches(Request $request): View
+    {
+        return $this->renderPropertyIndex($request, true);
+    }
+
+    private function renderPropertyIndex(Request $request, bool $newLaunchesOnly): View
     {
         $deal = (string) $request->query('deal', '');
         if (! in_array($deal, ['', 'sale', 'rent'], true)) {
@@ -45,6 +60,10 @@ class PropertyListingController extends Controller
             ->published()
             ->with(['category']);
 
+        if ($newLaunchesOnly) {
+            $query->newLaunch();
+        }
+
         if ($deal === 'sale') {
             $query->whereIn('listing_type', [Property::LISTING_SALE, Property::LISTING_BOTH]);
         } elseif ($deal === 'rent') {
@@ -67,8 +86,31 @@ class PropertyListingController extends Controller
             $query->where('city', $city);
         }
 
-        if ($categoryId !== null && $categoryId !== '' && ctype_digit((string) $categoryId)) {
-            $query->where('property_category_id', (int) $categoryId);
+        $selectedCategoryId = ($categoryId !== null && $categoryId !== '' && ctype_digit((string) $categoryId))
+            ? (int) $categoryId
+            : null;
+
+        if ($selectedCategoryId !== null) {
+            $cat = PropertyCategory::query()
+                ->where('is_published', true)
+                ->whereKey($selectedCategoryId)
+                ->first();
+            if ($cat) {
+                $hasPublishedChildren = PropertyCategory::query()
+                    ->where('parent_id', $cat->id)
+                    ->where('is_published', true)
+                    ->exists();
+                if ($hasPublishedChildren) {
+                    $branchIds = PropertyCategory::query()
+                        ->whereIn('id', $cat->branchIds())
+                        ->where('is_published', true)
+                        ->pluck('id')
+                        ->all();
+                    $query->whereIn('property_category_id', $branchIds !== [] ? $branchIds : [$cat->id]);
+                } else {
+                    $query->where('property_category_id', $selectedCategoryId);
+                }
+            }
         }
 
         if ($bedrooms !== null && $bedrooms !== '' && ctype_digit((string) $bedrooms)) {
@@ -104,8 +146,11 @@ class PropertyListingController extends Controller
 
         $properties = $query->paginate($perPage)->withQueryString();
 
-        $cities = Property::query()
-            ->published()
+        $citiesQuery = Property::query()->published();
+        if ($newLaunchesOnly) {
+            $citiesQuery->newLaunch();
+        }
+        $cities = $citiesQuery
             ->whereNotNull('city')
             ->where('city', '!=', '')
             ->distinct()
@@ -113,17 +158,70 @@ class PropertyListingController extends Controller
             ->pluck('city')
             ->values();
 
-        $categories = PropertyCategory::query()
+        $categoryDropdownParent = null;
+
+        $filterCategoriesQuery = PropertyCategory::query()
             ->where('is_published', true)
+            ->when($newLaunchesOnly, function ($q) {
+                $q->whereHas('properties', function ($pq) {
+                    $pq->published()->newLaunch();
+                });
+            });
+
+        $categories = (clone $filterCategoriesQuery)
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        if ($selectedCategoryId !== null) {
+            $sel = PropertyCategory::query()
+                ->where('is_published', true)
+                ->whereKey($selectedCategoryId)
+                ->first();
+            if ($sel) {
+                if (PropertyCategory::query()
+                    ->where('parent_id', $sel->id)
+                    ->where('is_published', true)
+                    ->exists()) {
+                    $categoryDropdownParent = $sel;
+                } elseif ($sel->parent_id) {
+                    $par = PropertyCategory::query()
+                        ->where('is_published', true)
+                        ->whereKey($sel->parent_id)
+                        ->first();
+                    if ($par && PropertyCategory::query()
+                        ->where('parent_id', $par->id)
+                        ->where('is_published', true)
+                        ->exists()) {
+                        $categoryDropdownParent = $par;
+                    }
+                }
+            }
+        }
+
+        if ($categoryDropdownParent !== null) {
+            $categories = $categoryDropdownParent->children()
+                ->where('is_published', true)
+                ->when($newLaunchesOnly, function ($q) {
+                    $q->whereHas('properties', function ($pq) {
+                        $pq->published()->newLaunch();
+                    });
+                })
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get(['id', 'name']);
+        }
+
+        $pageSlug = $newLaunchesOnly ? 'new-launches' : 'properties';
+        $listingRoute = $newLaunchesOnly ? 'new-launches.index' : 'properties.index';
+
         return view('frontend.properties.index', [
-            'page' => null,
+            'page' => Page::bySlug($pageSlug),
             'properties' => $properties,
             'filterCities' => $cities,
             'filterCategories' => $categories,
+            'categoryDropdownParent' => $categoryDropdownParent,
+            'listingRoute' => $listingRoute,
             'filters' => [
                 'deal' => $deal,
                 'q' => $q,
@@ -136,6 +234,64 @@ class PropertyListingController extends Controller
                 'view' => $view,
             ],
         ]);
+    }
+
+    /**
+     * JSON typeahead for the home hero search (and future widgets).
+     */
+    public function suggestions(Request $request): JsonResponse
+    {
+        $q = trim((string) $request->query('q', ''));
+        if (mb_strlen($q) < 2) {
+            return response()->json(['results' => []]);
+        }
+
+        $term = '%'.addcslashes($q, '%_\\').'%';
+
+        $properties = Property::query()
+            ->published()
+            ->where(function ($sub) use ($term) {
+                $sub->where('title', 'like', $term)
+                    ->orWhere('summary', 'like', $term)
+                    ->orWhere('locality', 'like', $term)
+                    ->orWhere('city', 'like', $term)
+                    ->orWhere('developer_name', 'like', $term);
+            })
+            ->orderByDesc('is_featured')
+            ->orderByDesc('published_at')
+            ->limit(8)
+            ->get([
+                'id',
+                'slug',
+                'title',
+                'locality',
+                'city',
+                'listing_type',
+                'price_currency',
+                'price',
+                'price_on_request',
+            ]);
+
+        $labels = Property::listingTypeOptions();
+
+        $results = $properties->map(function (Property $p) use ($labels) {
+            $loc = collect([$p->locality, $p->city])->filter()->implode(', ');
+            $priceLabel = $p->price_on_request
+                ? 'Price on request'
+                : ($p->price !== null
+                    ? trim($p->price_currency.' '.number_format((float) $p->price, 0))
+                    : null);
+
+            return [
+                'title' => $p->title,
+                'url' => route('properties.show', $p),
+                'location' => $loc !== '' ? $loc : null,
+                'price_label' => $priceLabel,
+                'deal' => $labels[$p->listing_type] ?? $p->listing_type,
+            ];
+        })->values();
+
+        return response()->json(['results' => $results]);
     }
 
     public function show(Property $property): View

@@ -4,9 +4,12 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EnquiryController;
+use App\Http\Controllers\Admin\ExclusiveResaleListingController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryItemController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ProjectPageController;
 use App\Http\Controllers\Admin\PropertyCategoryController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -24,10 +27,15 @@ Route::middleware('auth')->group(function () {
     })->name('home');
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::get('site-settings', [SiteSettingsController::class, 'index'])->name('site-settings');
     Route::post('site-settings', [SiteSettingsController::class, 'update'])->name('site-settings.update');
     Route::post('site-settings/logo/remove', [SiteSettingsController::class, 'destroyLogo'])->name('site-settings.logo.destroy');
     Route::post('site-settings/favicon/remove', [SiteSettingsController::class, 'destroyFavicon'])->name('site-settings.favicon.destroy');
+    Route::post('site-settings/promo-popup/remove', [SiteSettingsController::class, 'destroyPromoPopupImage'])->name('site-settings.promo-popup.destroy');
 
     Route::get('pages', [PageController::class, 'index'])->name('pages.index');
     Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
@@ -41,7 +49,6 @@ Route::middleware('auth')->group(function () {
     Route::put('faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
     Route::delete('faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
 
-    Route::get('blogs/data', [BlogPostController::class, 'data'])->name('blogs.data');
     Route::post('blogs/tinymce-upload', [BlogPostController::class, 'tinymceUpload'])->name('blogs.tinymce-upload');
     Route::get('blogs', [BlogPostController::class, 'index'])->name('blogs.index');
     Route::get('blogs/create', [BlogPostController::class, 'create'])->name('blogs.create');
@@ -49,6 +56,23 @@ Route::middleware('auth')->group(function () {
     Route::get('blogs/{blog}/edit', [BlogPostController::class, 'edit'])->name('blogs.edit');
     Route::put('blogs/{blog}', [BlogPostController::class, 'update'])->name('blogs.update');
     Route::delete('blogs/{blog}', [BlogPostController::class, 'destroy'])->name('blogs.destroy');
+
+    Route::get('projects/data', [ProjectPageController::class, 'data'])->name('projects.data');
+    Route::post('projects/tinymce-upload', [ProjectPageController::class, 'tinymceUpload'])->name('projects.tinymce-upload');
+    Route::get('projects', [ProjectPageController::class, 'index'])->name('projects.index');
+    Route::get('projects/create', [ProjectPageController::class, 'create'])->name('projects.create');
+    Route::post('projects', [ProjectPageController::class, 'store'])->name('projects.store');
+    Route::get('projects/{project}/edit', [ProjectPageController::class, 'edit'])->name('projects.edit');
+    Route::put('projects/{project}', [ProjectPageController::class, 'update'])->name('projects.update');
+    Route::delete('projects/{project}', [ProjectPageController::class, 'destroy'])->name('projects.destroy');
+
+    Route::get('exclusive-resale-listings/data', [ExclusiveResaleListingController::class, 'data'])->name('exclusive_resale_listings.data');
+    Route::get('exclusive-resale-listings', [ExclusiveResaleListingController::class, 'index'])->name('exclusive_resale_listings.index');
+    Route::get('exclusive-resale-listings/create', [ExclusiveResaleListingController::class, 'create'])->name('exclusive_resale_listings.create');
+    Route::post('exclusive-resale-listings', [ExclusiveResaleListingController::class, 'store'])->name('exclusive_resale_listings.store');
+    Route::get('exclusive-resale-listings/{exclusive_resale_listing}/edit', [ExclusiveResaleListingController::class, 'edit'])->name('exclusive_resale_listings.edit');
+    Route::put('exclusive-resale-listings/{exclusive_resale_listing}', [ExclusiveResaleListingController::class, 'update'])->name('exclusive_resale_listings.update');
+    Route::delete('exclusive-resale-listings/{exclusive_resale_listing}', [ExclusiveResaleListingController::class, 'destroy'])->name('exclusive_resale_listings.destroy');
 
     Route::get('gallery-items/data', [GalleryItemController::class, 'data'])->name('gallery_items.data');
     Route::get('gallery-items', [GalleryItemController::class, 'index'])->name('gallery_items.index');

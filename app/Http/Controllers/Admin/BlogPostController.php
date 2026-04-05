@@ -17,80 +17,11 @@ class BlogPostController extends Controller
 {
     public function index(): View
     {
-        return view('backend.blogs.index');
-    }
-
-    public function data(Request $request): JsonResponse
-    {
-        $draw = (int) $request->input('draw', 1);
-        $start = max(0, (int) $request->input('start', 0));
-        $lengthInput = (int) $request->input('length', 25);
-        $length = $lengthInput === -1 ? 100 : max(1, min(100, $lengthInput));
-
-        $search = trim((string) $request->input('search.value', ''));
-
-        $recordsTotal = BlogPost::query()->count();
-
-        $query = BlogPost::query();
-        if ($search !== '') {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', '%'.$search.'%')
-                    ->orWhere('slug', 'like', '%'.$search.'%')
-                    ->orWhere('excerpt', 'like', '%'.$search.'%')
-                    ->orWhere('body', 'like', '%'.$search.'%')
-                    ->orWhere('meta_title', 'like', '%'.$search.'%')
-                    ->orWhere('meta_description', 'like', '%'.$search.'%');
-            });
-        }
-
-        $recordsFiltered = (clone $query)->count();
-
-        $orderColumnIndex = (int) $request->input('order.0.column', 0);
-        $orderDir = strtolower((string) $request->input('order.0.dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-        $orderColumns = ['title', 'slug', 'is_published', 'updated_at', 'id'];
-        $orderBy = $orderColumns[$orderColumnIndex] ?? 'updated_at';
-        if (! in_array($orderBy, $orderColumns, true)) {
-            $orderBy = 'updated_at';
-        }
-        $query->orderBy($orderBy, $orderDir)->orderBy('id', 'desc');
-
-        $posts = $query->skip($start)->take($length)->get();
-
-        $token = csrf_token();
-        $data = $posts->map(function (BlogPost $post) use ($token) {
-            $status = $post->is_published
-                ? '<span class="badge bg-success">Published</span>'
-                : '<span class="badge bg-secondary">Draft</span>';
-
-            $updated = $post->updated_at?->format('M j, Y H:i') ?? '—';
-
-            $publicUrl = $post->is_published ? route('blog.show', $post) : null;
-            $slugCell = $publicUrl
-                ? '<code class="small"><a href="'.e($publicUrl).'" target="_blank" rel="noopener noreferrer">'.e($post->slug).'</a></code>'
-                : '<code class="small">'.e($post->slug).'</code>';
-
-            $editUrl = route('admin.blogs.edit', $post);
-            $deleteUrl = route('admin.blogs.destroy', $post);
-            $actions = '<a href="'.e($editUrl).'" class="btn btn-sm btn-primary">Edit</a> '
-                .'<form action="'.e($deleteUrl).'" method="post" class="d-inline" onsubmit="return confirm(\'Delete this post?\');">'
-                .'<input type="hidden" name="_token" value="'.e($token).'">'
-                .'<input type="hidden" name="_method" value="DELETE">'
-                .'<button type="submit" class="btn btn-sm btn-outline-danger">Delete</button></form>';
-
-            return [
-                '<span class="fw-semibold">'.e(Str::limit($post->title, 70)).'</span>',
-                $slugCell,
-                $status,
-                '<span class="text-muted small text-nowrap">'.e($updated).'</span>',
-                $actions,
-            ];
-        })->values()->all();
-
-        return response()->json([
-            'draw' => $draw,
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data,
+        return view('backend.blogs.index', [
+            'posts' => BlogPost::query()
+                ->orderByDesc('updated_at')
+                ->orderByDesc('id')
+                ->get(),
         ]);
     }
 

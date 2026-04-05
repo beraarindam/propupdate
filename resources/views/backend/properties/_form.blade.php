@@ -261,6 +261,10 @@
 					<input class="form-check-input" type="checkbox" name="is_featured" value="1" id="prop_feat" @checked(old('is_featured', $property->is_featured))>
 					<label class="form-check-label" for="prop_feat">Featured listing</label>
 				</div>
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" name="is_new_launch" value="1" id="prop_new_launch" @checked(old('is_new_launch', $property->is_new_launch ?? false))>
+					<label class="form-check-label" for="prop_new_launch">New launch <span class="text-muted small">(show on New Launches page and in Properties)</span></label>
+				</div>
 				<div class="mb-0">
 					<label class="form-label">Manual sort order</label>
 					<input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', $property->sort_order ?? 0) }}" min="0">

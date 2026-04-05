@@ -35,16 +35,18 @@
 
       <nav class="pu-main-nav d-none d-lg-flex" aria-label="Primary">
         <a href="{{ url('/') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
-        <a href="#">New Launches</a>
         <a href="{{ route('pages.about') }}" class="{{ request()->routeIs('pages.about') ? 'is-active' : '' }}">About Us</a>
-          <a href="{{ route('pages.contact') }}" class="{{ request()->routeIs('pages.contact') ? 'is-active' : '' }}">Contact</a>
+        <a href="{{ route('new-launches.index') }}" class="{{ request()->routeIs('new-launches.index') ? 'is-active' : '' }}">New Launches</a>
+       
+          
         <a href="{{ route('properties.index') }}" class="{{ request()->routeIs('properties.*') ? 'is-active' : '' }}">Properties</a>
-        <a href="{{ route('gallery.index') }}" class="{{ request()->routeIs('gallery.*') ? 'is-active' : '' }}">Gallery</a>
-        <a href="#">Projects</a>
+      
+        <a href="{{ route('projects.index') }}" class="{{ request()->routeIs('projects.*') ? 'is-active' : '' }}">Projects</a>
+        <a href="{{ route('pages.contact') }}" class="{{ request()->routeIs('pages.contact') ? 'is-active' : '' }}">Contact Us</a>
       </nav>
 
       <div class="pu-header-cta d-none d-lg-flex">
-        <a href="{{ url('/#exclusive-resale') }}" class="pu-btn-outline">Exclusive Resale</a>
+        <a href="{{ route('exclusive-resale.index') }}" class="pu-btn-outline {{ request()->routeIs('exclusive-resale.*') ? 'is-active' : '' }}">Exclusive Resale</a>
         <a href="{{ $siteSettings?->whatsappHref() ?? 'https://wa.me/917204362646' }}" class="pu-icon-circle pu-icon-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
         <a href="{{ $siteSettings?->mailtoHref() ?? 'mailto:info@propupdate.com' }}" class="pu-icon-circle pu-icon-mail" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
       </div>
@@ -70,17 +72,15 @@
   <div class="mobile-nav mobile-nav1">
     <ul class="mobile-nav-list nav-list1">
       <li><a href="{{ url('/') }}">Home</a></li>
-      <li><a href="#">New Launches</a></li>
+      <li><a href="{{ route('new-launches.index') }}">New Launches</a></li>
       <li><a href="{{ route('pages.about') }}">About Us</a></li>
-      <li><a href="{{ route('home') }}#services">Services</a></li>
-      <li><a href="{{ route('blog.index') }}">Blog</a></li>
       <li><a href="{{ route('pages.contact') }}">Contact</a></li>
       <li><a href="{{ route('properties.index') }}">Properties</a></li>
-      <li><a href="{{ route('gallery.index') }}">Gallery</a></li>
-      <li><a href="#">Projects</a></li>
+      <li><a href="{{ route('projects.index') }}">Projects</a></li>
+      <li><a href="{{ route('exclusive-resale.index') }}">Exclusive resale</a></li>
     </ul>
     <div class="allmobilesection" style="padding: 1rem 1.25rem;">
-      <a href="{{ url('/#exclusive-resale') }}" class="pu-btn-outline d-inline-block w-100 mb-3 text-center">Exclusive Resale</a>
+      <a href="{{ route('exclusive-resale.index') }}" class="pu-btn-outline d-inline-block w-100 mb-3 text-center">Exclusive Resale</a>
       <div class="d-flex gap-2 justify-content-center">
         <a href="{{ $siteSettings?->whatsappHref() ?? 'https://wa.me/917204362646' }}" class="pu-icon-circle pu-icon-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
         <a href="{{ $siteSettings?->mailtoHref() ?? 'mailto:info@propupdate.com' }}" class="pu-icon-circle pu-icon-mail" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ExclusiveResaleController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropertyListingController;
 use App\Models\Enquiry;
 use App\Models\Page;
@@ -45,7 +47,22 @@ Route::get('/blog/{blog}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
 
+Route::get('/exclusive-resale', [ExclusiveResaleController::class, 'index'])->name('exclusive-resale.index');
+Route::post('/exclusive-resale/{listing}/enquiry', [ExclusiveResaleController::class, 'submitEnquiry'])
+    ->middleware('throttle:20,1')
+    ->name('exclusive-resale.enquiry');
+
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+Route::post('/projects/{project}/enquiry', [ProjectController::class, 'submitEnquiry'])
+    ->middleware('throttle:20,1')
+    ->name('projects.enquiry');
+Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+
 Route::get('/properties', [PropertyListingController::class, 'index'])->name('properties.index');
+Route::get('/properties/suggestions', [PropertyListingController::class, 'suggestions'])
+    ->middleware('throttle:45,1')
+    ->name('properties.suggestions');
+Route::get('/new-launches', [PropertyListingController::class, 'newLaunches'])->name('new-launches.index');
 Route::post('/properties/{property}/enquiry', [PropertyListingController::class, 'submitEnquiry'])
     ->middleware('throttle:20,1')
     ->name('properties.enquiry');

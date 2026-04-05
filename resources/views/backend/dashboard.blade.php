@@ -113,6 +113,7 @@
 					<a href="{{ route('admin.properties.index') }}" class="btn btn-outline-primary btn-sm">All listings</a>
 					<a href="{{ route('admin.enquiries.index') }}" class="btn btn-outline-danger btn-sm">Enquiries</a>
 					<a href="{{ route('admin.gallery_items.index') }}" class="btn btn-outline-secondary btn-sm">Gallery</a>
+					<a href="{{ route('admin.projects.index') }}" class="btn btn-outline-secondary btn-sm">Projects</a>
 					<a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-secondary btn-sm">Blog</a>
 				</div>
 			</div>

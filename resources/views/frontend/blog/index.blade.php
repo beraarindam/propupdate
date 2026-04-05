@@ -1,20 +1,30 @@
 @extends('frontend.layouts.master')
 
 @php
-  $page = null;
+  $bannerBg = $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80';
 @endphp
 
-@section('title', 'Blog')
+@section('title', $page?->browserTitle() ?? 'Blog')
 
 @section('content')
 @include('frontend.partials.page-banner', [
-  'title' => 'Blog',
-  'crumbCurrent' => 'Blog',
-  'lead' => 'Insights on <strong>Bangalore real estate</strong>, launches, resale, and buying with clarity.',
-  'bgImage' => 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80',
+  'title' => $page?->banner_title ?? $page?->name ?? 'Blog',
+  'crumbCurrent' => $page?->name ?? 'Blog',
+  'lead' => $page?->banner_lead ?? 'Insights on <strong>Bangalore real estate</strong>, launches, resale, and buying with clarity.',
+  'bgImage' => $bannerBg,
 ])
 
-<section class="pu-blog-list">
+@if(filled($page?->body_html))
+<section class="pu-page-intro-cms pt-0">
+  <div class="container py-3 py-lg-4">
+    <div class="pu-legal__inner pu-page-body-cms">
+      {!! $page->body_html !!}
+    </div>
+  </div>
+</section>
+@endif
+
+<section class="pu-blog-list @if(filled($page?->body_html)) pt-0 @endif">
   <div class="container">
     @if($posts->isEmpty())
       <p class="text-center text-muted py-5 mb-0">No articles yet. Check back soon.</p>

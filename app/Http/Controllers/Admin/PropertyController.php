@@ -41,7 +41,7 @@ class PropertyController extends Controller
 
         $recordsTotal = Property::query()->count();
 
-        $query = Property::query()->with(['category', 'type']);
+        $query = Property::query()->with(['category']);
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', '%'.$search.'%')
@@ -59,18 +59,16 @@ class PropertyController extends Controller
 
         $orderColumnIndex = (int) $request->input('order.0.column', 0);
         $orderDir = strtolower((string) $request->input('order.0.dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+        // Must match <thead> column order (no "Type" column in the admin table).
         $orderColumns = [
             'sort_order',
             'title',
             'property_category_id',
-            'property_type_id',
             'listing_type',
             'price',
             'city',
             'is_published',
-            'is_featured',
             'updated_at',
-            'id',
         ];
         $orderBy = $orderColumns[$orderColumnIndex] ?? 'updated_at';
         if (! in_array($orderBy, $orderColumns, true)) {
@@ -92,11 +90,12 @@ class PropertyController extends Controller
                 ? '<span class="badge bg-warning text-dark">Featured</span>'
                 : '<span class="text-muted small">—</span>';
 
+            $newLaunch = $property->is_new_launch
+                ? '<span class="badge bg-info text-dark">New launch</span>'
+                : '<span class="text-muted small">—</span>';
+
             $cat = $property->category
                 ? e(Str::limit($property->category->name, 28))
-                : '<span class="text-muted">—</span>';
-            $typ = $property->type
-                ? e(Str::limit($property->type->name, 28))
                 : '<span class="text-muted">—</span>';
 
             $deal = $listingLabels[$property->listing_type] ?? $property->listing_type;
@@ -130,11 +129,10 @@ class PropertyController extends Controller
                 (string) $property->sort_order,
                 $titleCell,
                 $cat,
-                $typ,
                 $dealCell,
                 $priceCell,
                 $locCell,
-                '<div class="d-flex flex-wrap gap-1">'.$status.$feat.'</div>',
+                '<div class="d-flex flex-wrap gap-1">'.$status.$feat.$newLaunch.'</div>',
                 '<span class="text-muted small text-nowrap">'.e($updated).'</span>',
                 $actions,
             ];
@@ -172,6 +170,7 @@ class PropertyController extends Controller
             'property' => new Property([
                 'is_published' => false,
                 'is_featured' => false,
+                'is_new_launch' => false,
                 'sort_order' => 0,
                 'listing_type' => Property::LISTING_SALE,
                 'price_currency' => 'INR',
@@ -407,6 +406,7 @@ class PropertyController extends Controller
             'remove_gallery_paths.*' => 'string|max:500',
             'is_published' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
+            'is_new_launch' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0|max:999999',
         ]);
 
@@ -451,6 +451,7 @@ class PropertyController extends Controller
             'price_on_request' => $request->boolean('price_on_request'),
             'is_published' => $request->boolean('is_published'),
             'is_featured' => $request->boolean('is_featured'),
+            'is_new_launch' => $request->boolean('is_new_launch'),
             'price' => $request->boolean('price_on_request') ? null : ($validated['price'] ?? null),
             'featured_image_url' => $validated['featured_image_url'] ?? null,
             'property_category_id' => $validated['property_category_id'] ?? null,

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\SiteSetting;
+use App\Support\FooterGallery;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -30,10 +31,11 @@ class AppServiceProvider extends ServiceProvider
         View::composer('frontend.layouts.master', function ($view): void {
             if (! Schema::hasTable('site_settings')) {
                 $view->with('siteSettings', null);
-
-                return;
+            } else {
+                $view->with('siteSettings', SiteSetting::query()->first());
             }
-            $view->with('siteSettings', SiteSetting::query()->first());
+
+            $view->with('footerGalleryItems', FooterGallery::latestItems());
         });
     }
 }

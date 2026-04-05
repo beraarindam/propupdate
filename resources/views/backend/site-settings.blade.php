@@ -45,7 +45,7 @@
 			</div>
 		@endif
 
-		@if($settings->logoUrl() || $settings->faviconUrl())
+		@if($settings->logoUrl() || $settings->faviconUrl() || ($settings->promo_popup_image_path && $settings->promoPopupBannerUrl()))
 			<div class="card radius-10 settings-card mb-4">
 				<div class="card-body p-4">
 					<h5 class="card-title mb-0 border-0 pb-0">Uploaded assets</h5>
@@ -65,6 +65,15 @@
 								<form action="{{ route('admin.site-settings.favicon.destroy') }}" method="post" class="d-inline mb-0" onsubmit="return confirm('Remove favicon?');">
 									@csrf
 									<button type="submit" class="btn btn-sm btn-outline-danger">Remove favicon</button>
+								</form>
+							</div>
+						@endif
+						@if($settings->promo_popup_image_path && $settings->promoPopupBannerUrl())
+							<div class="d-flex align-items-center gap-2 border rounded px-3 py-2 bg-light bg-opacity-50">
+								<img src="{{ $settings->promoPopupBannerUrl() }}" alt="Promo popup" style="max-height:56px; max-width:200px; object-fit:contain;">
+								<form action="{{ route('admin.site-settings.promo-popup.destroy') }}" method="post" class="d-inline mb-0" onsubmit="return confirm('Remove promo popup image?');">
+									@csrf
+									<button type="submit" class="btn btn-sm btn-outline-danger">Remove promo image</button>
 								</form>
 							</div>
 						@endif
@@ -125,6 +134,37 @@
 							<div class="mb-0 flex-grow-1 d-flex flex-column">
 								<label class="form-label fw-semibold">Address</label>
 								<textarea name="address" class="form-control flex-grow-1" rows="5" style="min-height: 7.5rem;">{{ old('address', $settings->address) }}</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-4 align-items-stretch mb-4">
+				<div class="col-12">
+					<div class="card radius-10 settings-card">
+						<div class="card-body p-4">
+							<h5 class="card-title">Promo popup <span class="fw-normal text-muted small">(homepage &amp; site-wide on first visit)</span></h5>
+							<p class="text-muted small mb-3">Shows a full-screen style overlay when visitors open the site. After they close it, it stays hidden until you change the image, URL, or link (or they clear browser data).</p>
+							<div class="form-check form-switch mb-3">
+								<input class="form-check-input" type="checkbox" name="promo_popup_enabled" value="1" id="promo_popup_enabled" @checked(old('promo_popup_enabled', $settings->promo_popup_enabled ?? false))>
+								<label class="form-check-label" for="promo_popup_enabled">Enable promo popup</label>
+							</div>
+							<div class="mb-3">
+								<label class="form-label fw-semibold">Banner image <span class="fw-normal text-muted small">(upload — max 5&nbsp;MB)</span></label>
+								<input type="file" name="promo_popup_image" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp">
+							</div>
+							<div class="mb-3">
+								<label class="form-label fw-semibold">Or image URL <span class="fw-normal text-muted small">(if no upload)</span></label>
+								<input type="text" name="promo_popup_image_url" class="form-control" value="{{ old('promo_popup_image_url', $settings->promo_popup_image_url) }}" placeholder="https://…">
+							</div>
+							<div class="mb-3">
+								<label class="form-label fw-semibold">Click-through link <span class="fw-normal text-muted small">(optional)</span></label>
+								<input type="text" name="promo_popup_link_url" class="form-control" value="{{ old('promo_popup_link_url', $settings->promo_popup_link_url) }}" placeholder="https://… or /properties">
+							</div>
+							<div class="form-check mb-0">
+								<input class="form-check-input" type="checkbox" name="remove_promo_popup_image" value="1" id="remove_promo_popup_image">
+								<label class="form-check-label text-muted small" for="remove_promo_popup_image">Remove uploaded promo image on save (keeps URL field)</label>
 							</div>
 						</div>
 					</div>

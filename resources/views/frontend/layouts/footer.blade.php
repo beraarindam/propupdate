@@ -44,10 +44,9 @@
             <li><a href="{{ route('blog.index') }}">Blog</a></li>
             <li><a href="{{ route('gallery.index') }}">Gallery</a></li>
             <li><a href="{{ route('pages.contact') }}">Contact us</a></li>
-            <li><a href="{{ url('/#exclusive-resale') }}">Exclusive resale</a></li>
-            <li><a href="{{ url('/#why-propupdate') }}">Why PropUpdate</a></li>
+            <li><a href="{{ route('exclusive-resale.index') }}">Exclusive resale</a></li>
             <li><a href="{{ route('properties.index') }}">Properties</a></li>
-            <li><a href="#">New launches</a></li>
+            <li><a href="{{ route('projects.index') }}">Projects</a></li>
           </ul>
         </div>
 
@@ -79,14 +78,11 @@
 
         <div class="col-lg-3 col-md-6">
           <h3 class="pu-footer-heading">Gallery</h3>
-          <p class="pu-footer-gallery__hint">Follow us for new listings</p>
+          <p class="pu-footer-gallery__hint">Latest from our gallery &amp; listings</p>
           <div class="pu-footer-gallery">
-            <a href="#" class="pu-footer-gallery__item" aria-label="Property 1" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=200&amp;q=80');"></a>
-            <a href="#" class="pu-footer-gallery__item" aria-label="Property 2" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&amp;fit=crop&amp;w=200&amp;q=80');"></a>
-            <a href="#" class="pu-footer-gallery__item" aria-label="Property 3" style="background-image: url('https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&amp;fit=crop&amp;w=200&amp;q=80');"></a>
-            <a href="#" class="pu-footer-gallery__item" aria-label="Property 4" style="background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&amp;fit=crop&amp;w=200&amp;q=80');"></a>
-            <a href="#" class="pu-footer-gallery__item" aria-label="Property 5" style="background-image: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&amp;fit=crop&amp;w=200&amp;q=80');"></a>
-            <a href="#" class="pu-footer-gallery__item" aria-label="Property 6" style="background-image: url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&amp;fit=crop&amp;w=200&amp;q=80');"></a>
+            @foreach($footerGalleryItems ?? [] as $fg)
+              <a href="{{ $fg['href'] }}" class="pu-footer-gallery__item" aria-label="{{ e($fg['label']) }}" style="background-image: url('{{ e($fg['image_url']) }}');"></a>
+            @endforeach
           </div>
         </div>
       </div>
