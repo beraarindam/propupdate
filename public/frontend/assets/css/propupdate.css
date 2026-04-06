@@ -99,13 +99,16 @@ body.homepage1-body {
   z-index: 1000;
   background: var(--pu-white);
   box-shadow: 0 1px 0 rgba(0, 31, 63, 0.06);
+  overflow: visible;
 }
 
 .pu-main-header {
   background: var(--pu-white);
+  overflow: visible;
 }
 
 .pu-main-header-inner {
+  position: relative;
   max-width: 1320px;
   margin: 0 auto;
   padding: 0.85rem 1.25rem;
@@ -113,6 +116,7 @@ body.homepage1-body {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
+  overflow: visible;
 }
 
 /* Logo */
@@ -164,6 +168,8 @@ body.homepage1-body {
   gap: 2rem;
   flex: 1;
   justify-content: center;
+  overflow: visible;
+  min-width: 0;
 }
 
 .pu-main-nav a {
@@ -193,6 +199,345 @@ body.homepage1-body {
   height: 3px;
   background: var(--pu-gold);
   border-radius: 2px;
+}
+
+/* —— Mega menus (New Launches / Projects). Panel must NOT be positioned
+   relative to this narrow wrapper — only .pu-main-header-inner is relative. —— */
+.pu-nav-mega-wrap {
+  position: static;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+
+.pu-nav-mega__trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--pu-text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.35rem 0;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.pu-nav-mega__trigger:hover {
+  color: var(--pu-navy);
+}
+
+.pu-nav-mega__trigger.is-active {
+  color: var(--pu-navy);
+}
+
+.pu-nav-mega__trigger.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 3px;
+  background: var(--pu-gold);
+  border-radius: 2px;
+}
+
+.pu-nav-mega__chev {
+  font-size: 0.65rem;
+  opacity: 0.75;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.pu-nav-mega-wrap:hover .pu-nav-mega__chev,
+.pu-nav-mega-wrap:focus-within .pu-nav-mega__chev,
+.pu-nav-mega-wrap.pu-mega--open .pu-nav-mega__chev {
+  transform: rotate(-180deg);
+  opacity: 1;
+}
+
+.pu-nav-mega {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  top: 100%;
+  margin-top: -10px;
+  /* Above page sections so content under the header cannot steal hover */
+  z-index: 5000;
+  padding: calc(0.5rem + 10px) 0 0;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease,
+    visibility 0.28s;
+}
+
+/* Invisible hit area: fills the space under the nav bar into the panel */
+.pu-nav-mega::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 1.35rem;
+  background: transparent;
+}
+
+.pu-nav-mega-wrap:hover .pu-nav-mega,
+.pu-nav-mega-wrap:focus-within .pu-nav-mega,
+.pu-nav-mega-wrap.pu-mega--open .pu-nav-mega {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.pu-nav-mega__inner {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 31, 63, 0.08);
+  box-shadow:
+    0 28px 64px rgba(0, 31, 63, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  padding: 1.1rem 1.25rem 1.25rem;
+  overflow: hidden;
+}
+
+.pu-nav-mega__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 31, 63, 0.08);
+}
+
+.pu-nav-mega__kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pu-navy);
+  opacity: 0.9;
+}
+
+.pu-nav-mega__see-all {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--pu-accent-blue);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.pu-nav-mega__see-all:hover {
+  color: var(--pu-navy);
+  text-decoration: underline;
+}
+
+.pu-nav-mega__body {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.pu-nav-mega__empty {
+  padding: 1.25rem 1rem 1.5rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.95) 0%, #fff 100%);
+  border-radius: 12px;
+  border: 1px dashed rgba(0, 31, 63, 0.12);
+}
+
+.pu-nav-mega__empty-text {
+  margin: 0 auto;
+  max-width: 36rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.pu-nav-mega__empty-cta {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--pu-accent-blue);
+  text-decoration: none;
+}
+
+.pu-nav-mega__empty-cta:hover {
+  color: var(--pu-navy);
+  text-decoration: underline;
+}
+
+.pu-nav-mega__arrow {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #f59e0b, var(--pu-gold));
+  color: var(--pu-navy);
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pu-nav-mega__arrow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(245, 158, 11, 0.45);
+}
+
+.pu-nav-mega__arrow:active {
+  transform: translateY(0);
+}
+
+.pu-nav-mega__viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 2%, #000 98%, transparent 100%);
+  mask-size: 100% 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 3%, #000 97%, transparent 100%);
+}
+
+.pu-nav-mega__track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0.25rem 0.15rem 0.85rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 31, 63, 0.25) transparent;
+}
+
+.pu-nav-mega__track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.pu-nav-mega__track::-webkit-scrollbar-thumb {
+  background: rgba(0, 31, 63, 0.2);
+  border-radius: 99px;
+}
+
+.pu-nav-mega__card {
+  flex: 0 0 auto;
+  width: min(240px, 72vw);
+  scroll-snap-align: start;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid rgba(0, 31, 63, 0.06);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.pu-nav-mega__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 31, 63, 0.12);
+  border-color: rgba(201, 169, 98, 0.45);
+}
+
+.pu-nav-mega__media-wrap {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  overflow: hidden;
+}
+
+.pu-nav-mega__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pu-nav-mega__media-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--pu-navy), #0a3a6b);
+  opacity: 0.35;
+}
+
+.pu-nav-mega__badge {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.5rem;
+  border-radius: 6px;
+  color: #fff;
+  background: linear-gradient(135deg, #db2777, #7c3aed);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+}
+
+.pu-nav-mega__text {
+  padding: 0.75rem 0.85rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pu-nav-mega__title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--pu-navy);
+}
+
+.pu-nav-mega__loc {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.pu-nav-mega__cta {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--pu-accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pu-nav-mega__card:hover .pu-nav-mega__cta {
+  color: var(--pu-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pu-nav-mega,
+  .pu-nav-mega__chev,
+  .pu-nav-mega__card,
+  .pu-nav-mega__arrow {
+    transition: none;
+  }
+
+  .pu-nav-mega-wrap:hover .pu-nav-mega,
+  .pu-nav-mega-wrap:focus-within .pu-nav-mega,
+  .pu-nav-mega-wrap.pu-mega--open .pu-nav-mega {
+    transform: none;
+  }
 }
 
 /* CTA row */

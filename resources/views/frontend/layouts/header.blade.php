@@ -13,6 +13,12 @@
     </div>
   </div>
 
+  @php
+    $megaCards = $newLaunchesMegaCards ?? [];
+    $propertiesMegaCards = $propertiesMegaCards ?? [];
+    $projectMegaCards = $projectsMegaCards ?? [];
+    $projectMegaEnabled = count($projectMegaCards) > 0;
+  @endphp
   <header class="pu-main-header">
     <div class="pu-main-header-inner">
       <a href="{{ url('/') }}" class="pu-brand">
@@ -36,12 +42,154 @@
       <nav class="pu-main-nav d-none d-lg-flex" aria-label="Primary">
         <a href="{{ url('/') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
         <a href="{{ route('pages.about') }}" class="{{ request()->routeIs('pages.about') ? 'is-active' : '' }}">About Us</a>
-        <a href="{{ route('new-launches.index') }}" class="{{ request()->routeIs('new-launches.index') ? 'is-active' : '' }}">New Launches</a>
-       
-          
-        <a href="{{ route('properties.index') }}" class="{{ request()->routeIs('properties.*') ? 'is-active' : '' }}">Properties</a>
-      
-        <a href="{{ route('projects.index') }}" class="{{ request()->routeIs('projects.*') ? 'is-active' : '' }}">Projects</a>
+        <div class="pu-nav-mega-wrap">
+          <a href="{{ route('new-launches.index') }}" class="pu-nav-mega__trigger {{ request()->routeIs('new-launches.index') ? 'is-active' : '' }}">
+            New Launches
+            <i class="fa-solid fa-chevron-down pu-nav-mega__chev" aria-hidden="true"></i>
+          </a>
+          <div class="pu-nav-mega" role="region" aria-label="New launch highlights">
+            <div class="pu-nav-mega__inner">
+              <div class="pu-nav-mega__head">
+                <span class="pu-nav-mega__kicker"><i class="fa-solid fa-star me-2" aria-hidden="true"></i>New &amp; featured</span>
+                <a href="{{ route('new-launches.index') }}" class="pu-nav-mega__see-all">View all <span class="text-nowrap">new launches <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span></a>
+              </div>
+              @if(count($megaCards) > 0)
+                <div class="pu-nav-mega__body">
+                  <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--prev" data-mega-prev aria-label="Show previous items">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                  </button>
+                  <div class="pu-nav-mega__viewport">
+                    <div class="pu-nav-mega__track" data-mega-track>
+                      @foreach($megaCards as $card)
+                        <a href="{{ $card['url'] }}" class="pu-nav-mega__card">
+                          <div class="pu-nav-mega__media-wrap">
+                            @if(!empty($card['image']))
+                              <img src="{{ $card['image'] }}" alt="" class="pu-nav-mega__img" loading="lazy" width="320" height="192">
+                            @else
+                              <div class="pu-nav-mega__media-fallback" aria-hidden="true"></div>
+                            @endif
+                            <span class="pu-nav-mega__badge">{{ $card['badge'] }}</span>
+                          </div>
+                          <div class="pu-nav-mega__text">
+                            <span class="pu-nav-mega__title">{{ \Illuminate\Support\Str::limit($card['title'], 54) }}</span>
+                            <span class="pu-nav-mega__loc">{{ $card['location'] }}</span>
+                            <span class="pu-nav-mega__cta">Details <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span>
+                          </div>
+                        </a>
+                      @endforeach
+                    </div>
+                  </div>
+                  <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--next" data-mega-next aria-label="Show more items">
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              @else
+                <div class="pu-nav-mega__empty">
+                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Mark listings as <strong>New launch</strong> in Admin → Properties (published) to show them here.</p>
+                  <a href="{{ route('new-launches.index') }}" class="pu-nav-mega__empty-cta">Browse the full new launches page <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
+        <div class="pu-nav-mega-wrap">
+          <a href="{{ route('properties.index') }}" class="pu-nav-mega__trigger {{ request()->routeIs('properties.*') ? 'is-active' : '' }}">
+            Properties
+            <i class="fa-solid fa-chevron-down pu-nav-mega__chev" aria-hidden="true"></i>
+          </a>
+          <div class="pu-nav-mega" role="region" aria-label="Property listings">
+            <div class="pu-nav-mega__inner">
+              <div class="pu-nav-mega__head">
+                <span class="pu-nav-mega__kicker"><i class="fa-solid fa-house me-2" aria-hidden="true"></i>Latest listings</span>
+                <a href="{{ route('properties.index') }}" class="pu-nav-mega__see-all">View all <span class="text-nowrap">properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span></a>
+              </div>
+              @if(count($propertiesMegaCards) > 0)
+                <div class="pu-nav-mega__body">
+                  <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--prev" data-mega-prev aria-label="Show previous items">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                  </button>
+                  <div class="pu-nav-mega__viewport">
+                    <div class="pu-nav-mega__track" data-mega-track>
+                      @foreach($propertiesMegaCards as $card)
+                        <a href="{{ $card['url'] }}" class="pu-nav-mega__card">
+                          <div class="pu-nav-mega__media-wrap">
+                            @if(!empty($card['image']))
+                              <img src="{{ $card['image'] }}" alt="" class="pu-nav-mega__img" loading="lazy" width="320" height="192">
+                            @else
+                              <div class="pu-nav-mega__media-fallback" aria-hidden="true"></div>
+                            @endif
+                            <span class="pu-nav-mega__badge">{{ $card['badge'] }}</span>
+                          </div>
+                          <div class="pu-nav-mega__text">
+                            <span class="pu-nav-mega__title">{{ \Illuminate\Support\Str::limit($card['title'], 54) }}</span>
+                            <span class="pu-nav-mega__loc">{{ $card['location'] }}</span>
+                            <span class="pu-nav-mega__cta">Details <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span>
+                          </div>
+                        </a>
+                      @endforeach
+                    </div>
+                  </div>
+                  <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--next" data-mega-next aria-label="Show more items">
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              @else
+                <div class="pu-nav-mega__empty">
+                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Publish property listings in <strong>Admin → Properties</strong> to show them here.</p>
+                  <a href="{{ route('properties.index') }}" class="pu-nav-mega__empty-cta">Browse all properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
+
+        @if($projectMegaEnabled)
+          <div class="pu-nav-mega-wrap">
+            <a href="{{ route('projects.index') }}" class="pu-nav-mega__trigger {{ request()->routeIs('projects.*') ? 'is-active' : '' }}">
+              Projects
+              <i class="fa-solid fa-chevron-down pu-nav-mega__chev" aria-hidden="true"></i>
+            </a>
+            <div class="pu-nav-mega" role="region" aria-label="Project highlights">
+              <div class="pu-nav-mega__inner">
+                <div class="pu-nav-mega__head">
+                  <span class="pu-nav-mega__kicker"><i class="fa-solid fa-building me-2" aria-hidden="true"></i>Developments</span>
+                  <a href="{{ route('projects.index') }}" class="pu-nav-mega__see-all">View all <span class="text-nowrap">projects <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span></a>
+                </div>
+                <div class="pu-nav-mega__body">
+                  <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--prev" data-mega-prev aria-label="Show previous items">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                  </button>
+                  <div class="pu-nav-mega__viewport">
+                    <div class="pu-nav-mega__track" data-mega-track>
+                      @foreach($projectMegaCards as $card)
+                        <a href="{{ $card['url'] }}" class="pu-nav-mega__card">
+                          <div class="pu-nav-mega__media-wrap">
+                            @if(!empty($card['image']))
+                              <img src="{{ $card['image'] }}" alt="" class="pu-nav-mega__img" loading="lazy" width="320" height="192">
+                            @else
+                              <div class="pu-nav-mega__media-fallback" aria-hidden="true"></div>
+                            @endif
+                            <span class="pu-nav-mega__badge">{{ $card['badge'] }}</span>
+                          </div>
+                          <div class="pu-nav-mega__text">
+                            <span class="pu-nav-mega__title">{{ \Illuminate\Support\Str::limit($card['title'], 54) }}</span>
+                            <span class="pu-nav-mega__loc">{{ $card['location'] }}</span>
+                            <span class="pu-nav-mega__cta">Details <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span>
+                          </div>
+                        </a>
+                      @endforeach
+                    </div>
+                  </div>
+                  <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--next" data-mega-next aria-label="Show more items">
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        @else
+          <a href="{{ route('projects.index') }}" class="{{ request()->routeIs('projects.*') ? 'is-active' : '' }}">Projects</a>
+        @endif
         <a href="{{ route('pages.contact') }}" class="{{ request()->routeIs('pages.contact') ? 'is-active' : '' }}">Contact Us</a>
       </nav>
 

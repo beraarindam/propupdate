@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use App\Models\SiteSetting;
 use App\Support\FooterGallery;
+use App\Support\NewLaunchesMegaMenu;
+use App\Support\ProjectsMegaMenu;
+use App\Support\PropertiesMegaMenu;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -36,6 +39,9 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('footerGalleryItems', FooterGallery::latestItems());
+            $view->with('newLaunchesMegaCards', NewLaunchesMegaMenu::cards());
+            $view->with('projectsMegaCards', ProjectsMegaMenu::cards());
+            $view->with('propertiesMegaCards', PropertiesMegaMenu::cards());
         });
     }
 }
