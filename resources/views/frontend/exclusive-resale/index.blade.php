@@ -59,7 +59,7 @@
                 <h2 class="pu-er-card__title">{{ $item->title }}</h2>
                 <div class="pu-er-card__visual">
                   @if($img)
-                    <img src="{{ e($img) }}" alt="" class="pu-er-card__photo" width="160" height="160" loading="lazy" decoding="async">
+                    <img src="{{ e($img) }}" alt="" class="pu-er-card__photo" width="640" height="640" loading="lazy" decoding="async">
                   @else
                     <div class="pu-er-card__photo pu-er-card__photo--placeholder" aria-hidden="true"></div>
                   @endif
