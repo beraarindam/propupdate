@@ -339,9 +339,19 @@ body.homepage1-body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
 }
 
-.pu-hero-search .input-wrap i {
+/* Only the field magnifying glass — not the submit arrow inside the button */
+.pu-hero-search .input-wrap > .fa-search {
   color: #94a3b8;
   font-size: 1rem;
+}
+
+.pu-hero-search__submit i {
+  color: #0f172a;
+  font-size: 0.88em;
+}
+
+.pu-hero-search__submit:hover i {
+  color: var(--pu-navy);
 }
 
 .pu-hero-search input {
