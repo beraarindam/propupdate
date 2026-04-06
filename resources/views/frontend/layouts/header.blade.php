@@ -18,6 +18,12 @@
     $propertiesMegaCards = $propertiesMegaCards ?? [];
     $projectMegaCards = $projectsMegaCards ?? [];
     $projectMegaEnabled = count($projectMegaCards) > 0;
+    $citiesMega = $citiesMega ?? ['cities' => [], 'cardsByCity' => []];
+    $citiesMegaCardsByCity = $citiesMega['cardsByCity'] ?? [];
+    $citiesMegaCities = $citiesMega['cities'] ?? [];
+    $citiesMegaAllKey = \App\Support\CitiesMegaMenu::ALL_KEY;
+    $citiesMegaInitialCards = $citiesMegaCardsByCity[$citiesMegaAllKey] ?? [];
+    $citiesMegaHasListings = count($citiesMegaInitialCards) > 0;
   @endphp
   <header class="pu-main-header">
     <div class="pu-main-header-inner">
@@ -143,6 +149,89 @@
           </div>
         </div>
 
+        <div class="pu-nav-mega-wrap">
+          <a href="{{ route('properties.index') }}" class="pu-nav-mega__trigger">
+            Cities
+            <i class="fa-solid fa-chevron-down pu-nav-mega__chev" aria-hidden="true"></i>
+          </a>
+          <div
+            class="pu-nav-mega pu-nav-mega--cities"
+            role="region"
+            aria-label="Browse properties by city"
+            data-cities-mega-root
+            data-properties-index="{{ route('properties.index') }}"
+          >
+            <div class="pu-nav-mega__inner">
+              <div class="pu-nav-mega__head">
+                <span class="pu-nav-mega__kicker"><i class="fa-solid fa-location-dot me-2" aria-hidden="true"></i>By city</span>
+                <a href="{{ route('properties.index') }}" class="pu-nav-mega__see-all" data-cities-see-all>View all <span class="text-nowrap">properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span></a>
+              </div>
+              @if(! $citiesMegaHasListings)
+                <div class="pu-nav-mega__empty">
+                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Publish listings with a <strong>city</strong> in Admin → Properties to browse them here.</p>
+                  <a href="{{ route('properties.index') }}" class="pu-nav-mega__empty-cta">Browse properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
+                </div>
+              @else
+                <div class="pu-cities-mega__split">
+                  <div class="pu-cities-mega__sidebar" data-cities-mega-sidebar>
+                    <div class="pu-cities-mega__sidebar-label">City</div>
+                    <ul class="pu-cities-mega__city-list list-unstyled mb-0">
+                      <li>
+                        <button type="button" class="pu-cities-mega__city is-active" data-cities-mega-city="{{ $citiesMegaAllKey }}">
+                          All
+                        </button>
+                      </li>
+                      @foreach($citiesMegaCities as $cityName)
+                        <li>
+                          <button type="button" class="pu-cities-mega__city" data-cities-mega-city="{{ $cityName }}">
+                            {{ $cityName }}
+                          </button>
+                        </li>
+                      @endforeach
+                    </ul>
+                  </div>
+                  <div class="pu-cities-mega__main">
+                    <div class="pu-nav-mega__body" data-cities-body-row>
+                      <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--prev" data-mega-prev aria-label="Show previous items">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                      </button>
+                      <div class="pu-nav-mega__viewport">
+                        <div class="pu-nav-mega__track" data-mega-track data-cities-track>
+                          @foreach($citiesMegaInitialCards as $card)
+                            <a href="{{ $card['url'] }}" class="pu-nav-mega__card">
+                              <div class="pu-nav-mega__media-wrap">
+                                @if(!empty($card['image']))
+                                  <img src="{{ $card['image'] }}" alt="" class="pu-nav-mega__img" loading="lazy" width="320" height="192">
+                                @else
+                                  <div class="pu-nav-mega__media-fallback" aria-hidden="true"></div>
+                                @endif
+                                <span class="pu-nav-mega__badge">{{ $card['badge'] }}</span>
+                              </div>
+                              <div class="pu-nav-mega__text">
+                                <span class="pu-nav-mega__title">{{ $card['title'] }}</span>
+                                <span class="pu-nav-mega__loc">{{ $card['location'] }}</span>
+                                <span class="pu-nav-mega__cta">Details <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span>
+                              </div>
+                            </a>
+                          @endforeach
+                        </div>
+                      </div>
+                      <button type="button" class="pu-nav-mega__arrow pu-nav-mega__arrow--next" data-mega-next aria-label="Show more items">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="pu-cities-mega__empty-main" data-cities-empty-panel hidden>
+                      <p class="pu-cities-mega__empty-main-text mb-0">No published listings in this city yet.</p>
+                      <a href="{{ route('properties.index') }}" class="pu-nav-mega__empty-cta d-inline-flex mt-2">View all properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <script type="application/json" id="pu-cities-mega-json">@json($citiesMegaCardsByCity)</script>
+              @endif
+            </div>
+          </div>
+        </div>
+
         @if($projectMegaEnabled)
           <div class="pu-nav-mega-wrap">
             <a href="{{ route('projects.index') }}" class="pu-nav-mega__trigger {{ request()->routeIs('projects.*') ? 'is-active' : '' }}">
@@ -190,7 +279,7 @@
         @else
           <a href="{{ route('projects.index') }}" class="{{ request()->routeIs('projects.*') ? 'is-active' : '' }}">Projects</a>
         @endif
-        <a href="{{ route('pages.contact') }}" class="{{ request()->routeIs('pages.contact') ? 'is-active' : '' }}">Contact Us</a>
+        
       </nav>
 
       <div class="pu-header-cta d-none d-lg-flex">
@@ -224,6 +313,7 @@
       <li><a href="{{ route('pages.about') }}">About Us</a></li>
       <li><a href="{{ route('pages.contact') }}">Contact</a></li>
       <li><a href="{{ route('properties.index') }}">Properties</a></li>
+      <li><a href="{{ route('properties.index') }}">Cities</a></li>
       <li><a href="{{ route('projects.index') }}">Projects</a></li>
       <li><a href="{{ route('exclusive-resale.index') }}">Exclusive resale</a></li>
     </ul>

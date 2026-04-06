@@ -7,6 +7,7 @@
   --pu-text: #4a5568;
   --pu-gold: #c9a962;
   --pu-accent-blue: #3b7ddd;
+  --pu-mega-orange: #ea580c;
   --pu-wa: #25d366;
   --pu-font: "Montserrat", system-ui, -apple-system, sans-serif;
 }
@@ -348,6 +349,143 @@ body.homepage1-body {
   flex-wrap: nowrap;
   align-items: center;
   gap: 0.65rem;
+}
+
+/* —— Cities mega (Homz-style: city list + carousel) —— */
+.pu-cities-mega__split {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.pu-cities-mega__sidebar {
+  flex: 0 0 clamp(10rem, 18vw, 12.5rem);
+  max-height: min(22rem, 52vh);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 0.6rem;
+  margin-right: 0.1rem;
+  border-right: 1px solid rgba(0, 31, 63, 0.08);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 31, 63, 0.2) transparent;
+}
+
+.pu-cities-mega__sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pu-cities-mega__sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 31, 63, 0.2);
+  border-radius: 99px;
+}
+
+.pu-cities-mega__sidebar-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  padding-left: 0.85rem;
+}
+
+.pu-cities-mega__city-list li + li {
+  margin-top: 0.2rem;
+}
+
+.pu-cities-mega__city {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0.42rem 0.65rem 0.42rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--pu-navy);
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.pu-cities-mega__city:hover {
+  background: rgba(234, 88, 12, 0.08);
+  color: var(--pu-mega-orange);
+}
+
+.pu-cities-mega__city.is-active {
+  color: var(--pu-mega-orange);
+  border-left-color: var(--pu-mega-orange);
+  background: rgba(234, 88, 12, 0.07);
+}
+
+.pu-cities-mega__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.pu-cities-mega__empty-main {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.95) 0%, #fff 100%);
+  border-radius: 12px;
+  border: 1px dashed rgba(0, 31, 63, 0.12);
+}
+
+.pu-cities-mega__empty-main-text {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #64748b;
+  max-width: 24rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 1100px) {
+  .pu-cities-mega__split {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .pu-cities-mega__sidebar {
+    flex: 0 0 auto;
+    max-height: 9.5rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 31, 63, 0.08);
+    padding-right: 0;
+    padding-bottom: 0.65rem;
+    margin-right: 0;
+  }
+
+  .pu-cities-mega__city-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .pu-cities-mega__city-list li {
+    margin-top: 0 !important;
+  }
+
+  .pu-cities-mega__city {
+    width: auto;
+    border-left-width: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.35rem 0.65rem;
+    border-radius: 8px;
+  }
+
+  .pu-cities-mega__city.is-active {
+    border-left-color: transparent;
+    border-bottom-color: var(--pu-mega-orange);
+  }
 }
 
 .pu-nav-mega__empty {
