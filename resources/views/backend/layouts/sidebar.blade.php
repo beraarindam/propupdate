@@ -17,12 +17,7 @@
 				<div class="menu-title">Dashboard</div>
 			</a>
 		</li>
-		<li class="{{ request()->routeIs('admin.site-settings') ? 'mm-active' : '' }}">
-			<a href="{{ route('admin.site-settings') }}">
-				<div class="parent-icon"><i class='bx bx-cog'></i></div>
-				<div class="menu-title">Site settings</div>
-			</a>
-		</li>
+		
 		<li class="{{ request()->routeIs('admin.pages.*') ? 'mm-active' : '' }}">
 			<a href="javascript:;" class="has-arrow">
 				<div class="parent-icon"><i class='bx bx-book-content'></i></div>
@@ -87,6 +82,12 @@
 			<a href="{{ route('admin.enquiries.index') }}">
 				<div class="parent-icon"><i class='bx bx-mail-send'></i></div>
 				<div class="menu-title">Enquiries</div>
+			</a>
+		</li>
+		<li class="{{ request()->routeIs('admin.site-settings') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.site-settings') }}">
+				<div class="parent-icon"><i class='bx bx-cog'></i></div>
+				<div class="menu-title">Site settings</div>
 			</a>
 		</li>
 	</ul>
