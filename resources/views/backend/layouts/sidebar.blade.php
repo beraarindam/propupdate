@@ -75,6 +75,12 @@
 				<div class="menu-title">Gallery</div>
 			</a>
 		</li>
+		<li class="{{ request()->routeIs('admin.awards.*') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.awards.index') }}">
+				<div class="parent-icon"><i class='bx bx-award'></i></div>
+				<div class="menu-title">Awards</div>
+			</a>
+		</li>
 		<li class="{{ request()->routeIs('admin.faqs.*') ? 'mm-active' : '' }}">
 			<a href="{{ route('admin.faqs.index') }}">
 				<div class="parent-icon"><i class='bx bx-help-circle'></i></div>

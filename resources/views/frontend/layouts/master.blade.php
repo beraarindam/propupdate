@@ -61,6 +61,18 @@
   <script src="{{ asset('frontend/assets/js/cities-mega.js') }}" defer></script>
   @stack('scripts')
 
+  <script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69d4eed22d076c1c3651bbae/1jljs9q2p';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
   </body>
 
 </html>

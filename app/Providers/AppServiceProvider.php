@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\SiteSetting;
 use App\Support\CitiesMegaMenu;
+use App\Support\FooterAwards;
 use App\Support\FooterGallery;
 use App\Support\NewLaunchesMegaMenu;
 use App\Support\ProjectsMegaMenu;
@@ -40,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('footerGalleryItems', FooterGallery::latestItems());
+            $view->with('footerAwardItems', FooterAwards::latestItems());
             $view->with('newLaunchesMegaCards', NewLaunchesMegaMenu::cards());
             $view->with('projectsMegaCards', ProjectsMegaMenu::cards());
             $view->with('propertiesMegaCards', PropertiesMegaMenu::cards());

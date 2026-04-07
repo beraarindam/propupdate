@@ -420,35 +420,35 @@ CREATE TABLE IF NOT EXISTS `properties` (
 
 -- CMS pages: optional uploaded banner (breadcrumb / hero). Run migration
 -- `2026_04_09_100000_add_banner_image_path_to_pages_and_gallery_page.php` or:
--- ALTER TABLE `pages` ADD COLUMN `banner_image_path` varchar(255) NULL AFTER `banner_image_url`;
--- INSERT INTO `pages` (`slug`,`name`,`meta_title`,`meta_description`,`meta_keywords`,`banner_title`,`banner_lead`,`banner_image_url`,`banner_image_path`,`body_html`,`extras`,`is_published`,`created_at`,`updated_at`)
--- SELECT 'gallery','Gallery','Gallery — PropUpdate Realty','Browse our gallery of projects, spaces, and places across Bangalore real estate.','PropUpdate, gallery, Bangalore property photos','Gallery','A curated look at <strong>projects</strong>, spaces, and places we work with.','https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1920&q=80',NULL,NULL,NULL,1,NOW(),NOW()
+ALTER TABLE `pages` ADD COLUMN `banner_image_path` varchar(255) NULL AFTER `banner_image_url`;
+INSERT INTO `pages` (`slug`,`name`,`meta_title`,`meta_description`,`meta_keywords`,`banner_title`,`banner_lead`,`banner_image_url`,`banner_image_path`,`body_html`,`extras`,`is_published`,`created_at`,`updated_at`)
+SELECT 'gallery','Gallery','Gallery — PropUpdate Realty','Browse our gallery of projects, spaces, and places across Bangalore real estate.','PropUpdate, gallery, Bangalore property photos','Gallery','A curated look at <strong>projects</strong>, spaces, and places we work with.','https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1920&q=80',NULL,NULL,NULL,1,NOW(),NOW()
 -- FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `pages` WHERE `slug` = 'gallery');
 
 -- Blog listing CMS page (banner / SEO / optional intro HTML). Run migration
 -- `2026_04_12_100000_add_blog_cms_page.php` or:
--- INSERT INTO `pages` (`slug`,`name`,`meta_title`,`meta_description`,`meta_keywords`,`banner_title`,`banner_lead`,`banner_image_url`,`banner_image_path`,`body_html`,`extras`,`is_published`,`created_at`,`updated_at`)
--- SELECT 'blog','Blog','Blog — PropUpdate Realty','Insights on Bangalore real estate, launches, resale, and buying with clarity.','PropUpdate, blog, Bangalore real estate, property news','Blog','Insights on <strong>Bangalore real estate</strong>, launches, resale, and buying with clarity.','https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80',NULL,NULL,NULL,1,NOW(),NOW()
+INSERT INTO `pages` (`slug`,`name`,`meta_title`,`meta_description`,`meta_keywords`,`banner_title`,`banner_lead`,`banner_image_url`,`banner_image_path`,`body_html`,`extras`,`is_published`,`created_at`,`updated_at`)
+SELECT 'blog','Blog','Blog — PropUpdate Realty','Insights on Bangalore real estate, launches, resale, and buying with clarity.','PropUpdate, blog, Bangalore real estate, property news','Blog','Insights on <strong>Bangalore real estate</strong>, launches, resale, and buying with clarity.','https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80',NULL,NULL,NULL,1,NOW(),NOW()
 -- FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `pages` WHERE `slug` = 'blog');
 
 -- New launch flag on properties + CMS page for /new-launches. Run migration
--- `2026_04_12_120000_add_is_new_launch_to_properties_and_cms_page.php` or:
--- ALTER TABLE `properties` ADD COLUMN `is_new_launch` tinyint(1) NOT NULL DEFAULT 0 AFTER `is_featured`;
--- INSERT INTO `pages` (`slug`,`name`,`meta_title`,`meta_description`,`meta_keywords`,`banner_title`,`banner_lead`,`banner_image_url`,`banner_image_path`,`body_html`,`extras`,`is_published`,`created_at`,`updated_at`)
--- SELECT 'new-launches','New launches','New launches — PropUpdate Realty','Explore new launch projects and listings in Bangalore — curated by PropUpdate Realty.','PropUpdate, new launch, Bangalore, new projects','New launches','Hand-picked <strong>new launch</strong> listings — also visible in the main properties directory.','https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80',NULL,NULL,NULL,1,NOW(),NOW()
--- FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `pages` WHERE `slug` = 'new-launches');
+`2026_04_12_120000_add_is_new_launch_to_properties_and_cms_page.php` or:
+ALTER TABLE `properties` ADD COLUMN `is_new_launch` tinyint(1) NOT NULL DEFAULT 0 AFTER `is_featured`;
+INSERT INTO `pages` (`slug`,`name`,`meta_title`,`meta_description`,`meta_keywords`,`banner_title`,`banner_lead`,`banner_image_url`,`banner_image_path`,`body_html`,`extras`,`is_published`,`created_at`,`updated_at`)
+SELECT 'new-launches','New launches','New launches — PropUpdate Realty','Explore new launch projects and listings in Bangalore — curated by PropUpdate Realty.','PropUpdate, new launch, Bangalore, new projects','New launches','Hand-picked <strong>new launch</strong> listings — also visible in the main properties directory.','https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80',NULL,NULL,NULL,1,NOW(),NOW()
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `pages` WHERE `slug` = 'new-launches');
 
 -- Project micro-site fields + project enquiries. Run migrations
 -- `2026_04_13_100000_add_project_detail_fields_to_projects_table.php` and
 -- `2026_04_13_100001_add_project_id_to_enquiries_table.php`, or:
--- ALTER TABLE `projects` ADD COLUMN `extras` json NULL AFTER `body`;
--- ALTER TABLE `projects` ADD COLUMN `maps_link_url` text NULL AFTER `developer_name`;
--- ALTER TABLE `projects` ADD COLUMN `rera_number` varchar(120) NULL AFTER `maps_link_url`;
--- ALTER TABLE `projects` ADD COLUMN `gallery_paths` json NULL AFTER `featured_image_url`;
--- ALTER TABLE `projects` ADD COLUMN `master_plan_path` varchar(255) NULL AFTER `gallery_paths`;
--- ALTER TABLE `projects` ADD COLUMN `floor_plan_paths` json NULL AFTER `master_plan_path`;
--- ALTER TABLE `enquiries` ADD COLUMN `project_id` bigint UNSIGNED NULL AFTER `exclusive_resale_listing_id`;
--- ALTER TABLE `enquiries` ADD CONSTRAINT `enquiries_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE SET NULL;
+ALTER TABLE `projects` ADD COLUMN `extras` json NULL AFTER `body`;
+ALTER TABLE `projects` ADD COLUMN `maps_link_url` text NULL AFTER `developer_name`;
+ALTER TABLE `projects` ADD COLUMN `rera_number` varchar(120) NULL AFTER `maps_link_url`;
+ALTER TABLE `projects` ADD COLUMN `gallery_paths` json NULL AFTER `featured_image_url`;
+ALTER TABLE `projects` ADD COLUMN `master_plan_path` varchar(255) NULL AFTER `gallery_paths`;
+ALTER TABLE `projects` ADD COLUMN `floor_plan_paths` json NULL AFTER `master_plan_path`;
+ALTER TABLE `enquiries` ADD COLUMN `project_id` bigint UNSIGNED NULL AFTER `exclusive_resale_listing_id`;
+ALTER TABLE `enquiries` ADD CONSTRAINT `enquiries_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE SET NULL;
 
 -- Google reviews (homepage). Run migration `2026_04_16_100000_add_google_reviews_to_site_settings_table.php`, or:
 ALTER TABLE `site_settings` ADD COLUMN `google_reviews_enabled` tinyint(1) NOT NULL DEFAULT 0 AFTER `promo_popup_link_url`;
@@ -475,3 +475,18 @@ CREATE TABLE `property_areas` (
 );
 ALTER TABLE `properties` ADD COLUMN `property_area_id` bigint UNSIGNED NULL AFTER `property_type_id`;
 ALTER TABLE `properties` ADD CONSTRAINT `properties_property_area_id_foreign` FOREIGN KEY (`property_area_id`) REFERENCES `property_areas` (`id`) ON DELETE SET NULL;
+
+-- Awards management (admin CRUD + footer block). Run migration `2026_04_18_100000_create_awards_table.php`, or:
+CREATE TABLE `awards` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NULL,
+  `subtitle` varchar(255) NULL,
+  `image_path` varchar(255) NULL,
+  `image_url` text NULL,
+  `link_url` text NULL,
+  `sort_order` int UNSIGNED NOT NULL DEFAULT 0,
+  `is_published` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL,
+  `updated_at` timestamp NULL,
+  PRIMARY KEY (`id`)
+);

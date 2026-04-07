@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\AwardController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EnquiryController;
@@ -82,6 +83,14 @@ Route::middleware('auth')->group(function () {
     Route::get('gallery-items/{gallery_item}/edit', [GalleryItemController::class, 'edit'])->name('gallery_items.edit');
     Route::put('gallery-items/{gallery_item}', [GalleryItemController::class, 'update'])->name('gallery_items.update');
     Route::delete('gallery-items/{gallery_item}', [GalleryItemController::class, 'destroy'])->name('gallery_items.destroy');
+
+    Route::get('awards/data', [AwardController::class, 'data'])->name('awards.data');
+    Route::get('awards', [AwardController::class, 'index'])->name('awards.index');
+    Route::get('awards/create', [AwardController::class, 'create'])->name('awards.create');
+    Route::post('awards', [AwardController::class, 'store'])->name('awards.store');
+    Route::get('awards/{award}/edit', [AwardController::class, 'edit'])->name('awards.edit');
+    Route::put('awards/{award}', [AwardController::class, 'update'])->name('awards.update');
+    Route::delete('awards/{award}', [AwardController::class, 'destroy'])->name('awards.destroy');
 
     Route::get('property-categories/data', [PropertyCategoryController::class, 'data'])->name('property_categories.data');
     Route::get('property-categories', [PropertyCategoryController::class, 'index'])->name('property_categories.index');
