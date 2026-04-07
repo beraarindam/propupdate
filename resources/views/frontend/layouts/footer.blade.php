@@ -80,8 +80,7 @@
           <h3 class="pu-footer-heading">Award</h3>
           <p class="pu-footer-gallery__hint">Latest from our awards</p>
           <div class="pu-footer-gallery">
-            @php($awardItems = ($footerAwardItems ?? []) !== [] ? ($footerAwardItems ?? []) : ($footerGalleryItems ?? []))
-            @foreach($awardItems as $fg)
+            @foreach(($footerAwardItems ?? []) as $fg)
               <a href="{{ $fg['href'] }}" class="pu-footer-gallery__item" aria-label="{{ e($fg['label']) }}" style="background-image: url('{{ e($fg['image_url']) }}');"></a>
             @endforeach
           </div>
