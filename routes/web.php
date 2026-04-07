@@ -88,10 +88,35 @@ Route::post('/contact', [PagesController::class, 'contactSubmit'])->name('pages.
 Route::get('/privacy-policy', [PagesController::class, 'privacy'])->name('pages.privacy');
 Route::get('/terms-and-conditions', [PagesController::class, 'terms'])->name('pages.terms');
 
+Route::post('/lead/consultation', function (Request $request) {
+    $data = $request->validateWithBag('consultation', [
+        'consult_name' => 'required|string|max:120',
+        'consult_email' => 'required|email|max:255',
+        'consult_phone' => 'required|string|max:32',
+        'consult_message' => 'nullable|string|max:4000',
+    ]);
+
+    Enquiry::create([
+        'source' => Enquiry::SOURCE_CONTACT,
+        'name' => $data['consult_name'],
+        'email' => $data['consult_email'],
+        'phone' => $data['consult_phone'],
+        'subject' => 'Free consultation request',
+        'message' => $data['consult_message'] ?? null,
+        'ip_address' => $request->ip(),
+    ]);
+
+    return redirect()
+        ->route('home')
+        ->fragment('why-propupdate')
+        ->with('consultation_status', 'Thank you — our team will call you shortly.');
+})->middleware('throttle:20,1')->name('lead.consultation');
+
 Route::post('/lead/pre-register', function (Request $request) {
     $data = $request->validate([
         'name' => 'required|string|max:120',
         'email' => 'required|email|max:255',
+        'phone' => 'nullable|string|max:32',
         'message' => 'nullable|string|max:4000',
     ]);
 
@@ -99,6 +124,7 @@ Route::post('/lead/pre-register', function (Request $request) {
         'source' => Enquiry::SOURCE_PRE_REGISTER,
         'name' => $data['name'],
         'email' => $data['email'],
+        'phone' => $data['phone'] ?? null,
         'message' => $data['message'] ?? null,
         'ip_address' => $request->ip(),
     ]);

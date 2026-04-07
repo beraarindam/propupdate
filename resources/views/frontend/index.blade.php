@@ -334,9 +334,38 @@
             {{ $whyQuote }}
           </blockquote>
           <div class="pu-why-cta-wrap">
-            <a href="{{ e($whyTelHref) }}" class="pu-why-btn">
-              {!! nl2br(e($whyConsult)) !!}
-            </a>
+            @if(session('consultation_status'))
+              <div class="alert alert-success py-2 px-3 mb-0 w-100" role="status">
+                {{ session('consultation_status') }}
+              </div>
+            @endif
+            <form action="{{ route('lead.consultation') }}" method="post" class="pu-why-consult-form" novalidate>
+              @csrf
+              <p class="pu-why-consult-form__title mb-0">{!! nl2br(e($whyConsult)) !!}</p>
+              <div class="pu-why-consult-form__grid">
+                <div class="pu-why-consult-field">
+                  <label for="consult-name">Name</label>
+                  <input id="consult-name" type="text" name="consult_name" value="{{ old('consult_name') }}" autocomplete="name" required>
+                  @error('consult_name', 'consultation')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+                <div class="pu-why-consult-field">
+                  <label for="consult-email">Email</label>
+                  <input id="consult-email" type="email" name="consult_email" value="{{ old('consult_email') }}" autocomplete="email" required>
+                  @error('consult_email', 'consultation')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+                <div class="pu-why-consult-field pu-why-consult-field--full">
+                  <label for="consult-phone">Phone no</label>
+                  <input id="consult-phone" type="text" name="consult_phone" value="{{ old('consult_phone') }}" autocomplete="tel" required>
+                  @error('consult_phone', 'consultation')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+                <div class="pu-why-consult-field pu-why-consult-field--full">
+                  <label for="consult-message">Message (optional)</label>
+                  <textarea id="consult-message" name="consult_message" rows="2" placeholder="Budget, area, timeline...">{{ old('consult_message') }}</textarea>
+                  @error('consult_message', 'consultation')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+              </div>
+              <button type="submit" class="pu-why-btn">Submit consultation</button>
+            </form>
             <a href="{{ e($whyWebUrl) }}" class="pu-why-link" target="_blank" rel="noopener noreferrer">
               <span class="pu-why-link__icon" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
               <span class="pu-why-link__text">{{ $whyWebLabel }}</span>
@@ -556,6 +585,10 @@
               <div class="pu-launches-field">
                 <label for="launch-email">Email address</label>
                 <input type="email" id="launch-email" name="email" value="{{ old('email') }}" placeholder="you@example.com" autocomplete="email" required>
+              </div>
+              <div class="pu-launches-field">
+                <label for="launch-phone">Phone no</label>
+                <input type="tel" id="launch-phone" name="phone" value="{{ old('phone') }}" placeholder="+91 ..." autocomplete="tel">
               </div>
               <div class="pu-launches-field">
                 <label for="launch-message">Leave a message</label>
