@@ -2,59 +2,52 @@
 
 namespace App\Support;
 
-use App\Models\Property;
+use App\Models\PropertyCategory;
 use Illuminate\Support\Facades\Schema;
 
 final class PropertiesMegaMenu
 {
-    private const LIMIT = 5;
+    private const LIMIT = 4;
 
     /**
-     * Latest published property listings for the “Properties” mega menu.
+     * Top property categories for the “Properties” mega menu (same pattern as homepage).
      *
      * @return array<int, array{url: string, title: string, image: ?string, location: string, badge: string}>
      */
     public static function cards(): array
     {
-        if (! Schema::hasTable('properties')) {
+        if (! Schema::hasTable('property_categories')) {
             return [];
         }
 
-        $properties = Property::query()
-            ->published()
-            ->orderByDesc('is_featured')
-            ->orderByDesc('sort_order')
-            ->orderByDesc('updated_at')
+        $categories = PropertyCategory::query()
+            ->where('is_published', true)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->orderBy('name')
             ->limit(self::LIMIT)
             ->get();
 
-        $out = [];
-        foreach ($properties as $property) {
-            $loc = collect([$property->locality, $property->city])->filter()->implode(', ');
+        if ($categories->isEmpty()) {
+            $categories = PropertyCategory::query()
+                ->where('is_published', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->limit(self::LIMIT)
+                ->get();
+        }
 
+        $out = [];
+        foreach ($categories as $category) {
             $out[] = [
-                'url' => route('properties.show', $property),
-                'title' => $property->title,
-                'image' => $property->featuredBannerUrl(),
-                'location' => $loc !== '' ? $loc : 'Bangalore',
-                'badge' => self::badgeLabel($property),
+                'url' => route('properties.index', ['category_id' => $category->id]),
+                'title' => $category->name,
+                'image' => $category->bannerImageUrl(),
+                'location' => 'Browse category',
+                'badge' => 'Category',
             ];
         }
 
         return $out;
-    }
-
-    private static function badgeLabel(Property $property): string
-    {
-        if ($property->is_featured) {
-            return 'Featured';
-        }
-        if ($property->is_new_launch) {
-            return 'New launch';
-        }
-
-        $labels = Property::listingTypeOptions();
-
-        return $labels[$property->listing_type] ?? 'Listing';
     }
 }

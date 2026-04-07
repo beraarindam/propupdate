@@ -29,7 +29,7 @@
 				</li>
 			</ul>
 		</li>
-		<li class="{{ request()->routeIs('admin.properties.*', 'admin.property_categories.*', 'admin.projects.*', 'admin.exclusive_resale_listings.*') ? 'mm-active' : '' }}">
+		<li class="{{ request()->routeIs('admin.properties.*', 'admin.property_categories.*', 'admin.property_areas.*', 'admin.projects.*', 'admin.exclusive_resale_listings.*') ? 'mm-active' : '' }}">
 			<a href="javascript:;" class="has-arrow">
 				<div class="parent-icon"><i class='bx bx-buildings'></i></div>
 				<div class="menu-title">Properties</div>
@@ -40,6 +40,9 @@
 				</li>
 				<li class="{{ request()->routeIs('admin.property_categories.*') ? 'mm-active' : '' }}">
 					<a href="{{ route('admin.property_categories.index') }}"><i class='bx bx-radio-circle'></i>Categories</a>
+				</li>
+				<li class="{{ request()->routeIs('admin.property_areas.*') ? 'mm-active' : '' }}">
+					<a href="{{ route('admin.property_areas.index') }}"><i class='bx bx-radio-circle'></i>Areas</a>
 				</li>
 				<li class="{{ request()->routeIs('admin.projects.*') ? 'mm-active' : '' }}">
 					<a href="{{ route('admin.projects.index') }}"><i class='bx bx-radio-circle'></i>Projects</a>

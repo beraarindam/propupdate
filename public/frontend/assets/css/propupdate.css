@@ -1164,6 +1164,16 @@ body.homepage1-body {
   gap: clamp(0.75rem, 2vw, 1.15rem);
 }
 
+/* Listing pages: do not attach categories to breadcrumb/banner */
+.pu-categories-wrap--listing {
+  margin: 1rem auto 0;
+}
+
+.pu-categories-wrap--listing .pu-categories {
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(0, 31, 63, 0.08);
+}
+
 .pu-cat-card {
   position: relative;
   display: block;
@@ -1223,6 +1233,10 @@ body.homepage1-body {
 
   .pu-categories-wrap {
     margin-top: -3.25rem;
+  }
+
+  .pu-categories-wrap--listing {
+    margin-top: 0.85rem;
   }
 }
 

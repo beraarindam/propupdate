@@ -18,9 +18,9 @@
     $propertiesMegaCards = $propertiesMegaCards ?? [];
     $projectMegaCards = $projectsMegaCards ?? [];
     $projectMegaEnabled = count($projectMegaCards) > 0;
-    $citiesMega = $citiesMega ?? ['cities' => [], 'cardsByCity' => []];
+    $citiesMega = $citiesMega ?? ['areas' => [], 'cardsByCity' => []];
     $citiesMegaCardsByCity = $citiesMega['cardsByCity'] ?? [];
-    $citiesMegaCities = $citiesMega['cities'] ?? [];
+    $citiesMegaAreas = $citiesMega['areas'] ?? [];
     $citiesMegaAllKey = \App\Support\CitiesMegaMenu::ALL_KEY;
     $citiesMegaInitialCards = $citiesMegaCardsByCity[$citiesMegaAllKey] ?? [];
     $citiesMegaHasListings = count($citiesMegaInitialCards) > 0;
@@ -103,11 +103,11 @@
             Properties
             <i class="fa-solid fa-chevron-down pu-nav-mega__chev" aria-hidden="true"></i>
           </a>
-          <div class="pu-nav-mega" role="region" aria-label="Property listings">
+          <div class="pu-nav-mega" role="region" aria-label="Property categories">
             <div class="pu-nav-mega__inner">
               <div class="pu-nav-mega__head">
-                <span class="pu-nav-mega__kicker"><i class="fa-solid fa-house me-2" aria-hidden="true"></i>Latest listings</span>
-                <a href="{{ route('properties.index') }}" class="pu-nav-mega__see-all">View all <span class="text-nowrap">properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span></a>
+                <span class="pu-nav-mega__kicker"><i class="fa-solid fa-house me-2" aria-hidden="true"></i>Top categories</span>
+                <a href="{{ route('properties.index') }}" class="pu-nav-mega__see-all">View all <span class="text-nowrap">categories <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span></a>
               </div>
               @if(count($propertiesMegaCards) > 0)
                 <div class="pu-nav-mega__body">
@@ -129,7 +129,7 @@
                           <div class="pu-nav-mega__text">
                             <span class="pu-nav-mega__title">{{ \Illuminate\Support\Str::limit($card['title'], 54) }}</span>
                             <span class="pu-nav-mega__loc">{{ $card['location'] }}</span>
-                            <span class="pu-nav-mega__cta">Details <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span>
+                            <span class="pu-nav-mega__cta">Browse <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span>
                           </div>
                         </a>
                       @endforeach
@@ -141,7 +141,7 @@
                 </div>
               @else
                 <div class="pu-nav-mega__empty">
-                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Publish property listings in <strong>Admin → Properties</strong> to show them here.</p>
+                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Publish categories in <strong>Admin → Property categories</strong> to show them here.</p>
                   <a href="{{ route('properties.index') }}" class="pu-nav-mega__empty-cta">Browse all properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
                 </div>
               @endif
@@ -151,40 +151,40 @@
 
         <div class="pu-nav-mega-wrap">
           <a href="{{ route('properties.index') }}" class="pu-nav-mega__trigger">
-            Cities
+            Areas
             <i class="fa-solid fa-chevron-down pu-nav-mega__chev" aria-hidden="true"></i>
           </a>
           <div
             class="pu-nav-mega pu-nav-mega--cities"
             role="region"
-            aria-label="Browse properties by city"
+            aria-label="Browse properties by area"
             data-cities-mega-root
             data-properties-index="{{ route('properties.index') }}"
           >
             <div class="pu-nav-mega__inner">
               <div class="pu-nav-mega__head">
-                <span class="pu-nav-mega__kicker"><i class="fa-solid fa-location-dot me-2" aria-hidden="true"></i>By city</span>
+                <span class="pu-nav-mega__kicker"><i class="fa-solid fa-location-dot me-2" aria-hidden="true"></i>By area</span>
                 <a href="{{ route('properties.index') }}" class="pu-nav-mega__see-all" data-cities-see-all>View all <span class="text-nowrap">properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></span></a>
               </div>
               @if(! $citiesMegaHasListings)
                 <div class="pu-nav-mega__empty">
-                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Publish listings with a <strong>city</strong> in Admin → Properties to browse them here.</p>
+                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Publish listings with an <strong>area</strong> in Admin → Properties to browse them here.</p>
                   <a href="{{ route('properties.index') }}" class="pu-nav-mega__empty-cta">Browse properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
                 </div>
               @else
                 <div class="pu-cities-mega__split">
                   <div class="pu-cities-mega__sidebar" data-cities-mega-sidebar>
-                    <div class="pu-cities-mega__sidebar-label">City</div>
+                    <div class="pu-cities-mega__sidebar-label">Area</div>
                     <ul class="pu-cities-mega__city-list list-unstyled mb-0">
                       <li>
                         <button type="button" class="pu-cities-mega__city is-active" data-cities-mega-city="{{ $citiesMegaAllKey }}">
                           All
                         </button>
                       </li>
-                      @foreach($citiesMegaCities as $cityName)
+                      @foreach($citiesMegaAreas as $area)
                         <li>
-                          <button type="button" class="pu-cities-mega__city" data-cities-mega-city="{{ $cityName }}">
-                            {{ $cityName }}
+                          <button type="button" class="pu-cities-mega__city" data-cities-mega-city="{{ (string) ($area['id'] ?? '') }}">
+                            {{ $area['name'] ?? '' }}
                           </button>
                         </li>
                       @endforeach
@@ -221,7 +221,7 @@
                       </button>
                     </div>
                     <div class="pu-cities-mega__empty-main" data-cities-empty-panel hidden>
-                      <p class="pu-cities-mega__empty-main-text mb-0">No published listings in this city yet.</p>
+                      <p class="pu-cities-mega__empty-main-text mb-0">No published listings in this area yet.</p>
                       <a href="{{ route('properties.index') }}" class="pu-nav-mega__empty-cta d-inline-flex mt-2">View all properties <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
                     </div>
                   </div>
@@ -313,7 +313,7 @@
       <li><a href="{{ route('pages.about') }}">About Us</a></li>
       <li><a href="{{ route('pages.contact') }}">Contact</a></li>
       <li><a href="{{ route('properties.index') }}">Properties</a></li>
-      <li><a href="{{ route('properties.index') }}">Cities</a></li>
+      <li><a href="{{ route('properties.index') }}">Areas</a></li>
       <li><a href="{{ route('projects.index') }}">Projects</a></li>
       <li><a href="{{ route('exclusive-resale.index') }}">Exclusive resale</a></li>
     </ul>

@@ -16,6 +16,7 @@ class Property extends Model
 
     protected $fillable = [
         'property_category_id',
+        'property_area_id',
         'property_type_id',
         'slug',
         'title',
@@ -115,6 +116,11 @@ class Property extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(PropertyCategory::class, 'property_category_id');
+    }
+
+    public function area(): BelongsTo
+    {
+        return $this->belongsTo(PropertyArea::class, 'property_area_id');
     }
 
     public function type(): BelongsTo

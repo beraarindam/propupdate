@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Enquiry;
 use App\Models\Page;
 use App\Models\Property;
+use App\Models\PropertyArea;
 use App\Models\PropertyCategory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -37,7 +38,12 @@ class PropertyListingController extends Controller
 
         $q = trim((string) $request->query('q', ''));
         $city = trim((string) $request->query('city', ''));
+        $areaIdRaw = $request->query('area_id');
         $categoryId = $request->query('category_id');
+        $selectedAreaId = ($areaIdRaw !== null && $areaIdRaw !== '' && ctype_digit((string) $areaIdRaw))
+            ? (int) $areaIdRaw
+            : null;
+
         $bedrooms = $request->query('bedrooms');
         $bathrooms = $request->query('bathrooms');
 
@@ -82,7 +88,9 @@ class PropertyListingController extends Controller
             });
         }
 
-        if ($city !== '') {
+        if ($selectedAreaId !== null) {
+            $query->where('property_area_id', $selectedAreaId);
+        } elseif ($city !== '') {
             $query->where('city', $city);
         }
 
@@ -146,19 +154,41 @@ class PropertyListingController extends Controller
 
         $properties = $query->paginate($perPage)->withQueryString();
 
-        $citiesQuery = Property::query()->published();
-        if ($newLaunchesOnly) {
-            $citiesQuery->newLaunch();
-        }
-        $cities = $citiesQuery
-            ->whereNotNull('city')
-            ->where('city', '!=', '')
-            ->distinct()
-            ->orderBy('city')
-            ->pluck('city')
-            ->values();
+        $areas = PropertyArea::query()
+            ->where('is_published', true)
+            ->when($newLaunchesOnly, function ($q) {
+                $q->whereHas('properties', function ($pq) {
+                    $pq->published()->newLaunch();
+                });
+            }, function ($q) {
+                $q->whereHas('properties', function ($pq) {
+                    $pq->published();
+                });
+            })
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
         $categoryDropdownParent = null;
+
+        // Match homepage category strip logic: 4 published parent categories,
+        // fallback to any published categories when parent set is empty.
+        $topCategories = PropertyCategory::query()
+            ->where('is_published', true)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->limit(4)
+            ->get();
+
+        if ($topCategories->isEmpty()) {
+            $topCategories = PropertyCategory::query()
+                ->where('is_published', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->limit(4)
+                ->get();
+        }
 
         $filterCategoriesQuery = PropertyCategory::query()
             ->where('is_published', true)
@@ -218,14 +248,16 @@ class PropertyListingController extends Controller
         return view('frontend.properties.index', [
             'page' => Page::bySlug($pageSlug),
             'properties' => $properties,
-            'filterCities' => $cities,
+            'filterAreas' => $areas,
             'filterCategories' => $categories,
             'categoryDropdownParent' => $categoryDropdownParent,
+            'listingTopCategories' => $topCategories,
             'listingRoute' => $listingRoute,
             'filters' => [
                 'deal' => $deal,
                 'q' => $q,
                 'city' => $city,
+                'area_id' => $selectedAreaId ? (string) $selectedAreaId : '',
                 'category_id' => $categoryId !== null && $categoryId !== '' ? (string) $categoryId : '',
                 'bedrooms' => $bedrooms !== null && $bedrooms !== '' ? (string) $bedrooms : '',
                 'bathrooms' => $bathrooms !== null && $bathrooms !== '' ? (string) $bathrooms : '',

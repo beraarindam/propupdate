@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\GalleryItemController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectPageController;
+use App\Http\Controllers\Admin\PropertyAreaController;
 use App\Http\Controllers\Admin\PropertyCategoryController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -89,6 +90,14 @@ Route::middleware('auth')->group(function () {
     Route::get('property-categories/{property_category}/edit', [PropertyCategoryController::class, 'edit'])->name('property_categories.edit');
     Route::put('property-categories/{property_category}', [PropertyCategoryController::class, 'update'])->name('property_categories.update');
     Route::delete('property-categories/{property_category}', [PropertyCategoryController::class, 'destroy'])->name('property_categories.destroy');
+
+    Route::get('property-areas/data', [PropertyAreaController::class, 'data'])->name('property_areas.data');
+    Route::get('property-areas', [PropertyAreaController::class, 'index'])->name('property_areas.index');
+    Route::get('property-areas/create', [PropertyAreaController::class, 'create'])->name('property_areas.create');
+    Route::post('property-areas', [PropertyAreaController::class, 'store'])->name('property_areas.store');
+    Route::get('property-areas/{property_area}/edit', [PropertyAreaController::class, 'edit'])->name('property_areas.edit');
+    Route::put('property-areas/{property_area}', [PropertyAreaController::class, 'update'])->name('property_areas.update');
+    Route::delete('property-areas/{property_area}', [PropertyAreaController::class, 'destroy'])->name('property_areas.destroy');
 
     Route::get('properties/data', [PropertyController::class, 'data'])->name('properties.data');
     Route::post('properties/tinymce-upload', [PropertyController::class, 'tinymceUpload'])->name('properties.tinymce-upload');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
+use App\Models\PropertyArea;
 use App\Models\PropertyCategory;
 use App\Models\PropertyType;
 use App\Models\SiteSetting;
@@ -177,6 +178,7 @@ class PropertyController extends Controller
                 'country' => 'India',
             ]),
             'categories' => PropertyCategory::optionsForPropertyAssign(),
+            'areas' => PropertyArea::optionsForPropertyAssign(),
             'types' => PropertyType::query()->orderBy('sort_order')->orderBy('name')->get(),
         ]);
     }
@@ -225,6 +227,7 @@ class PropertyController extends Controller
         return view('backend.properties.edit', [
             'property' => $property,
             'categories' => PropertyCategory::optionsForPropertyAssign(),
+            'areas' => PropertyArea::optionsForPropertyAssign(),
             'types' => PropertyType::query()->orderBy('sort_order')->orderBy('name')->get(),
         ]);
     }
@@ -329,6 +332,11 @@ class PropertyController extends Controller
      */
     private function validatedPropertyPayload(Request $request, ?Property $ignore = null): array
     {
+        $rawArea = $request->input('property_area_id');
+        if ($rawArea === '' || $rawArea === null || $rawArea === '0') {
+            $request->merge(['property_area_id' => null]);
+        }
+
         $priceRule = $request->boolean('price_on_request')
             ? 'nullable|numeric|min:0|max:99999999999999'
             : 'nullable|numeric|min:0|max:99999999999999';
@@ -342,6 +350,7 @@ class PropertyController extends Controller
                 Rule::unique('properties', 'slug')->ignore($ignore?->id),
             ],
             'property_category_id' => 'nullable|exists:property_categories,id',
+            'property_area_id' => 'nullable|exists:property_areas,id',
             'property_type_id' => 'nullable|exists:property_types,id',
             'listing_type' => 'required|in:sale,rent,both',
             'price' => $priceRule,
@@ -455,6 +464,7 @@ class PropertyController extends Controller
             'price' => $request->boolean('price_on_request') ? null : ($validated['price'] ?? null),
             'featured_image_url' => $validated['featured_image_url'] ?? null,
             'property_category_id' => $validated['property_category_id'] ?? null,
+            'property_area_id' => $validated['property_area_id'] ?? null,
             'property_type_id' => $validated['property_type_id'] ?? null,
         ]);
     }

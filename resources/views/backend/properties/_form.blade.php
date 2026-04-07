@@ -2,6 +2,7 @@
   use App\Models\Property;
   $listingOpts = Property::listingTypeOptions();
   $amenitiesText = old('amenities_text', is_array($property->amenities ?? null) ? implode("\n", $property->amenities) : '');
+  $areas = $areas ?? ['' => '— None —'];
 @endphp
 
 <div class="row g-4">
@@ -123,6 +124,15 @@
 		<div class="card radius-10 border h-100">
 			<div class="card-body">
 				<h5 class="mb-3 pb-2 border-bottom">Location</h5>
+				<div class="mb-3">
+					<label class="form-label">Area</label>
+					<select name="property_area_id" class="form-select">
+						@foreach($areas as $aid => $alabel)
+							<option value="{{ $aid }}" @selected((string) old('property_area_id', $property->property_area_id ?? '') === (string) $aid)>{{ $alabel }}</option>
+						@endforeach
+					</select>
+					<p class="text-muted small mb-0 mt-1">Managed under <strong>Properties → Areas</strong>. Free-text locality below stays optional.</p>
+				</div>
 				<div class="mb-3">
 					<label class="form-label">Address line 1</label>
 					<input type="text" name="address_line1" class="form-control" value="{{ old('address_line1', $property->address_line1) }}" maxlength="255">

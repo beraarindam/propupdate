@@ -62,7 +62,7 @@
       return;
     }
     var join = indexUrl.indexOf('?') === -1 ? '?' : '&';
-    seeAll.setAttribute('href', indexUrl + join + 'city=' + encodeURIComponent(cityKey));
+    seeAll.setAttribute('href', indexUrl + join + 'area_id=' + encodeURIComponent(cityKey));
   }
 
   function setCity(cityKey) {

@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\Property;
+use App\Models\PropertyArea;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -11,27 +12,27 @@ final class CitiesMegaMenu
 {
     private const CARD_LIMIT = 5;
 
-    /** @internal Serialized mega JSON key for “all cities” */
+    /** @internal Serialized mega JSON key for “all areas” */
     public const ALL_KEY = '__all__';
 
     /**
-     * Distinct published cities and up to CARD_LIMIT cards per city (plus “all” bucket).
+     * Distinct published areas and up to CARD_LIMIT cards per area (plus “all” bucket).
      *
-     * @return array{cities: array<int, string>, cardsByCity: array<string, array<int, array{url: string, title: string, image: ?string, location: string, badge: string}>>}
+     * @return array{areas: array<int, array{id: int, name: string}>, cardsByCity: array<string, array<int, array{url: string, title: string, image: ?string, location: string, badge: string}>>}
      */
     public static function data(): array
     {
-        if (! Schema::hasTable('properties')) {
-            return ['cities' => [], 'cardsByCity' => []];
+        if (! Schema::hasTable('properties') || ! Schema::hasTable('property_areas')) {
+            return ['areas' => [], 'cardsByCity' => []];
         }
 
-        $cities = Property::query()
-            ->published()
-            ->whereNotNull('city')
-            ->where('city', '!=', '')
-            ->distinct()
-            ->orderBy('city')
-            ->pluck('city')
+        $areas = PropertyArea::query()
+            ->where('is_published', true)
+            ->whereHas('properties', fn (Builder $q) => $q->published())
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn (PropertyArea $area) => ['id' => (int) $area->id, 'name' => (string) $area->name])
             ->values()
             ->all();
 
@@ -39,14 +40,14 @@ final class CitiesMegaMenu
             self::ALL_KEY => self::cardsForQuery(Property::query()->published()),
         ];
 
-        foreach ($cities as $city) {
-            $cardsByCity[$city] = self::cardsForQuery(
-                Property::query()->published()->where('city', $city)
+        foreach ($areas as $area) {
+            $cardsByCity[(string) $area['id']] = self::cardsForQuery(
+                Property::query()->published()->where('property_area_id', $area['id'])
             );
         }
 
         return [
-            'cities' => $cities,
+            'areas' => $areas,
             'cardsByCity' => $cardsByCity,
         ];
     }
@@ -58,6 +59,7 @@ final class CitiesMegaMenu
     private static function cardsForQuery(Builder $base): array
     {
         $properties = (clone $base)
+            ->with('area')
             ->orderByDesc('is_featured')
             ->orderByDesc('sort_order')
             ->orderByDesc('updated_at')
@@ -66,7 +68,8 @@ final class CitiesMegaMenu
 
         $out = [];
         foreach ($properties as $property) {
-            $loc = collect([$property->locality, $property->city])->filter()->implode(', ');
+            $areaName = $property->area?->name;
+            $loc = collect([$areaName, $property->locality, $property->city])->filter()->implode(', ');
 
             $out[] = [
                 'url' => route('properties.show', $property),

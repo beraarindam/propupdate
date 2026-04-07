@@ -38,7 +38,8 @@
   var el = document.getElementById('pu-promo-modal');
   if (!el) return;
   var sig = el.getAttribute('data-sig') || '';
-  var key = 'pu_promo_closed';
+  var pageKey = (window.location && window.location.pathname) ? window.location.pathname : 'home';
+  var key = 'pu_promo_closed:' + sig + ':' + pageKey;
   function getStore() {
     try {
       window.localStorage.setItem('__pu_t', '1');
@@ -54,14 +55,14 @@
   }
   var store = getStore();
   if (!sig) return;
-  if (store && store.getItem(key) === sig) return;
+  if (store && store.getItem(key) === '1') return;
 
   function close() {
     el.setAttribute('hidden', '');
     document.body.classList.remove('pu-promo-modal-open');
     if (store) {
       try {
-        store.setItem(key, sig);
+        store.setItem(key, '1');
       } catch (e) {}
     }
   }
@@ -69,6 +70,10 @@
   function open() {
     el.removeAttribute('hidden');
     document.body.classList.add('pu-promo-modal-open');
+  }
+
+  function openWithDelay() {
+    window.setTimeout(open, 3000);
   }
 
   el.querySelectorAll('[data-pu-promo-close]').forEach(function (btn) {
@@ -83,9 +88,9 @@
   });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', open);
+    document.addEventListener('DOMContentLoaded', openWithDelay);
   } else {
-    open();
+    openWithDelay();
   }
 })();
 </script>

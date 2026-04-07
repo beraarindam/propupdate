@@ -20,6 +20,27 @@
   'bgImage' => $bannerBg,
 ])
 
+@php
+  $listingCatFallbacks = [
+    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
+  ];
+@endphp
+@if(($listingTopCategories ?? collect())->isNotEmpty() && $listingRouteName === 'properties.index')
+<section class="pu-categories-wrap pu-categories-wrap--listing">
+  <div class="pu-categories">
+    @foreach($listingTopCategories as $idx => $cat)
+      @php($catBg = $cat->bannerImageUrl() ?? ($listingCatFallbacks[$idx] ?? $listingCatFallbacks[0]))
+      <a href="{{ route($listingRouteName, ['category_id' => $cat->id]) }}" class="pu-cat-card" style="background-image: url('{{ e($catBg) }}');">
+        <span class="pu-cat-label">{{ $cat->name }}</span>
+      </a>
+    @endforeach
+  </div>
+</section>
+@endif
+
 @if(filled($page?->body_html))
 <section class="pu-page-intro-cms pt-0">
   <div class="container py-3 py-lg-4">
@@ -65,11 +86,11 @@
                 <input type="text" name="q" id="pu-q" class="pu-pl-input" value="{{ $f['q'] ?? '' }}" placeholder="Title, area, address…" autocomplete="off">
               </div>
               <div class="pu-pl-field">
-                <label class="pu-pl-label" for="pu-city">City</label>
-                <select name="city" id="pu-city" class="pu-pl-select">
-                  <option value="">All cities</option>
-                  @foreach($filterCities as $c)
-                    <option value="{{ $c }}" @selected(($f['city'] ?? '') === $c)>{{ $c }}</option>
+                <label class="pu-pl-label" for="pu-area">Area</label>
+                <select name="area_id" id="pu-area" class="pu-pl-select">
+                  <option value="">All areas</option>
+                  @foreach(($filterAreas ?? collect()) as $area)
+                    <option value="{{ $area->id }}" @selected((string)($f['area_id'] ?? '') === (string) $area->id)>{{ $area->name }}</option>
                   @endforeach
                 </select>
               </div>

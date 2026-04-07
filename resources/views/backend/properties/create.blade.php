@@ -18,7 +18,7 @@
 
 		<form id="property_form" action="{{ route('admin.properties.store') }}" method="post" enctype="multipart/form-data">
 			@csrf
-			@include('backend.properties._form', ['property' => $property, 'categories' => $categories])
+			@include('backend.properties._form', ['property' => $property, 'categories' => $categories, 'areas' => $areas])
 			<div class="mt-3">
 				<button type="submit" class="btn btn-primary px-4">Create listing</button>
 			</div>

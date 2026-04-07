@@ -454,3 +454,24 @@ CREATE TABLE IF NOT EXISTS `properties` (
 ALTER TABLE `site_settings` ADD COLUMN `google_reviews_enabled` tinyint(1) NOT NULL DEFAULT 0 AFTER `promo_popup_link_url`;
 ALTER TABLE `site_settings` ADD COLUMN `google_place_id` varchar(512) NULL AFTER `google_reviews_enabled`;
 ALTER TABLE `site_settings` ADD COLUMN `google_places_api_key` text NULL AFTER `google_place_id`;
+
+-- Property areas (admin CRUD + listing field). Run migration `2026_04_17_100000_create_property_areas_table.php`, or:
+CREATE TABLE `property_areas` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text NULL,
+  `meta_title` varchar(255) NULL,
+  `meta_description` text NULL,
+  `meta_keywords` varchar(255) NULL,
+  `image_path` varchar(255) NULL,
+  `image_url` text NULL,
+  `sort_order` int UNSIGNED NOT NULL DEFAULT 0,
+  `is_published` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL,
+  `updated_at` timestamp NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `property_areas_slug_unique` (`slug`)
+);
+ALTER TABLE `properties` ADD COLUMN `property_area_id` bigint UNSIGNED NULL AFTER `property_type_id`;
+ALTER TABLE `properties` ADD CONSTRAINT `properties_property_area_id_foreign` FOREIGN KEY (`property_area_id`) REFERENCES `property_areas` (`id`) ON DELETE SET NULL;
