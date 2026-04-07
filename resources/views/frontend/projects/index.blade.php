@@ -4,6 +4,7 @@
   $bannerBg = $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1920&q=80';
   $bannerTitle = $page?->banner_title ?: 'Projects';
   $crumbLabel = $page?->name ?: 'Projects';
+  $projectListExcerptWords = 28;
 @endphp
 
 @section('title', $page?->browserTitle() ?? 'Projects')
@@ -69,10 +70,10 @@
                 <h2 class="pu-blog-card__title">
                   <a href="{{ route('projects.show', $item) }}">{{ $item->title }}</a>
                 </h2>
-                @if($item->summary)
-                  <p class="pu-blog-card__excerpt">{{ $item->summary }}</p>
-                @else
-                  <p class="pu-blog-card__excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->body), 140) }}</p>
+                @if(filled($item->summary))
+                  <p class="pu-blog-card__excerpt">{{ \Illuminate\Support\Str::words(strip_tags($item->summary), $projectListExcerptWords, '…') }}</p>
+                @elseif(filled($item->body))
+                  <p class="pu-blog-card__excerpt">{{ \Illuminate\Support\Str::words(strip_tags($item->body), $projectListExcerptWords, '…') }}</p>
                 @endif
                 <a href="{{ route('projects.show', $item) }}" class="pu-blog-card__more">View project</a>
               </div>
