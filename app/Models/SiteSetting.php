@@ -13,6 +13,8 @@ class SiteSetting extends Model
     {
         return [
             'promo_popup_enabled' => 'boolean',
+            'google_reviews_enabled' => 'boolean',
+            'google_places_api_key' => 'encrypted',
         ];
     }
 
@@ -38,6 +40,9 @@ class SiteSetting extends Model
         'promo_popup_image_path',
         'promo_popup_image_url',
         'promo_popup_link_url',
+        'google_reviews_enabled',
+        'google_place_id',
+        'google_places_api_key',
     ];
 
     /**

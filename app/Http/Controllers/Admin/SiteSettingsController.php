@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
+use App\Support\GooglePlaceReviews;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +44,10 @@ class SiteSettingsController extends Controller
             'promo_popup_link_url' => 'nullable|string|max:500',
             'promo_popup_image' => 'nullable|image|max:5120|mimes:jpeg,png,jpg,gif,webp',
             'remove_promo_popup_image' => 'nullable|boolean',
+            'google_reviews_enabled' => 'nullable|boolean',
+            'google_place_id' => 'nullable|string|max:512',
+            'google_places_api_key' => 'nullable|string|max:5000',
+            'clear_google_places_api_key' => 'nullable|boolean',
         ]);
 
         $settings = SiteSetting::current();
@@ -94,9 +99,19 @@ class SiteSettingsController extends Controller
             'promo_popup_enabled' => $request->boolean('promo_popup_enabled'),
             'promo_popup_image_url' => $validated['promo_popup_image_url'] ?? null,
             'promo_popup_link_url' => $validated['promo_popup_link_url'] ?? null,
+            'google_reviews_enabled' => $request->boolean('google_reviews_enabled'),
+            'google_place_id' => isset($validated['google_place_id']) ? trim((string) $validated['google_place_id']) : null,
         ]);
 
+        if ($request->boolean('clear_google_places_api_key')) {
+            $settings->google_places_api_key = null;
+        } elseif (filled($request->input('google_places_api_key'))) {
+            $settings->google_places_api_key = $request->input('google_places_api_key');
+        }
+
         $settings->save();
+
+        GooglePlaceReviews::forgetCache((int) $settings->id);
 
         return redirect()
             ->route('admin.site-settings')

@@ -348,6 +348,8 @@
   </div>
 </section>
 
+@include('frontend.partials.google-reviews')
+
 @php
   $rsHeading = $homePage?->section('resale.heading') ?: 'Exclusive resale deals in North Bangalore';
   $rsImg = \App\Models\Page::mediaPublicUrl($homePage?->section('resale.hero_image_path'), $homePage?->section('resale.hero_image_url'))

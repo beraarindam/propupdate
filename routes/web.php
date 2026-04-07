@@ -10,8 +10,11 @@ use App\Models\Enquiry;
 use App\Models\Page;
 use App\Models\PropertyCategory;
 use App\Models\Service;
+use App\Models\SiteSetting;
+use App\Support\GooglePlaceReviews;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/', function () {
     $homeCategories = PropertyCategory::query()
@@ -31,6 +34,14 @@ Route::get('/', function () {
             ->get();
     }
 
+    $googleReviews = null;
+    if (Schema::hasTable('site_settings')) {
+        $siteSettingsRow = SiteSetting::query()->first();
+        if ($siteSettingsRow) {
+            $googleReviews = GooglePlaceReviews::forHome($siteSettingsRow);
+        }
+    }
+
     return view('frontend.index', [
         'page' => Page::bySlug('home'),
         'homeCategories' => $homeCategories,
@@ -39,6 +50,7 @@ Route::get('/', function () {
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get(),
+        'googleReviews' => $googleReviews,
     ]);
 })->name('home');
 

@@ -449,3 +449,8 @@ CREATE TABLE IF NOT EXISTS `properties` (
 -- ALTER TABLE `projects` ADD COLUMN `floor_plan_paths` json NULL AFTER `master_plan_path`;
 -- ALTER TABLE `enquiries` ADD COLUMN `project_id` bigint UNSIGNED NULL AFTER `exclusive_resale_listing_id`;
 -- ALTER TABLE `enquiries` ADD CONSTRAINT `enquiries_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE SET NULL;
+
+-- Google reviews (homepage). Run migration `2026_04_16_100000_add_google_reviews_to_site_settings_table.php`, or:
+ALTER TABLE `site_settings` ADD COLUMN `google_reviews_enabled` tinyint(1) NOT NULL DEFAULT 0 AFTER `promo_popup_link_url`;
+ALTER TABLE `site_settings` ADD COLUMN `google_place_id` varchar(512) NULL AFTER `google_reviews_enabled`;
+ALTER TABLE `site_settings` ADD COLUMN `google_places_api_key` text NULL AFTER `google_place_id`;

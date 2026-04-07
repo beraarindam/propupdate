@@ -19,8 +19,8 @@
                 @endif
               </span>
               <span class="pu-footer-brand__text">
-                <span class="pu-footer-brand__name">{{ strtoupper($siteSettings?->site_name ?? 'PROPUPDATE') }}</span>
-                <span class="pu-footer-brand__tag">{{ $siteSettings?->tagline ?? 'Update your property search' }}</span>
+                <span class="pu-footer-brand__name">{{ $siteSettings?->site_name ?: 'PropUpdate' }}</span>
+                <span class="pu-footer-brand__tag">{{ $siteSettings?->tagline ?: 'Update your property search' }}</span>
               </span>
             </a>
             <p class="pu-footer-brand__desc">

@@ -40,8 +40,8 @@
           @endif
         </span>
         <span class="pu-brand-text">
-          <span class="pu-brand-name">{{ strtoupper($siteSettings?->site_name ?? 'PROPUPDATE') }}</span>
-          <span class="pu-brand-tag">{{ strtoupper($siteSettings?->tagline ?? 'UPDATE YOUR PROPERTY SEARCH') }}</span>
+          <span class="pu-brand-name">{{ $siteSettings?->site_name ?: 'PropUpdate' }}</span>
+          <span class="pu-brand-tag">{{ $siteSettings?->tagline ?: 'Update your property search' }}</span>
         </span>
       </a>
 
@@ -298,7 +298,7 @@
 <div class="mobile-sidebar mobile-sidebar1">
   <div class="logosicon-area">
     <div class="logos">
-      <span class="pu-mobile-brand-name">PROPUPDATE</span>
+      <span class="pu-mobile-brand-name">{{ $siteSettings?->site_name ?: 'PropUpdate' }}</span>
     </div>
     <div class="menu-close">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
