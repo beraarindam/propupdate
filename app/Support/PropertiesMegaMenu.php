@@ -64,20 +64,6 @@ final class PropertiesMegaMenu
             return $img;
         }
 
-        $child = PropertyCategory::query()
-            ->where('parent_id', $category->id)
-            ->where('is_published', true)
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->limit(8)
-            ->get()
-            ->first(function (PropertyCategory $c) {
-                return $c->bannerImageUrl() !== null;
-            });
-        if ($child) {
-            return $child->bannerImageUrl();
-        }
-
         return self::FALLBACK_IMAGES[$idx] ?? self::FALLBACK_IMAGES[0];
     }
 }
