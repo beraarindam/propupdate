@@ -18,7 +18,7 @@
 
 		<form id="project_page_form" action="{{ route('admin.projects.store') }}" method="post" enctype="multipart/form-data">
 			@csrf
-			@include('backend.projects._form', ['project' => $project])
+			@include('backend.projects._form', ['project' => $project, 'categories' => $categories, 'areas' => $areas])
 			<div class="mt-3">
 				<button type="submit" class="btn btn-primary px-4">Create</button>
 			</div>

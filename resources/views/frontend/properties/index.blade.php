@@ -2,9 +2,12 @@
 
 @php
   use App\Models\Property;
+  use App\Models\Project;
   $f = $filters ?? [];
   $listingRouteName = $listingRoute ?? 'properties.index';
   $listingLabels = Property::listingTypeOptions();
+  $resultsItems = ($listingRouteName === 'new-launches.index') ? ($launchItems ?? $properties->getCollection()) : $properties;
+  $resultsTotal = ($listingRouteName === 'new-launches.index') ? ($launchTotal ?? $resultsItems->count()) : $properties->total();
   $bannerBg = $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80';
   $bannerTitle = $page?->banner_title ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
   $crumbLabel = $page?->name ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
@@ -140,7 +143,7 @@
         <div class="col-lg-8 col-xl-9">
           <div class="pu-pl-toolbar">
             <div class="pu-pl-toolbar__left">
-              <h1 class="pu-pl-count">{{ $bannerTitle }} <span class="pu-pl-count__n">({{ $properties->total() }})</span></h1>
+              <h1 class="pu-pl-count">{{ $bannerTitle }} <span class="pu-pl-count__n">({{ $resultsTotal }})</span></h1>
             </div>
             <div class="pu-pl-toolbar__right">
               <div class="pu-pl-view-toggle" role="group" aria-label="Layout">
@@ -169,7 +172,7 @@
             </div>
           </div>
 
-          @if($properties->isEmpty())
+          @if($resultsItems->isEmpty())
             <div class="pu-pl-empty">
               <div class="pu-pl-empty__icon" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></div>
               <h2 class="h5 pu-pl-empty__title">{{ $page?->listingIndex('empty_title') ?: 'No listings match' }}</h2>
@@ -187,14 +190,16 @@
             </div>
           @else
             <div class="row g-4 pu-pl-grid @if(($f['view'] ?? 'grid') === 'list') pu-pl-grid--list @endif">
-              @foreach($properties as $item)
+              @foreach($resultsItems as $item)
+                @php($isProjectCard = $item instanceof Project)
                 @php($featured = $item->featuredBannerUrl())
-                @php($dealLabel = $listingLabels[$item->listing_type] ?? $item->listing_type)
+                @php($dealLabel = $isProjectCard ? 'Project' : ($listingLabels[$item->listing_type] ?? $item->listing_type))
+                @php($detailsUrl = $isProjectCard ? route('projects.show', $item) : route('properties.show', $item))
                 <div class="@if(($f['view'] ?? 'grid') === 'list') col-12 @else col-md-6 @endif">
                   <article class="pu-pl-card @if(($f['view'] ?? 'grid') === 'list') pu-pl-card--list @endif">
                     <div class="pu-pl-card__media">
                       @if($featured)
-                        <a href="{{ route('properties.show', $item) }}" class="pu-pl-card__img-link">
+                        <a href="{{ $detailsUrl }}" class="pu-pl-card__img-link">
                           <figure class="pu-pl-card__figure">
                             <img src="{{ e($featured) }}" alt="{{ e(\Illuminate\Support\Str::limit($item->title, 120)) }}" class="pu-pl-card__photo" loading="lazy" decoding="async" width="640" height="400">
                           </figure>
@@ -206,60 +211,66 @@
                         @if($item->is_featured)
                           <span class="pu-pl-badge pu-pl-badge--feat">Featured</span>
                         @endif
-                        @if($item->is_new_launch)
+                        @if((bool) ($item->is_new_launch ?? false))
                           <span class="pu-pl-badge pu-pl-badge--launch">New launch</span>
                         @endif
                         <span class="pu-pl-badge pu-pl-badge--deal">{{ $dealLabel }}</span>
                       </div>
                     </div>
                     <div class="pu-pl-card__body">
-                      @if($item->category)
+                      @if(!$isProjectCard && $item->category)
                         <p class="pu-pl-card__cat">{{ $item->category->name }}</p>
                       @endif
                       <h2 class="pu-pl-card__title">
-                        <a href="{{ route('properties.show', $item) }}">{{ $item->title }}</a>
+                        <a href="{{ $detailsUrl }}">{{ $item->title }}</a>
                       </h2>
-                      @if($item->locality || $item->city)
-                        <p class="pu-pl-card__loc"><i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i>{{ collect([$item->locality, $item->city])->filter()->implode(', ') }}</p>
+                      @if($isProjectCard ? ($item->location || $item->developer_name) : ($item->locality || $item->city))
+                        <p class="pu-pl-card__loc"><i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i>{{ $isProjectCard ? collect([$item->location, $item->developer_name])->filter()->implode(' · ') : collect([$item->locality, $item->city])->filter()->implode(', ') }}</p>
                       @endif
-                      <p class="pu-pl-card__price-row mb-2">
-                        @if($item->price_on_request)
-                          <strong class="pu-pl-card__price">Price on request</strong>
-                        @elseif($item->price !== null)
-                          <strong class="pu-pl-card__price">{{ $item->price_currency }} {{ number_format((float) $item->price, 0) }}</strong>
-                          @if($item->listing_type === Property::LISTING_RENT)
-                            <span class="pu-pl-card__price-note">/ month</span>
+                      @if(!$isProjectCard)
+                        <p class="pu-pl-card__price-row mb-2">
+                          @if($item->price_on_request)
+                            <strong class="pu-pl-card__price">Price on request</strong>
+                          @elseif($item->price !== null)
+                            <strong class="pu-pl-card__price">{{ $item->price_currency }} {{ number_format((float) $item->price, 0) }}</strong>
+                            @if($item->listing_type === Property::LISTING_RENT)
+                              <span class="pu-pl-card__price-note">/ month</span>
+                            @endif
+                          @else
+                            <strong class="pu-pl-card__price text-muted">Ask for price</strong>
                           @endif
-                        @else
-                          <strong class="pu-pl-card__price text-muted">Ask for price</strong>
-                        @endif
-                      </p>
+                        </p>
+                      @endif
                       @if($item->summary)
                         <p class="pu-pl-card__excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->summary), ($f['view'] ?? 'grid') === 'list' ? 220 : 120) }}</p>
                       @endif
-                      <div class="pu-pl-card__facts">
-                        @if($item->bedrooms !== null)
-                          <span class="pu-pl-fact" title="Bedrooms"><i class="fa-solid fa-bed" aria-hidden="true"></i> {{ $item->bedrooms }}</span>
-                        @endif
-                        @if($item->bathrooms !== null)
-                          <span class="pu-pl-fact" title="Bathrooms"><i class="fa-solid fa-bath" aria-hidden="true"></i> {{ $item->bathrooms }}</span>
-                        @endif
-                        @if($item->built_up_area_sqft)
-                          <span class="pu-pl-fact" title="Built-up area"><i class="fa-solid fa-ruler-combined" aria-hidden="true"></i> {{ number_format((float) $item->built_up_area_sqft, 0) }} sq ft</span>
-                        @elseif($item->plot_area_sqft)
-                          <span class="pu-pl-fact" title="Plot area"><i class="fa-solid fa-ruler-combined" aria-hidden="true"></i> {{ number_format((float) $item->plot_area_sqft, 0) }} sq ft plot</span>
-                        @endif
-                      </div>
-                      <a href="{{ route('properties.show', $item) }}" class="pu-pl-card__cta">View details <i class="fa-solid fa-arrow-right-long ms-1" aria-hidden="true"></i></a>
+                      @if(!$isProjectCard)
+                        <div class="pu-pl-card__facts">
+                          @if($item->bedrooms !== null)
+                            <span class="pu-pl-fact" title="Bedrooms"><i class="fa-solid fa-bed" aria-hidden="true"></i> {{ $item->bedrooms }}</span>
+                          @endif
+                          @if($item->bathrooms !== null)
+                            <span class="pu-pl-fact" title="Bathrooms"><i class="fa-solid fa-bath" aria-hidden="true"></i> {{ $item->bathrooms }}</span>
+                          @endif
+                          @if($item->built_up_area_sqft)
+                            <span class="pu-pl-fact" title="Built-up area"><i class="fa-solid fa-ruler-combined" aria-hidden="true"></i> {{ number_format((float) $item->built_up_area_sqft, 0) }} sq ft</span>
+                          @elseif($item->plot_area_sqft)
+                            <span class="pu-pl-fact" title="Plot area"><i class="fa-solid fa-ruler-combined" aria-hidden="true"></i> {{ number_format((float) $item->plot_area_sqft, 0) }} sq ft plot</span>
+                          @endif
+                        </div>
+                      @endif
+                      <a href="{{ $detailsUrl }}" class="pu-pl-card__cta">{{ $isProjectCard ? 'View project' : 'View details' }} <i class="fa-solid fa-arrow-right-long ms-1" aria-hidden="true"></i></a>
                     </div>
                   </article>
                 </div>
               @endforeach
             </div>
 
-            <div class="mt-4 pt-2 d-flex justify-content-center pu-blog-pagination">
-              {{ $properties->withQueryString()->links() }}
-            </div>
+            @if($listingRouteName !== 'new-launches.index')
+              <div class="mt-4 pt-2 d-flex justify-content-center pu-blog-pagination">
+                {{ $properties->withQueryString()->links() }}
+              </div>
+            @endif
           @endif
         </div>
       </div>

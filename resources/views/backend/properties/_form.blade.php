@@ -61,68 +61,6 @@
 	<div class="col-lg-6">
 		<div class="card radius-10 border h-100">
 			<div class="card-body">
-				<h5 class="mb-3 pb-2 border-bottom">Specifications</h5>
-				<div class="row g-3">
-					<div class="col-6">
-						<label class="form-label">Bedrooms</label>
-						<input type="number" name="bedrooms" class="form-control" value="{{ old('bedrooms', $property->bedrooms) }}" step="0.5" min="0">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Bathrooms</label>
-						<input type="number" name="bathrooms" class="form-control" value="{{ old('bathrooms', $property->bathrooms) }}" step="0.5" min="0">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Balconies</label>
-						<input type="number" name="balconies" class="form-control" value="{{ old('balconies', $property->balconies) }}" min="0">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Covered parking</label>
-						<input type="number" name="parking_covered" class="form-control" value="{{ old('parking_covered', $property->parking_covered) }}" min="0">
-					</div>
-					<div class="col-12">
-						<label class="form-label">Built-up area (sq ft)</label>
-						<input type="number" name="built_up_area_sqft" class="form-control" value="{{ old('built_up_area_sqft', $property->built_up_area_sqft) }}" step="0.01" min="0">
-					</div>
-					<div class="col-12">
-						<label class="form-label">Carpet area (sq ft)</label>
-						<input type="number" name="carpet_area_sqft" class="form-control" value="{{ old('carpet_area_sqft', $property->carpet_area_sqft) }}" step="0.01" min="0">
-					</div>
-					<div class="col-12">
-						<label class="form-label">Plot area (sq ft)</label>
-						<input type="number" name="plot_area_sqft" class="form-control" value="{{ old('plot_area_sqft', $property->plot_area_sqft) }}" step="0.01" min="0">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Floor #</label>
-						<input type="number" name="floor_number" class="form-control" value="{{ old('floor_number', $property->floor_number) }}">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Total floors</label>
-						<input type="number" name="total_floors" class="form-control" value="{{ old('total_floors', $property->total_floors) }}" min="1">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Facing</label>
-						<input type="text" name="facing" class="form-control" value="{{ old('facing', $property->facing) }}" maxlength="60" placeholder="East, North-East…">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Furnishing</label>
-						<input type="text" name="furnishing" class="form-control" value="{{ old('furnishing', $property->furnishing) }}" maxlength="60" placeholder="Unfurnished / Semi / Full">
-					</div>
-					<div class="col-6">
-						<label class="form-label">Age (years)</label>
-						<input type="number" name="age_of_property_years" class="form-control" value="{{ old('age_of_property_years', $property->age_of_property_years) }}" min="0">
-					</div>
-					<div class="col-12">
-						<label class="form-label">Possession</label>
-						<input type="text" name="possession_status" class="form-control" value="{{ old('possession_status', $property->possession_status) }}" maxlength="120" placeholder="Ready to move, Dec 2026…">
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-lg-6">
-		<div class="card radius-10 border h-100">
-			<div class="card-body">
 				<h5 class="mb-3 pb-2 border-bottom">Location</h5>
 				<div class="mb-3">
 					<label class="form-label">Area</label>

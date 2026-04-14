@@ -490,3 +490,24 @@ CREATE TABLE `awards` (
   `updated_at` timestamp NULL,
   PRIMARY KEY (`id`)
 );
+
+-- Project admin alignment with Property form (category + full location fields). Run migration
+-- `2026_04_19_100000_add_category_and_location_fields_to_projects_table.php`, or:
+ALTER TABLE `projects` ADD COLUMN `property_category_id` bigint UNSIGNED NULL AFTER `id`;
+ALTER TABLE `projects` ADD COLUMN `property_area_id` bigint UNSIGNED NULL AFTER `property_category_id`;
+ALTER TABLE `projects` ADD COLUMN `address_line1` varchar(255) NULL AFTER `location`;
+ALTER TABLE `projects` ADD COLUMN `address_line2` varchar(255) NULL AFTER `address_line1`;
+ALTER TABLE `projects` ADD COLUMN `locality` varchar(120) NULL AFTER `address_line2`;
+ALTER TABLE `projects` ADD COLUMN `city` varchar(120) NULL AFTER `locality`;
+ALTER TABLE `projects` ADD COLUMN `state` varchar(120) NULL AFTER `city`;
+ALTER TABLE `projects` ADD COLUMN `postal_code` varchar(20) NULL AFTER `state`;
+ALTER TABLE `projects` ADD COLUMN `country` varchar(120) NULL AFTER `postal_code`;
+ALTER TABLE `projects` ADD COLUMN `latitude` decimal(10,7) NULL AFTER `country`;
+ALTER TABLE `projects` ADD COLUMN `longitude` decimal(10,7) NULL AFTER `latitude`;
+ALTER TABLE `projects` ADD CONSTRAINT `projects_property_category_id_foreign` FOREIGN KEY (`property_category_id`) REFERENCES `property_categories` (`id`) ON DELETE SET NULL;
+ALTER TABLE `projects` ADD CONSTRAINT `projects_property_area_id_foreign` FOREIGN KEY (`property_area_id`) REFERENCES `property_areas` (`id`) ON DELETE SET NULL;
+
+-- New launch flag for projects (to show project cards on frontend /new-launches). Run migration
+-- `2026_04_20_100000_add_is_new_launch_to_projects_table.php`, or:
+ALTER TABLE `projects` ADD COLUMN `is_new_launch` tinyint(1) NOT NULL DEFAULT 0 AFTER `is_featured`;
+ALTER TABLE `projects` ADD INDEX `projects_is_new_launch_is_published_index` (`is_new_launch`, `is_published`);

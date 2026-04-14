@@ -31,7 +31,7 @@
 		<form id="project_page_form" action="{{ route('admin.projects.update', $project) }}" method="post" enctype="multipart/form-data">
 			@csrf
 			@method('PUT')
-			@include('backend.projects._form', ['project' => $project])
+			@include('backend.projects._form', ['project' => $project, 'categories' => $categories, 'areas' => $areas])
 			<div class="mt-3">
 				<button type="submit" class="btn btn-primary px-4">Save changes</button>
 			</div>

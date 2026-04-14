@@ -7,6 +7,7 @@ use App\Models\Page;
 use App\Models\Property;
 use App\Models\PropertyArea;
 use App\Models\PropertyCategory;
+use App\Models\Project;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -242,6 +243,57 @@ class PropertyListingController extends Controller
                 ->get(['id', 'name']);
         }
 
+        $projectsNewLaunches = collect();
+        if ($newLaunchesOnly) {
+            $projectsQuery = Project::query()->published()->newLaunch();
+            if ($q !== '') {
+                $term = '%'.addcslashes($q, '%_\\').'%';
+                $projectsQuery->where(function ($sub) use ($term) {
+                    $sub->where('title', 'like', $term)
+                        ->orWhere('summary', 'like', $term)
+                        ->orWhere('body', 'like', $term)
+                        ->orWhere('location', 'like', $term)
+                        ->orWhere('developer_name', 'like', $term);
+                });
+            }
+            if ($selectedAreaId !== null) {
+                $projectsQuery->where('property_area_id', $selectedAreaId);
+            }
+            if ($selectedCategoryId !== null) {
+                $cat = PropertyCategory::query()->where('is_published', true)->whereKey($selectedCategoryId)->first();
+                if ($cat) {
+                    $hasPublishedChildren = PropertyCategory::query()
+                        ->where('parent_id', $cat->id)
+                        ->where('is_published', true)
+                        ->exists();
+                    if ($hasPublishedChildren) {
+                        $branchIds = PropertyCategory::query()
+                            ->whereIn('id', $cat->branchIds())
+                            ->where('is_published', true)
+                            ->pluck('id')
+                            ->all();
+                        $projectsQuery->whereIn('property_category_id', $branchIds !== [] ? $branchIds : [$cat->id]);
+                    } else {
+                        $projectsQuery->where('property_category_id', $selectedCategoryId);
+                    }
+                }
+            }
+
+            $projectsNewLaunches = $projectsQuery
+                ->orderByDesc('is_featured')
+                ->orderBy('sort_order')
+                ->orderByDesc('published_at')
+                ->limit(12)
+                ->get();
+        }
+
+        $launchItems = $properties->getCollection();
+        $launchTotal = $properties->total();
+        if ($newLaunchesOnly) {
+            $launchItems = $launchItems->concat($projectsNewLaunches)->values();
+            $launchTotal = $launchItems->count();
+        }
+
         $pageSlug = $newLaunchesOnly ? 'new-launches' : 'properties';
         $listingRoute = $newLaunchesOnly ? 'new-launches.index' : 'properties.index';
 
@@ -253,6 +305,9 @@ class PropertyListingController extends Controller
             'categoryDropdownParent' => $categoryDropdownParent,
             'listingTopCategories' => $topCategories,
             'listingRoute' => $listingRoute,
+            'projectsNewLaunches' => $projectsNewLaunches,
+            'launchItems' => $launchItems,
+            'launchTotal' => $launchTotal,
             'filters' => [
                 'deal' => $deal,
                 'q' => $q,

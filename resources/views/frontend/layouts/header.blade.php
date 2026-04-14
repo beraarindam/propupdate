@@ -91,7 +91,7 @@
                 </div>
               @else
                 <div class="pu-nav-mega__empty">
-                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Mark listings as <strong>New launch</strong> in Admin → Properties (published) to show them here.</p>
+                  <p class="pu-nav-mega__empty-text mb-2 mb-md-3">Mark listings/projects as <strong>New launch</strong> in Admin → Properties or Projects (published) to show them here.</p>
                   <a href="{{ route('new-launches.index') }}" class="pu-nav-mega__empty-cta">Browse the full new launches page <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
                 </div>
               @endif

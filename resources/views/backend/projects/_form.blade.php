@@ -1,3 +1,7 @@
+@php
+	$categories = $categories ?? ['' => '— None —'];
+	$areas = $areas ?? ['' => '— None —'];
+@endphp
 <div class="row g-4">
 	<div class="col-12" id="proj-section-content-top">
 		<div class="card radius-10 border">
@@ -17,10 +21,18 @@
 				</div>
 				<div class="row g-3 mb-3">
 					<div class="col-md-6">
+						<label class="form-label">Category</label>
+						<select name="property_category_id" class="form-select">
+							@foreach($categories as $cid => $clabel)
+								<option value="{{ $cid }}" @selected((string) old('property_category_id', $project->property_category_id ?? '') === (string) $cid)>{{ $clabel }}</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="col-md-6">
 						<label class="form-label">Location <span class="text-muted small">(short — chips / banner)</span></label>
 						<input type="text" name="location" class="form-control" value="{{ old('location', $project->location) }}" maxlength="255" placeholder="e.g. North Bangalore">
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<label class="form-label">Developer name <span class="text-muted small">(builder)</span></label>
 						<input type="text" name="developer_name" class="form-control" value="{{ old('developer_name', $project->developer_name) }}" maxlength="255" placeholder="e.g. Prestige Estates">
 					</div>
@@ -69,6 +81,61 @@
 
 	@include('backend.projects._form_detail', ['project' => $project])
 
+	<div class="col-12">
+		<div class="card radius-10 border">
+			<div class="card-body">
+				<h5 class="mb-3 pb-2 border-bottom">Location</h5>
+				<div class="mb-3">
+						<label class="form-label">Area</label>
+						<select name="property_area_id" class="form-select">
+							@foreach($areas as $aid => $alabel)
+								<option value="{{ $aid }}" @selected((string) old('property_area_id', $project->property_area_id ?? '') === (string) $aid)>{{ $alabel }}</option>
+							@endforeach
+						</select>
+					<p class="text-muted small mb-0 mt-1">Managed under <strong>Properties → Areas</strong>. Free-text locality below stays optional.</p>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Address line 1</label>
+					<input type="text" name="address_line1" class="form-control" value="{{ old('address_line1', $project->address_line1) }}" maxlength="255">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Address line 2</label>
+					<input type="text" name="address_line2" class="form-control" value="{{ old('address_line2', $project->address_line2) }}" maxlength="255">
+				</div>
+				<div class="row g-3">
+					<div class="col-md-6">
+						<label class="form-label">Locality</label>
+						<input type="text" name="locality" class="form-control" value="{{ old('locality', $project->locality) }}" maxlength="120">
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">City</label>
+						<input type="text" name="city" class="form-control" value="{{ old('city', $project->city) }}" maxlength="120">
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">State</label>
+						<input type="text" name="state" class="form-control" value="{{ old('state', $project->state) }}" maxlength="120">
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">PIN</label>
+						<input type="text" name="postal_code" class="form-control" value="{{ old('postal_code', $project->postal_code) }}" maxlength="20">
+					</div>
+					<div class="col-12">
+						<label class="form-label">Country</label>
+						<input type="text" name="country" class="form-control" value="{{ old('country', $project->country ?? 'India') }}" maxlength="120">
+					</div>
+					<div class="col-6">
+						<label class="form-label">Latitude</label>
+						<input type="number" name="latitude" class="form-control" value="{{ old('latitude', $project->latitude) }}" step="0.0000001" min="-90" max="90">
+					</div>
+					<div class="col-6">
+						<label class="form-label">Longitude</label>
+						<input type="number" name="longitude" class="form-control" value="{{ old('longitude', $project->longitude) }}" step="0.0000001" min="-180" max="180">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="col-lg-6">
 		<div class="card radius-10 border h-100">
 			<div class="card-body">
@@ -100,6 +167,10 @@
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" name="is_featured" value="1" id="proj_feat" @checked(old('is_featured', $project->is_featured))>
 					<label class="form-check-label" for="proj_feat">Featured (sort to top on listing)</label>
+				</div>
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" name="is_new_launch" value="1" id="proj_new_launch" @checked(old('is_new_launch', $project->is_new_launch))>
+					<label class="form-check-label" for="proj_new_launch">New launch (show on /new-launches)</label>
 				</div>
 				<div class="mb-3">
 					<label class="form-label">Sort order</label>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\PropertyArea;
+use App\Models\PropertyCategory;
 use App\Models\SiteSetting;
 use App\Support\ProjectDetailTextParsers;
 use Illuminate\Contracts\View\View;
@@ -130,9 +132,13 @@ class ProjectPageController extends Controller
             'project' => new Project([
                 'is_published' => false,
                 'is_featured' => false,
+                'is_new_launch' => false,
                 'sort_order' => 0,
                 'body' => '',
+                'country' => 'India',
             ]),
+            'categories' => PropertyCategory::optionsForPropertyAssign(),
+            'areas' => PropertyArea::optionsForPropertyAssign(),
         ]);
     }
 
@@ -176,7 +182,11 @@ class ProjectPageController extends Controller
 
     public function edit(Project $project): View
     {
-        return view('backend.projects.edit', compact('project'));
+        return view('backend.projects.edit', [
+            'project' => $project,
+            'categories' => PropertyCategory::optionsForPropertyAssign(),
+            'areas' => PropertyArea::optionsForPropertyAssign(),
+        ]);
     }
 
     public function update(Request $request, Project $project): RedirectResponse
@@ -277,6 +287,16 @@ class ProjectPageController extends Controller
      */
     private function validatedPayload(Request $request, ?Project $ignore = null): array
     {
+        $rawCategory = $request->input('property_category_id');
+        if ($rawCategory === '' || $rawCategory === null || $rawCategory === '0') {
+            $request->merge(['property_category_id' => null]);
+        }
+
+        $rawArea = $request->input('property_area_id');
+        if ($rawArea === '' || $rawArea === null || $rawArea === '0') {
+            $request->merge(['property_area_id' => null]);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => [
@@ -285,9 +305,20 @@ class ProjectPageController extends Controller
                 'max:255',
                 Rule::unique('projects', 'slug')->ignore($ignore?->id),
             ],
+            'property_category_id' => 'nullable|exists:property_categories,id',
+            'property_area_id' => 'nullable|exists:property_areas,id',
             'summary' => 'nullable|string|max:8000',
             'body' => 'required|string|max:500000',
             'location' => 'nullable|string|max:255',
+            'address_line1' => 'nullable|string|max:255',
+            'address_line2' => 'nullable|string|max:255',
+            'locality' => 'nullable|string|max:120',
+            'city' => 'nullable|string|max:120',
+            'state' => 'nullable|string|max:120',
+            'postal_code' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:120',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'developer_name' => 'nullable|string|max:255',
             'maps_link_url' => 'nullable|string|max:2000',
             'rera_number' => 'nullable|string|max:120',
@@ -322,6 +353,7 @@ class ProjectPageController extends Controller
             'remove_floor_plan_paths.*' => 'string|max:500',
             'is_published' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
+            'is_new_launch' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0|max:999999',
         ]);
 
@@ -349,7 +381,18 @@ class ProjectPageController extends Controller
             'summary' => $validated['summary'] ?? null,
             'body' => $validated['body'],
             'extras' => $extras,
-            'location' => $validated['location'] ?? null,
+            'location' => $validated['location'] ?? collect([$validated['locality'] ?? null, $validated['city'] ?? null])->filter()->implode(', '),
+            'property_category_id' => $validated['property_category_id'] ?? null,
+            'property_area_id' => $validated['property_area_id'] ?? null,
+            'address_line1' => $validated['address_line1'] ?? null,
+            'address_line2' => $validated['address_line2'] ?? null,
+            'locality' => $validated['locality'] ?? null,
+            'city' => $validated['city'] ?? null,
+            'state' => $validated['state'] ?? null,
+            'postal_code' => $validated['postal_code'] ?? null,
+            'country' => $validated['country'] ?? null,
+            'latitude' => $validated['latitude'] ?? null,
+            'longitude' => $validated['longitude'] ?? null,
             'developer_name' => $validated['developer_name'] ?? null,
             'maps_link_url' => $mapsUrl !== '' ? $mapsUrl : null,
             'rera_number' => $rera !== '' ? $rera : null,
@@ -359,6 +402,7 @@ class ProjectPageController extends Controller
             'featured_image_url' => $validated['featured_image_url'] ?? null,
             'is_published' => $request->boolean('is_published'),
             'is_featured' => $request->boolean('is_featured'),
+            'is_new_launch' => $request->boolean('is_new_launch'),
             'sort_order' => $validated['sort_order'] ?? 0,
         ];
     }

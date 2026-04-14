@@ -8,12 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     protected $fillable = [
+        'property_category_id',
+        'property_area_id',
         'slug',
         'title',
         'summary',
         'body',
         'extras',
         'location',
+        'address_line1',
+        'address_line2',
+        'locality',
+        'city',
+        'state',
+        'postal_code',
+        'country',
+        'latitude',
+        'longitude',
         'developer_name',
         'maps_link_url',
         'rera_number',
@@ -27,6 +38,7 @@ class Project extends Model
         'floor_plan_paths',
         'is_published',
         'is_featured',
+        'is_new_launch',
         'sort_order',
         'published_at',
     ];
@@ -37,8 +49,11 @@ class Project extends Model
             'extras' => 'array',
             'gallery_paths' => 'array',
             'floor_plan_paths' => 'array',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
+            'is_new_launch' => 'boolean',
             'published_at' => 'datetime',
         ];
     }
@@ -305,6 +320,19 @@ class Project extends Model
 
     public function locationAddressLine(): ?string
     {
+        $fromFields = collect([
+            $this->address_line1,
+            $this->address_line2,
+            $this->locality,
+            $this->city,
+            $this->state,
+            $this->postal_code,
+            $this->country,
+        ])->filter()->implode(', ');
+        if ($fromFields !== '') {
+            return $fromFields;
+        }
+
         $s = $this->extra('location_address');
         if (is_string($s) && trim($s) !== '') {
             return trim($s);
@@ -419,5 +447,10 @@ class Project extends Model
     {
         return $query->where('is_published', true)
             ->whereNotNull('published_at');
+    }
+
+    public function scopeNewLaunch(Builder $query): Builder
+    {
+        return $query->where('is_new_launch', true);
     }
 }
