@@ -359,8 +359,8 @@
                   @error('consult_phone', 'consultation')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
                 <div class="pu-why-consult-field pu-why-consult-field--full">
-                  <label for="consult-message">Message (optional)</label>
-                  <textarea id="consult-message" name="consult_message" rows="2" placeholder="Budget, area, timeline...">{{ old('consult_message') }}</textarea>
+                  <label for="consult-message">Message</label>
+                  <textarea id="consult-message" name="consult_message" rows="2" placeholder="Budget, area, timeline..." required>{{ old('consult_message') }}</textarea>
                   @error('consult_message', 'consultation')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
               </div>
@@ -588,11 +588,11 @@
               </div>
               <div class="pu-launches-field">
                 <label for="launch-phone">Phone no</label>
-                <input type="tel" id="launch-phone" name="phone" value="{{ old('phone') }}" placeholder="+91 ..." autocomplete="tel">
+                <input type="tel" id="launch-phone" name="phone" value="{{ old('phone') }}" placeholder="+91 ..." autocomplete="tel" required>
               </div>
               <div class="pu-launches-field">
                 <label for="launch-message">Leave a message</label>
-                <textarea id="launch-message" name="message" rows="4" placeholder="Project preferences, budget range, timeline…">{{ old('message') }}</textarea>
+                <textarea id="launch-message" name="message" rows="4" placeholder="Project preferences, budget range, timeline…" required>{{ old('message') }}</textarea>
               </div>
               <button type="submit" class="pu-launches-submit">Submit</button>
               <p class="pu-launches-form__note">

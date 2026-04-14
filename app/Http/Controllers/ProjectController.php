@@ -6,6 +6,7 @@ use App\Models\Enquiry;
 use App\Models\Page;
 use App\Models\Project;
 use App\Models\PropertyCategory;
+use App\Support\LeadRatClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -176,19 +177,25 @@ class ProjectController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:32',
+            'phone' => 'required|string|max:32',
             'message' => 'required|string|max:4000',
         ]);
 
-        Enquiry::create([
+        $enquiry = Enquiry::create([
             'source' => Enquiry::SOURCE_PROJECT,
             'project_id' => $project->id,
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
+            'phone' => $data['phone'],
             'subject' => Str::limit('Project: '.$project->title, 200),
             'message' => $data['message'],
             'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'project_model' => $project,
+            'project_name' => $project->title,
+            'propertyType' => (string) ($project->category?->name ?? ''),
+            'page_url' => $request->fullUrl(),
         ]);
 
         return redirect()

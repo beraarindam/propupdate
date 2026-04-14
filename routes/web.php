@@ -12,6 +12,7 @@ use App\Models\PropertyCategory;
 use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Support\GooglePlaceReviews;
+use App\Support\LeadRatClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -96,17 +97,22 @@ Route::post('/lead/consultation', function (Request $request) {
         'consult_name' => 'required|string|max:120',
         'consult_email' => 'required|email|max:255',
         'consult_phone' => 'required|string|max:32',
-        'consult_message' => 'nullable|string|max:4000',
+        'consult_message' => 'required|string|max:4000',
     ]);
 
-    Enquiry::create([
+    $enquiry = Enquiry::create([
         'source' => Enquiry::SOURCE_CONTACT,
         'name' => $data['consult_name'],
         'email' => $data['consult_email'],
         'phone' => $data['consult_phone'],
         'subject' => 'Free consultation request',
-        'message' => $data['consult_message'] ?? null,
+        'message' => $data['consult_message'],
         'ip_address' => $request->ip(),
+    ]);
+    app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+        'subsource' => 'Free Consultation',
+        'leadStatus' => 'Consultation Requested',
+        'page_url' => $request->fullUrl(),
     ]);
 
     return redirect()
@@ -119,17 +125,22 @@ Route::post('/lead/pre-register', function (Request $request) {
     $data = $request->validate([
         'name' => 'required|string|max:120',
         'email' => 'required|email|max:255',
-        'phone' => 'nullable|string|max:32',
-        'message' => 'nullable|string|max:4000',
+        'phone' => 'required|string|max:32',
+        'message' => 'required|string|max:4000',
     ]);
 
-    Enquiry::create([
+    $enquiry = Enquiry::create([
         'source' => Enquiry::SOURCE_PRE_REGISTER,
         'name' => $data['name'],
         'email' => $data['email'],
-        'phone' => $data['phone'] ?? null,
-        'message' => $data['message'] ?? null,
+        'phone' => $data['phone'],
+        'message' => $data['message'],
         'ip_address' => $request->ip(),
+    ]);
+    app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+        'subsource' => 'Pre Register',
+        'leadStatus' => 'Pre Register Submitted',
+        'page_url' => $request->fullUrl(),
     ]);
 
     return redirect()

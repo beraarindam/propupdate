@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 final class FooterAwards
 {
-    private const LIMIT = 6;
+    private const LIMIT = 10;
 
     /**
      * @return array<int, array{image_url: string, href: string, label: string}>
@@ -21,10 +21,9 @@ final class FooterAwards
 
         Award::query()
             ->where('is_published', true)
-            ->orderBy('sort_order')
             ->orderByDesc('updated_at')
             ->orderByDesc('id')
-            ->limit(24)
+            ->limit(40)
             ->get()
             ->each(function (Award $award) use (&$rows): void {
                 if (count($rows) >= self::LIMIT) {

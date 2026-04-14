@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Enquiry;
 use App\Models\ExclusiveResaleListing;
 use App\Models\Page;
+use App\Support\LeadRatClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class ExclusiveResaleController extends Controller
             'message' => 'required|string|max:4000',
         ]);
 
-        Enquiry::create([
+        $enquiry = Enquiry::create([
             'source' => Enquiry::SOURCE_EXCLUSIVE_RESALE,
             'exclusive_resale_listing_id' => $listing->id,
             'property_id' => null,
@@ -53,6 +54,14 @@ class ExclusiveResaleController extends Controller
             'subject' => Str::limit('Exclusive resale: '.$listing->displayCode().' — '.$listing->title, 200),
             'message' => $data['message'],
             'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'exclusive_resale_model' => $listing,
+            'property_name' => $listing->title,
+            'propertyType' => (string) ($listing->property_type ?? ''),
+            'location' => (string) ($listing->location ?? ''),
+            'budget' => (string) ($listing->asking_price ?? ''),
+            'page_url' => $request->fullUrl(),
         ]);
 
         return redirect()

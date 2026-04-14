@@ -2867,9 +2867,9 @@ body.homepage1-body {
 
 .pu-footer-gallery {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
-  max-width: 260px;
+  max-width: 420px;
 }
 
 .pu-footer-gallery__item {
@@ -2956,6 +2956,7 @@ body.homepage1-body {
 
 @media (max-width: 991.98px) {
   .pu-footer-gallery {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     max-width: 320px;
   }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Enquiry;
 use App\Models\Page;
+use App\Support\LeadRatClient;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -29,19 +30,23 @@ class PagesController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:32',
-            'subject' => 'nullable|string|max:200',
+            'phone' => 'required|string|max:32',
+            'subject' => 'required|string|max:200',
             'message' => 'required|string|max:4000',
         ]);
 
-        Enquiry::create([
+        $enquiry = Enquiry::create([
             'source' => Enquiry::SOURCE_CONTACT,
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'subject' => $data['subject'] ?? null,
+            'phone' => $data['phone'],
+            'subject' => $data['subject'],
             'message' => $data['message'],
             'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'leadStatus' => 'Contact Form Submitted',
+            'page_url' => $request->fullUrl(),
         ]);
 
         return redirect()

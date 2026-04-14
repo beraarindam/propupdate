@@ -92,12 +92,12 @@
                 <input class="pu-contact__input" type="email" id="contact-email" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="you@example.com">
               </div>
               <div class="col-md-6">
-                <label class="pu-contact__label" for="contact-phone">Phone</label>
-                <input class="pu-contact__input" type="tel" id="contact-phone" name="phone" value="{{ old('phone') }}" autocomplete="tel" placeholder="+91 …">
+                <label class="pu-contact__label" for="contact-phone">Phone <span class="text-danger">*</span></label>
+                <input class="pu-contact__input" type="tel" id="contact-phone" name="phone" value="{{ old('phone') }}" required autocomplete="tel" placeholder="+91 …">
               </div>
               <div class="col-md-6">
-                <label class="pu-contact__label" for="contact-subject">Subject</label>
-                <input class="pu-contact__input" type="text" id="contact-subject" name="subject" value="{{ old('subject') }}" placeholder="e.g. Whitefield 3BHK resale">
+                <label class="pu-contact__label" for="contact-subject">Subject <span class="text-danger">*</span></label>
+                <input class="pu-contact__input" type="text" id="contact-subject" name="subject" value="{{ old('subject') }}" required placeholder="e.g. Whitefield 3BHK resale">
               </div>
               <div class="col-12">
                 <label class="pu-contact__label" for="contact-message">Message <span class="text-danger">*</span></label>

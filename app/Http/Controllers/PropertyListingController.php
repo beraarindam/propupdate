@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Models\PropertyArea;
 use App\Models\PropertyCategory;
 use App\Models\Project;
+use App\Support\LeadRatClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -404,19 +405,26 @@ class PropertyListingController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:32',
+            'phone' => 'required|string|max:32',
             'message' => 'required|string|max:4000',
         ]);
 
-        Enquiry::create([
+        $enquiry = Enquiry::create([
             'source' => Enquiry::SOURCE_PROPERTY,
             'property_id' => $property->id,
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
+            'phone' => $data['phone'],
             'subject' => Str::limit('Listing: '.$property->title, 200),
             'message' => $data['message'],
             'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'property_model' => $property,
+            'property_name' => $property->title,
+            'propertyType' => (string) ($property->category?->name ?? ''),
+            'budget' => $property->price !== null ? (string) $property->price : '',
+            'page_url' => $request->fullUrl(),
         ]);
 
         return redirect()
@@ -438,7 +446,7 @@ class PropertyListingController extends Controller
             'brochure_message' => 'required|string|max:4000',
         ]);
 
-        Enquiry::create([
+        $enquiry = Enquiry::create([
             'source' => Enquiry::SOURCE_PROPERTY,
             'property_id' => $property->id,
             'name' => $data['brochure_name'],
@@ -447,6 +455,15 @@ class PropertyListingController extends Controller
             'subject' => Str::limit('Brochure request: '.$property->title, 200),
             'message' => $data['brochure_message'],
             'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'property_model' => $property,
+            'property_name' => $property->title,
+            'propertyType' => (string) ($property->category?->name ?? ''),
+            'budget' => $property->price !== null ? (string) $property->price : '',
+            'subsource' => 'Brochure Request',
+            'leadStatus' => 'Brochure Requested',
+            'page_url' => $request->fullUrl(),
         ]);
 
         return redirect()

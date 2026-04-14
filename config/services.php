@@ -31,4 +31,11 @@ return [
         ],
     ],
 
+    'leadrat' => [
+        'endpoint' => env('LEADRAT_ENDPOINT', 'https://connect.leadrat.com/api/v1/integration/Website'),
+        'api_key' => env('LEADRAT_API_KEY'),
+        'country_code' => env('LEADRAT_COUNTRY_CODE', '91'),
+        'enabled' => (bool) env('LEADRAT_ENABLED', true),
+    ],
+
 ];

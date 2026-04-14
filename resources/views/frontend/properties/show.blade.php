@@ -211,8 +211,8 @@
                   @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="mb-3">
-                  <label for="pu-enq-phone" class="form-label small fw-semibold text-muted mb-1">Phone <span class="fw-normal opacity-75">(optional)</span></label>
-                  <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="pu-enq-phone" name="phone" value="{{ old('phone') }}" maxlength="32" autocomplete="tel">
+                  <label for="pu-enq-phone" class="form-label small fw-semibold text-muted mb-1">Phone</label>
+                  <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="pu-enq-phone" name="phone" value="{{ old('phone') }}" required maxlength="32" autocomplete="tel">
                   @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="mb-3">
