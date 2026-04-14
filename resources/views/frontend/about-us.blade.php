@@ -61,8 +61,8 @@
 
 <section class="pu-about-page-intro @if(filled($page?->body_html)) pt-4 pt-lg-5 @endif">
   <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6">
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-lg-5">
         <div class="pu-about-page-visual">
           <div class="pu-about-page-visual__blob" aria-hidden="true"></div>
           <div class="pu-about-page-visual__frame">
@@ -80,7 +80,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-7">
         <p class="pu-about-page-kicker">{{ $page?->aboutPage('intro.kicker') ?: 'Who we are' }}</p>
         <h2 class="pu-about-page-h2">{{ $page?->aboutPage('intro.h2') ?: 'Built for buyers who read the fine print' }}</h2>
         <p class="pu-about-page-text">

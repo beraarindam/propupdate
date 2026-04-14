@@ -3083,7 +3083,7 @@ body.homepage1-body {
 .pu-about-page-visual {
   position: relative;
   padding: 0.5rem 0 2rem;
-  max-width: 520px;
+  max-width: 430px;
   margin: 0 auto;
 }
 
@@ -3160,7 +3160,7 @@ body.homepage1-body {
 
 .pu-about-page-h2 {
   font-family: "DM Serif Display", Georgia, serif;
-  font-size: clamp(1.65rem, 3.2vw, 2.35rem);
+  font-size: clamp(1.75rem, 3.1vw, 2.45rem);
   font-weight: 600;
   color: var(--pu-navy);
   line-height: 1.2;
@@ -3172,8 +3172,8 @@ body.homepage1-body {
 }
 
 .pu-about-page-text {
-  font-size: 1.05rem;
-  line-height: 1.75;
+  font-size: 1.07rem;
+  line-height: 1.82;
   color: #475569;
   margin: 0 0 1rem;
 }
