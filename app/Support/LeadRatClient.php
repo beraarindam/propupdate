@@ -28,7 +28,7 @@ class LeadRatClient
                     'API-Key' => (string) config('services.leadrat.api_key'),
                     'Content-Type' => 'application/json',
                 ])
-                ->post((string) config('services.leadrat.endpoint'), $payload);
+                ->post((string) config('services.leadrat.endpoint'), [$payload]);
 
             if ($response->successful()) {
                 return true;
