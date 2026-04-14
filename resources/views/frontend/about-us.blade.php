@@ -59,44 +59,41 @@
 </section>
 @endif
 
+@php
+  $introCtaText = $page?->aboutPage('intro.cta_text') ?: 'Get launch access';
+  $introCtaHref = filled($page?->aboutPage('intro.cta_href'))
+    ? Page::resolveHref($page->aboutPage('intro.cta_href'))
+    : route('home') . '#pre-register';
+@endphp
 <section class="pu-about-page-intro @if(filled($page?->body_html)) pt-4 pt-lg-5 @endif">
   <div class="container">
-    <div class="row align-items-center g-4 g-lg-5">
-      <div class="col-lg-5">
-        <div class="pu-about-page-visual">
-          <div class="pu-about-page-visual__blob" aria-hidden="true"></div>
-          <div class="pu-about-page-visual__frame">
-            <img
-              src="{{ $introImg }}"
-              alt="{{ $introAlt }}"
-              width="560"
-              height="420"
-              loading="lazy"
-            >
-          </div>
-          <div class="pu-about-page-badge">
-            <span class="pu-about-page-badge__num">{{ $page?->aboutPage('intro.badge_num') ?: '10+' }}</span>
-            <span class="pu-about-page-badge__text">{{ $page?->aboutPage('intro.badge_text') ?: 'Years collective experience' }}</span>
-          </div>
+    {{-- Float image on large screens so following copy wraps beside/under it (avoids a blank band under a tall image row). --}}
+    <div class="pu-about-page-intro__flow">
+      <div class="pu-about-page-visual pu-about-page-visual--float float-lg-start mb-4 mb-lg-3 me-lg-4 mx-auto mx-lg-0">
+        <div class="pu-about-page-visual__blob" aria-hidden="true"></div>
+        <div class="pu-about-page-visual__frame">
+          <img
+            src="{{ $introImg }}"
+            alt="{{ $introAlt }}"
+            width="400"
+            height="300"
+            loading="lazy"
+          >
+        </div>
+        <div class="pu-about-page-badge">
+          <span class="pu-about-page-badge__num">{{ $page?->aboutPage('intro.badge_num') ?: '10+' }}</span>
+          <span class="pu-about-page-badge__text">{{ $page?->aboutPage('intro.badge_text') ?: 'Years collective experience' }}</span>
         </div>
       </div>
-      <div class="col-lg-7">
-        <p class="pu-about-page-kicker">{{ $page?->aboutPage('intro.kicker') ?: 'Who we are' }}</p>
-        <h2 class="pu-about-page-h2">{{ $page?->aboutPage('intro.h2') ?: 'Built for buyers who read the fine print' }}</h2>
-        <p class="pu-about-page-text">
-          {!! $page?->aboutPage('intro.paragraph_1') ?: 'PropUpdate Realty is a Bangalore-focused practice for <strong>resale</strong>, <strong>new launches</strong>, and <strong>investment-grade inventory</strong>. We combine market data, legal diligence, and straight answers — so you never discover surprises after you commit.' !!}
-        </p>
-        <p class="pu-about-page-text">
-          {!! $page?->aboutPage('intro.paragraph_2') ?: 'Whether you are upgrading your home or building a portfolio, we act as your research partner, not a billboard.' !!}
-        </p>
-        @php
-          $introCtaText = $page?->aboutPage('intro.cta_text') ?: 'Get launch access';
-          $introCtaHref = filled($page?->aboutPage('intro.cta_href'))
-            ? Page::resolveHref($page->aboutPage('intro.cta_href'))
-            : route('home') . '#pre-register';
-        @endphp
-        <a href="{{ $introCtaHref }}" class="pu-about-page-cta">{{ $introCtaText }}</a>
-      </div>
+      <p class="pu-about-page-kicker">{{ $page?->aboutPage('intro.kicker') ?: 'Who we are' }}</p>
+      <h2 class="pu-about-page-h2">{{ $page?->aboutPage('intro.h2') ?: 'Built for buyers who read the fine print' }}</h2>
+      <p class="pu-about-page-text">
+        {!! $page?->aboutPage('intro.paragraph_1') ?: 'PropUpdate Realty is a Bangalore-focused practice for <strong>resale</strong>, <strong>new launches</strong>, and <strong>investment-grade inventory</strong>. We combine market data, legal diligence, and straight answers — so you never discover surprises after you commit.' !!}
+      </p>
+      <p class="pu-about-page-text">
+        {!! $page?->aboutPage('intro.paragraph_2') ?: 'Whether you are upgrading your home or building a portfolio, we act as your research partner, not a billboard.' !!}
+      </p>
+      <a href="{{ $introCtaHref }}" class="pu-about-page-cta mt-1">{{ $introCtaText }}</a>
     </div>
   </div>
 </section>

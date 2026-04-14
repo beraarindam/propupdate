@@ -279,6 +279,7 @@
         @else
           <a href="{{ route('projects.index') }}" class="{{ request()->routeIs('projects.*') ? 'is-active' : '' }}">Projects</a>
         @endif
+        <a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.index') ? 'is-active' : '' }}">Blog</a>
         
       </nav>
 
