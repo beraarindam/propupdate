@@ -99,9 +99,10 @@
 </section>
 
 <section class="pu-founder" aria-labelledby="founder-heading">
-  <div class="container-fluid px-0">
-    <div class="row g-0 align-items-lg-stretch pu-founder__row">
-      <div class="col-lg-6 order-2 order-lg-1">
+  <div class="container">
+    <div class="pu-founder__shell">
+      <div class="row g-0 align-items-center pu-founder__row">
+      <div class="col-lg-7 order-2 order-lg-1">
         <div class="pu-founder__content">
           <span class="pu-founder__ribbon" aria-hidden="true"></span>
           <p class="pu-founder__eyebrow" id="founder-heading">{{ $page?->aboutPage('founder.eyebrow') ?: "Founder's note" }}</p>
@@ -119,7 +120,7 @@
           </p>
         </div>
       </div>
-      <div class="col-lg-6 order-1 order-lg-2">
+      <div class="col-lg-5 order-1 order-lg-2">
         <div class="pu-founder__visual">
           <div class="pu-founder__visual-glow" aria-hidden="true"></div>
           <img
@@ -133,6 +134,7 @@
             referrerpolicy="no-referrer-when-downgrade"
           >
         </div>
+      </div>
       </div>
     </div>
   </div>
