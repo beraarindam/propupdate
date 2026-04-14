@@ -234,6 +234,47 @@
   </div>
 </article>
 
+<div class="modal fade" id="puBrochureModal" tabindex="-1" aria-labelledby="puBrochureModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header">
+        <h2 class="modal-title h5 mb-0" id="puBrochureModalLabel">Download free brochure</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post" action="{{ route('properties.brochure-request', $property) }}" novalidate>
+        @csrf
+        <div class="modal-body">
+          <p class="small text-muted mb-3">Share your details and our team will send you the brochure.</p>
+          <div class="mb-3">
+            <label for="pu-bro-name" class="form-label small fw-semibold text-muted mb-1">Name</label>
+            <input type="text" class="form-control @error('brochure_name', 'brochure') is-invalid @enderror" id="pu-bro-name" name="brochure_name" value="{{ old('brochure_name') }}" required maxlength="120" autocomplete="name">
+            @error('brochure_name', 'brochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label for="pu-bro-email" class="form-label small fw-semibold text-muted mb-1">Email</label>
+            <input type="email" class="form-control @error('brochure_email', 'brochure') is-invalid @enderror" id="pu-bro-email" name="brochure_email" value="{{ old('brochure_email') }}" required maxlength="255" autocomplete="email">
+            @error('brochure_email', 'brochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label for="pu-bro-phone" class="form-label small fw-semibold text-muted mb-1">Phone</label>
+            <input type="tel" class="form-control @error('brochure_phone', 'brochure') is-invalid @enderror" id="pu-bro-phone" name="brochure_phone" value="{{ old('brochure_phone') }}" required maxlength="32" autocomplete="tel">
+            @error('brochure_phone', 'brochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-0">
+            <label for="pu-bro-message" class="form-label small fw-semibold text-muted mb-1">Message</label>
+            <textarea class="form-control @error('brochure_message', 'brochure') is-invalid @enderror" id="pu-bro-message" name="brochure_message" rows="4" required maxlength="4000" placeholder="Please share brochure and payment plan.">{{ old('brochure_message') }}</textarea>
+            @error('brochure_message', 'brochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn pu-pd-request__submit">Submit & request brochure</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -248,6 +289,13 @@ document.addEventListener('DOMContentLoaded', function () {
     mainClass: 'mfp-img-mobile',
     removalDelay: 200
   });
+
+  @if($errors->brochure->any())
+    var modalEl = document.getElementById('puBrochureModal');
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+  @endif
 });
 </script>
 @endpush

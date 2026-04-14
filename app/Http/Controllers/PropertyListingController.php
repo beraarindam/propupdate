@@ -369,4 +369,34 @@ class PropertyListingController extends Controller
             ->withFragment('pu-property-request')
             ->with('property_enquiry_status', 'Thanks — your request was sent. We will get back to you shortly.');
     }
+
+    public function submitBrochureRequest(Request $request, Property $property): RedirectResponse
+    {
+        if (! $property->is_published || $property->published_at === null) {
+            throw new NotFoundHttpException;
+        }
+
+        $data = $request->validateWithBag('brochure', [
+            'brochure_name' => 'required|string|max:120',
+            'brochure_email' => 'required|email|max:255',
+            'brochure_phone' => 'required|string|max:32',
+            'brochure_message' => 'required|string|max:4000',
+        ]);
+
+        Enquiry::create([
+            'source' => Enquiry::SOURCE_PROPERTY,
+            'property_id' => $property->id,
+            'name' => $data['brochure_name'],
+            'email' => $data['brochure_email'],
+            'phone' => $data['brochure_phone'],
+            'subject' => Str::limit('Brochure request: '.$property->title, 200),
+            'message' => $data['brochure_message'],
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()
+            ->route('properties.show', $property)
+            ->withFragment('pu-proj-brochure')
+            ->with('property_brochure_status', 'Thanks — brochure request received. Our team will contact you shortly.');
+    }
 }

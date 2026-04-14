@@ -69,11 +69,36 @@
       @if($property->price_disclaimer)
         <div class="pu-proj-callout mt-3 mb-0">{!! nl2br(e($property->price_disclaimer)) !!}</div>
       @endif
+      <div class="mt-3" id="pu-proj-brochure">
+        @if(session('property_brochure_status'))
+          <div class="alert alert-success py-2 px-3 small mb-3" role="status">{{ session('property_brochure_status') }}</div>
+        @endif
+        <button type="button" class="pu-proj-maps-btn" data-bs-toggle="modal" data-bs-target="#puBrochureModal">
+          <i class="fa-solid fa-file-arrow-down me-2" aria-hidden="true"></i>Download free brochure
+        </button>
+      </div>
     </section>
   @elseif($property->price_disclaimer)
     <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
       <h2 class="pu-proj-heading h4 mb-3">Pricing notes</h2>
       <div class="pu-proj-callout mb-0">{!! nl2br(e($property->price_disclaimer)) !!}</div>
+      <div class="mt-3" id="pu-proj-brochure">
+        @if(session('property_brochure_status'))
+          <div class="alert alert-success py-2 px-3 small mb-3" role="status">{{ session('property_brochure_status') }}</div>
+        @endif
+        <button type="button" class="pu-proj-maps-btn" data-bs-toggle="modal" data-bs-target="#puBrochureModal">
+          <i class="fa-solid fa-file-arrow-down me-2" aria-hidden="true"></i>Download free brochure
+        </button>
+      </div>
+    </section>
+  @else
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5" id="pu-proj-brochure">
+      @if(session('property_brochure_status'))
+        <div class="alert alert-success py-2 px-3 small mb-3" role="status">{{ session('property_brochure_status') }}</div>
+      @endif
+      <button type="button" class="pu-proj-maps-btn" data-bs-toggle="modal" data-bs-target="#puBrochureModal">
+        <i class="fa-solid fa-file-arrow-down me-2" aria-hidden="true"></i>Download free brochure
+      </button>
     </section>
   @endif
 

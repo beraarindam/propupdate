@@ -78,6 +78,9 @@ Route::get('/new-launches', [PropertyListingController::class, 'newLaunches'])->
 Route::post('/properties/{property}/enquiry', [PropertyListingController::class, 'submitEnquiry'])
     ->middleware('throttle:20,1')
     ->name('properties.enquiry');
+Route::post('/properties/{property}/brochure-request', [PropertyListingController::class, 'submitBrochureRequest'])
+    ->middleware('throttle:20,1')
+    ->name('properties.brochure-request');
 Route::get('/properties/{property}', [PropertyListingController::class, 'show'])->name('properties.show');
 
 Route::get('/about-us', [PagesController::class, 'about'])->name('pages.about');
