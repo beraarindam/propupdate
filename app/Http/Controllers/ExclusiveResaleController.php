@@ -39,7 +39,7 @@ class ExclusiveResaleController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:32',
+            'phone' => 'required|string|max:32',
             'message' => 'required|string|max:4000',
         ]);
 
@@ -49,7 +49,7 @@ class ExclusiveResaleController extends Controller
             'property_id' => null,
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
+            'phone' => $data['phone'],
             'subject' => Str::limit('Exclusive resale: '.$listing->displayCode().' — '.$listing->title, 200),
             'message' => $data['message'],
             'ip_address' => $request->ip(),

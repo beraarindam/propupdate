@@ -143,8 +143,8 @@
                     <input type="email" class="pu-er-enquiry-form__input" id="er-email-{{ $item->id }}" name="email" value="{{ (int) old('er_listing_id') === $item->id ? old('email') : '' }}" required maxlength="255" autocomplete="email">
                   </div>
                   <div class="mb-2">
-                    <label class="pu-er-enquiry-form__label" for="er-phone-{{ $item->id }}">Phone <span class="pu-er-muted">(optional)</span></label>
-                    <input type="text" class="pu-er-enquiry-form__input" id="er-phone-{{ $item->id }}" name="phone" value="{{ (int) old('er_listing_id') === $item->id ? old('phone') : '' }}" maxlength="32" autocomplete="tel">
+                    <label class="pu-er-enquiry-form__label" for="er-phone-{{ $item->id }}">Phone</label>
+                    <input type="text" class="pu-er-enquiry-form__input" id="er-phone-{{ $item->id }}" name="phone" value="{{ (int) old('er_listing_id') === $item->id ? old('phone') : '' }}" required maxlength="32" autocomplete="tel">
                   </div>
                   <div class="mb-3">
                     <label class="pu-er-enquiry-form__label" for="er-msg-{{ $item->id }}">Message</label>
