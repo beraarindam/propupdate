@@ -203,4 +203,42 @@ class ProjectController extends Controller
             ->withFragment('pu-project-request')
             ->with('project_enquiry_status', 'Thanks — your request was sent. We will get back to you shortly.');
     }
+
+    public function submitBrochureRequest(Request $request, Project $project): RedirectResponse
+    {
+        if (! $project->is_published || $project->published_at === null) {
+            throw new NotFoundHttpException;
+        }
+
+        $data = $request->validateWithBag('projectBrochure', [
+            'brochure_name' => 'required|string|max:120',
+            'brochure_email' => 'required|email|max:255',
+            'brochure_phone' => 'required|string|max:32',
+            'brochure_message' => 'required|string|max:4000',
+        ]);
+
+        $enquiry = Enquiry::create([
+            'source' => Enquiry::SOURCE_PROJECT,
+            'project_id' => $project->id,
+            'name' => $data['brochure_name'],
+            'email' => $data['brochure_email'],
+            'phone' => $data['brochure_phone'],
+            'subject' => Str::limit('Brochure request: '.$project->title, 200),
+            'message' => $data['brochure_message'],
+            'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'project_model' => $project,
+            'project_name' => $project->title,
+            'propertyType' => (string) ($project->category?->name ?? ''),
+            'subsource' => 'Project Brochure Request',
+            'leadStatus' => 'Brochure Requested',
+            'page_url' => $request->fullUrl(),
+        ]);
+
+        return redirect()
+            ->route('projects.show', $project)
+            ->withFragment('pu-project-brochure')
+            ->with('project_brochure_status', 'Thanks — brochure request received. Our team will contact you shortly.');
+    }
 }

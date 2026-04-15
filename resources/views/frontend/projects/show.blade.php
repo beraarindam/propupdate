@@ -76,7 +76,7 @@
 
       <div class="col-lg-4">
         <aside class="pu-pd-sidebar pu-prj-sidebar">
-          <div class="pu-pd-facts card border-0 shadow-lg pu-prj-facts-card">
+          <div class="pu-pd-facts card border-0 shadow-lg pu-prj-facts-card d-none">
             <div class="pu-pd-facts__head">
               <h2 class="pu-pd-facts__title">Quick facts</h2>
               <p class="pu-pd-facts__sub text-white-50 small mb-0">Key details at a glance</p>

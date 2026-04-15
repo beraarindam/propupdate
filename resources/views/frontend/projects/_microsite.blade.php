@@ -28,7 +28,70 @@
     <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
       <h2 class="pu-proj-heading h4 mb-3">Overview</h2>
       <div class="pu-proj-lead">{!! nl2br(e($project->summary)) !!}</div>
+      <div class="mt-3" id="pu-project-brochure">
+        <button
+          type="button"
+          class="btn pu-proj-maps-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#puProjectBrochureModal"
+        >
+          <i class="fa-regular fa-file-lines me-2" aria-hidden="true"></i>Free Download Brochure
+        </button>
+      </div>
+      @if(session('project_brochure_status'))
+        <div class="alert alert-success py-2 px-3 small mt-3 mb-0" role="status">{{ session('project_brochure_status') }}</div>
+      @endif
     </section>
+  @endif
+
+  <div class="modal fade" id="puProjectBrochureModal" tabindex="-1" aria-labelledby="puProjectBrochureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title h5 mb-0" id="puProjectBrochureModalLabel">Free Download Brochure</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small mb-3">Fill your details and our team will send brochure details.</p>
+          <form method="post" action="{{ route('projects.brochure-request', $project) }}" novalidate>
+            @csrf
+            <div class="mb-3">
+              <label for="pu-prj-brochure-name" class="form-label small fw-semibold text-muted mb-1">Name</label>
+              <input type="text" class="form-control @error('brochure_name', 'projectBrochure') is-invalid @enderror" id="pu-prj-brochure-name" name="brochure_name" value="{{ old('brochure_name') }}" required maxlength="120" autocomplete="name">
+              @error('brochure_name', 'projectBrochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-3">
+              <label for="pu-prj-brochure-email" class="form-label small fw-semibold text-muted mb-1">Email</label>
+              <input type="email" class="form-control @error('brochure_email', 'projectBrochure') is-invalid @enderror" id="pu-prj-brochure-email" name="brochure_email" value="{{ old('brochure_email') }}" required maxlength="255" autocomplete="email">
+              @error('brochure_email', 'projectBrochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-3">
+              <label for="pu-prj-brochure-phone" class="form-label small fw-semibold text-muted mb-1">Phone</label>
+              <input type="tel" class="form-control @error('brochure_phone', 'projectBrochure') is-invalid @enderror" id="pu-prj-brochure-phone" name="brochure_phone" value="{{ old('brochure_phone') }}" required maxlength="32" autocomplete="tel">
+              @error('brochure_phone', 'projectBrochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-0">
+              <label for="pu-prj-brochure-message" class="form-label small fw-semibold text-muted mb-1">Message</label>
+              <textarea class="form-control @error('brochure_message', 'projectBrochure') is-invalid @enderror" id="pu-prj-brochure-message" name="brochure_message" rows="4" required maxlength="4000" placeholder="Please share brochure and project details.">{{ old('brochure_message') }}</textarea>
+              @error('brochure_message', 'projectBrochure')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <button type="submit" class="btn pu-pd-request__submit w-100 mt-3">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if($errors->projectBrochure->any() || session('project_brochure_status'))
+    @push('scripts')
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var modalEl = document.getElementById('puProjectBrochureModal');
+      if (!modalEl || typeof bootstrap === 'undefined') return;
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    });
+    </script>
+    @endpush
   @endif
 
   @if(count($qf))

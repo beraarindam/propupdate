@@ -69,6 +69,9 @@ Route::get('/projects', [ProjectController::class, 'index'])->name('projects.ind
 Route::post('/projects/{project}/enquiry', [ProjectController::class, 'submitEnquiry'])
     ->middleware('throttle:20,1')
     ->name('projects.enquiry');
+Route::post('/projects/{project}/brochure-request', [ProjectController::class, 'submitBrochureRequest'])
+    ->middleware('throttle:20,1')
+    ->name('projects.brochure-request');
 Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
 Route::get('/properties', [PropertyListingController::class, 'index'])->name('properties.index');
