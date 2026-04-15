@@ -54,6 +54,7 @@ class Property extends Model
         'expert_cons',
         'project_faqs',
         'master_plan_path',
+        'master_plan_paths',
         'floor_plan_paths',
         'address_line1',
         'address_line2',
@@ -99,6 +100,7 @@ class Property extends Model
             'expert_pros' => 'array',
             'expert_cons' => 'array',
             'project_faqs' => 'array',
+            'master_plan_paths' => 'array',
             'floor_plan_paths' => 'array',
             'gallery_paths' => 'array',
             'is_published' => 'boolean',
@@ -187,7 +189,29 @@ class Property extends Model
 
     public function masterPlanUrl(): ?string
     {
-        return $this->master_plan_path ? static::resolveStorageOrRemoteUrl($this->master_plan_path) : null;
+        return $this->masterPlanPublicUrls()[0] ?? null;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function masterPlanPublicUrls(): array
+    {
+        $paths = is_array($this->master_plan_paths) ? $this->master_plan_paths : [];
+        if (is_string($this->master_plan_path) && $this->master_plan_path !== '') {
+            array_unshift($paths, $this->master_plan_path);
+        }
+        $paths = array_values(array_unique(array_filter($paths, fn ($path) => is_string($path) && $path !== '')));
+
+        $urls = [];
+        foreach ($paths as $path) {
+            $u = static::resolveStorageOrRemoteUrl($path);
+            if ($u) {
+                $urls[] = $u;
+            }
+        }
+
+        return $urls;
     }
 
     /**

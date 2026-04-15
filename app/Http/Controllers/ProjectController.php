@@ -241,4 +241,51 @@ class ProjectController extends Controller
             ->withFragment('pu-project-brochure')
             ->with('project_brochure_status', 'Thanks — brochure request received. Our team will contact you shortly.');
     }
+
+    public function submitPlanRequest(Request $request, Project $project): RedirectResponse
+    {
+        if (! $project->is_published || $project->published_at === null) {
+            throw new NotFoundHttpException;
+        }
+
+        $data = $request->validateWithBag('projectPlanAsset', [
+            'plan_name' => 'required|string|max:120',
+            'plan_email' => 'required|email|max:255',
+            'plan_phone' => 'required|string|max:32',
+            'plan_message' => 'required|string|max:4000',
+            'plan_type' => 'nullable|string|max:80',
+            'plan_url' => 'nullable|url|max:2048',
+        ]);
+
+        $planType = trim((string) ($data['plan_type'] ?? 'Plan'));
+        $planUrl = trim((string) ($data['plan_url'] ?? ''));
+        $baseMessage = trim((string) $data['plan_message']);
+        if ($planUrl !== '') {
+            $baseMessage .= "\n\nRequested asset URL: ".$planUrl;
+        }
+
+        $enquiry = Enquiry::create([
+            'source' => Enquiry::SOURCE_PROJECT,
+            'project_id' => $project->id,
+            'name' => $data['plan_name'],
+            'email' => $data['plan_email'],
+            'phone' => $data['plan_phone'],
+            'subject' => Str::limit($planType.' request: '.$project->title, 200),
+            'message' => $baseMessage,
+            'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'project_model' => $project,
+            'project_name' => $project->title,
+            'propertyType' => (string) ($project->category?->name ?? ''),
+            'subsource' => $planType !== '' ? $planType.' Request' : 'Plan Request',
+            'leadStatus' => 'Plan Requested',
+            'page_url' => $request->fullUrl(),
+        ]);
+
+        return redirect()
+            ->route('projects.show', $project)
+            ->withFragment('pu-project-plans')
+            ->with('project_plan_status', 'Thanks — your plan request has been received. Our team will contact you shortly.');
+    }
 }

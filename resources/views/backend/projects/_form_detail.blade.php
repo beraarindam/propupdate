@@ -176,7 +176,9 @@
 					<p class="small text-muted mt-3 mb-1 fw-semibold">Existing — check to remove:</p>
 					<div class="row g-2">
 						@foreach($project->gallery_paths as $path)
-							@php($gUrl = \App\Models\SiteSetting::resolvePublicUrl($path))
+							@php
+								$gUrl = \App\Models\SiteSetting::resolvePublicUrl($path);
+							@endphp
 							@if($gUrl)
 								<div class="col-6 col-md-3 col-lg-2">
 									<div class="border rounded p-1">
@@ -195,17 +197,35 @@
 			<hr class="text-muted opacity-25">
 			<div class="row g-3 mb-0">
 				<div class="col-md-6">
-					<label class="form-label">Master plan image</label>
-					@if($project->masterPlanUrl())
-						<div class="mb-2">
-							<img src="{{ $project->masterPlanUrl() }}" alt="" class="img-thumbnail rounded" style="max-height: 140px; object-fit: contain;">
-						</div>
-					@endif
-					<input type="file" name="master_plan_image" class="form-control" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
-					@if($project->master_plan_path)
-						<div class="form-check mt-2">
-							<input class="form-check-input" type="checkbox" name="remove_master_plan" value="1" id="proj_rem_master" @checked(old('remove_master_plan'))>
-							<label class="form-check-label" for="proj_rem_master">Remove master plan</label>
+					<label class="form-label">Master plan images</label>
+					<input type="file" name="master_plans[]" class="form-control" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" multiple>
+					<p class="text-muted small mt-1 mb-2">Up to 12 new files per save; max 24 stored.</p>
+					@php
+						$projMasterPaths = is_array($project->master_plan_paths ?? null) ? $project->master_plan_paths : [];
+						if (is_string($project->master_plan_path ?? null) && $project->master_plan_path !== '') {
+							array_unshift($projMasterPaths, $project->master_plan_path);
+						}
+						$projMasterPaths = array_values(array_unique(array_filter($projMasterPaths, fn ($p) => is_string($p) && $p !== '')));
+					@endphp
+					@if(count($projMasterPaths))
+						<p class="small text-muted mt-2 mb-1 fw-semibold">Existing — check to remove:</p>
+						<div class="row g-2">
+							@foreach($projMasterPaths as $path)
+								@php
+									$mu = \App\Models\SiteSetting::resolvePublicUrl($path);
+								@endphp
+								@if($mu)
+									<div class="col-6">
+										<div class="border rounded p-1">
+											<img src="{{ $mu }}" alt="" class="img-fluid rounded" style="max-height: 72px; width:100%; object-fit:cover;">
+											<div class="form-check small mt-1">
+												<input class="form-check-input" type="checkbox" name="remove_master_plan_paths[]" value="{{ $path }}" id="proj_rm_mp_{{ md5($path) }}">
+												<label class="form-check-label" for="proj_rm_mp_{{ md5($path) }}">Remove</label>
+											</div>
+										</div>
+									</div>
+								@endif
+							@endforeach
 						</div>
 					@endif
 				</div>
@@ -216,7 +236,9 @@
 						<p class="small text-muted mt-2 mb-1 fw-semibold">Existing — check to remove:</p>
 						<div class="row g-2">
 							@foreach($project->floor_plan_paths as $path)
-								@php($fu = is_string($path) ? \App\Models\SiteSetting::resolvePublicUrl($path) : null)
+								@php
+									$fu = is_string($path) ? \App\Models\SiteSetting::resolvePublicUrl($path) : null;
+								@endphp
 								@if($fu)
 									<div class="col-6">
 										<div class="border rounded p-1">

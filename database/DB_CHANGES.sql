@@ -511,3 +511,11 @@ ALTER TABLE `projects` ADD CONSTRAINT `projects_property_area_id_foreign` FOREIG
 -- `2026_04_20_100000_add_is_new_launch_to_projects_table.php`, or:
 ALTER TABLE `projects` ADD COLUMN `is_new_launch` tinyint(1) NOT NULL DEFAULT 0 AFTER `is_featured`;
 ALTER TABLE `projects` ADD INDEX `projects_is_new_launch_is_published_index` (`is_new_launch`, `is_published`);
+
+-- 15-04-2026
+
+ALTER TABLE `properties`
+  ADD COLUMN `master_plan_paths` JSON NULL AFTER `master_plan_path`;
+
+ALTER TABLE `projects`
+  ADD COLUMN `master_plan_paths` JSON NULL AFTER `master_plan_path`;

@@ -471,4 +471,52 @@ class PropertyListingController extends Controller
             ->withFragment('pu-proj-brochure')
             ->with('property_brochure_status', 'Thanks — brochure request received. Our team will contact you shortly.');
     }
+
+    public function submitPlanRequest(Request $request, Property $property): RedirectResponse
+    {
+        if (! $property->is_published || $property->published_at === null) {
+            throw new NotFoundHttpException;
+        }
+
+        $data = $request->validateWithBag('propertyPlanAsset', [
+            'plan_name' => 'required|string|max:120',
+            'plan_email' => 'required|email|max:255',
+            'plan_phone' => 'required|string|max:32',
+            'plan_message' => 'required|string|max:4000',
+            'plan_type' => 'nullable|string|max:80',
+            'plan_url' => 'nullable|url|max:2048',
+        ]);
+
+        $planType = trim((string) ($data['plan_type'] ?? 'Plan'));
+        $planUrl = trim((string) ($data['plan_url'] ?? ''));
+        $baseMessage = trim((string) $data['plan_message']);
+        if ($planUrl !== '') {
+            $baseMessage .= "\n\nRequested asset URL: ".$planUrl;
+        }
+
+        $enquiry = Enquiry::create([
+            'source' => Enquiry::SOURCE_PROPERTY,
+            'property_id' => $property->id,
+            'name' => $data['plan_name'],
+            'email' => $data['plan_email'],
+            'phone' => $data['plan_phone'],
+            'subject' => Str::limit($planType.' request: '.$property->title, 200),
+            'message' => $baseMessage,
+            'ip_address' => $request->ip(),
+        ]);
+        app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+            'property_model' => $property,
+            'property_name' => $property->title,
+            'propertyType' => (string) ($property->category?->name ?? ''),
+            'budget' => $property->price !== null ? (string) $property->price : '',
+            'subsource' => $planType !== '' ? $planType.' Request' : 'Plan Request',
+            'leadStatus' => 'Plan Requested',
+            'page_url' => $request->fullUrl(),
+        ]);
+
+        return redirect()
+            ->route('properties.show', $property)
+            ->withFragment('pu-property-plans')
+            ->with('property_plan_status', 'Thanks — your plan request has been received. Our team will contact you shortly.');
+    }
 }

@@ -22,6 +22,8 @@ class ProjectPageController extends Controller
 
     private const FLOOR_PLAN_MAX_FILES = 24;
 
+    private const MASTER_PLAN_MAX_FILES = 24;
+
     public function index(): View
     {
         return view('backend.projects.index');
@@ -160,10 +162,7 @@ class ProjectPageController extends Controller
         }
 
         $galleryPaths = $this->storeNewGalleryFiles($request, []);
-        $masterPlanPath = null;
-        if ($request->hasFile('master_plan_image')) {
-            $masterPlanPath = $request->file('master_plan_image')->store('projects/master-plans', 'public');
-        }
+        $masterPlanPaths = $this->storeNewMasterPlanFiles($request, []);
         $floorPlanPaths = $this->storeNewFloorPlanFiles($request, []);
 
         $project = Project::create(array_merge($data, [
@@ -171,7 +170,8 @@ class ProjectPageController extends Controller
             'published_at' => $publishedAt,
             'featured_image_path' => $path,
             'gallery_paths' => $galleryPaths,
-            'master_plan_path' => $masterPlanPath,
+            'master_plan_path' => null,
+            'master_plan_paths' => $masterPlanPaths,
             'floor_plan_paths' => $floorPlanPaths,
         ]));
 
@@ -240,18 +240,22 @@ class ProjectPageController extends Controller
         $kept = array_values(array_diff($existingGallery, $remove));
         $project->gallery_paths = $this->storeNewGalleryFiles($request, $kept);
 
-        if ($request->boolean('remove_master_plan')) {
-            if ($project->master_plan_path) {
-                Storage::disk('public')->delete($project->master_plan_path);
-            }
-            $project->master_plan_path = null;
+        $existingMasterPlans = is_array($project->master_plan_paths) ? $project->master_plan_paths : [];
+        if (is_string($project->master_plan_path) && $project->master_plan_path !== '') {
+            array_unshift($existingMasterPlans, $project->master_plan_path);
         }
-        if ($request->hasFile('master_plan_image')) {
-            if ($project->master_plan_path) {
-                Storage::disk('public')->delete($project->master_plan_path);
-            }
-            $project->master_plan_path = $request->file('master_plan_image')->store('projects/master-plans', 'public');
+        $existingMasterPlans = array_values(array_unique(array_filter($existingMasterPlans, fn ($path) => is_string($path) && $path !== '')));
+        $removeMasterPlans = $request->input('remove_master_plan_paths', []);
+        if (! is_array($removeMasterPlans)) {
+            $removeMasterPlans = [];
         }
+        $removeMasterPlans = array_values(array_intersect($removeMasterPlans, $existingMasterPlans));
+        foreach ($removeMasterPlans as $path) {
+            Storage::disk('public')->delete($path);
+        }
+        $keptMasterPlans = array_values(array_diff($existingMasterPlans, $removeMasterPlans));
+        $project->master_plan_paths = $this->storeNewMasterPlanFiles($request, $keptMasterPlans);
+        $project->master_plan_path = null;
 
         $existingFloors = is_array($project->floor_plan_paths) ? $project->floor_plan_paths : [];
         $removeFloors = $request->input('remove_floor_plan_paths', []);
@@ -345,8 +349,10 @@ class ProjectPageController extends Controller
             'gallery.*' => 'image|max:8192|mimes:jpeg,png,jpg,gif,webp',
             'remove_gallery_paths' => 'nullable|array',
             'remove_gallery_paths.*' => 'string|max:500',
-            'master_plan_image' => 'nullable|image|max:8192|mimes:jpeg,png,jpg,gif,webp',
-            'remove_master_plan' => 'nullable|boolean',
+            'master_plans' => 'nullable|array|max:12',
+            'master_plans.*' => 'image|max:8192|mimes:jpeg,png,jpg,gif,webp',
+            'remove_master_plan_paths' => 'nullable|array',
+            'remove_master_plan_paths.*' => 'string|max:500',
             'floor_plans' => 'nullable|array|max:12',
             'floor_plans.*' => 'image|max:8192|mimes:jpeg,png,jpg,gif,webp',
             'remove_floor_plan_paths' => 'nullable|array',
@@ -408,6 +414,24 @@ class ProjectPageController extends Controller
     }
 
     /**
+     * @param  array<int, string>  $existingPaths
+     * @return array<int, string>
+     */
+    private function storeNewMasterPlanFiles(Request $request, array $existingPaths): array
+    {
+        $existingPaths = array_values(array_filter($existingPaths, fn ($p) => is_string($p) && $p !== ''));
+        $files = $request->file('master_plans', []) ?: [];
+        foreach ($files as $file) {
+            if (! $file || count($existingPaths) >= self::MASTER_PLAN_MAX_FILES) {
+                break;
+            }
+            $existingPaths[] = $file->store('projects/master-plans', 'public');
+        }
+
+        return $existingPaths;
+    }
+
+    /**
      * @return array<int, string>
      */
     private function parseAmenities(string $raw): array
@@ -465,6 +489,11 @@ class ProjectPageController extends Controller
         }
         if ($project->master_plan_path) {
             Storage::disk('public')->delete($project->master_plan_path);
+        }
+        foreach (is_array($project->master_plan_paths) ? $project->master_plan_paths : [] as $path) {
+            if (is_string($path) && $path !== '') {
+                Storage::disk('public')->delete($path);
+            }
         }
         foreach (is_array($project->gallery_paths) ? $project->gallery_paths : [] as $path) {
             if (is_string($path) && $path !== '') {

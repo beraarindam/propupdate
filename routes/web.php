@@ -72,6 +72,9 @@ Route::post('/projects/{project}/enquiry', [ProjectController::class, 'submitEnq
 Route::post('/projects/{project}/brochure-request', [ProjectController::class, 'submitBrochureRequest'])
     ->middleware('throttle:20,1')
     ->name('projects.brochure-request');
+Route::post('/projects/{project}/plan-request', [ProjectController::class, 'submitPlanRequest'])
+    ->middleware('throttle:20,1')
+    ->name('projects.plan-request');
 Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
 Route::get('/properties', [PropertyListingController::class, 'index'])->name('properties.index');
@@ -85,6 +88,9 @@ Route::post('/properties/{property}/enquiry', [PropertyListingController::class,
 Route::post('/properties/{property}/brochure-request', [PropertyListingController::class, 'submitBrochureRequest'])
     ->middleware('throttle:20,1')
     ->name('properties.brochure-request');
+Route::post('/properties/{property}/plan-request', [PropertyListingController::class, 'submitPlanRequest'])
+    ->middleware('throttle:20,1')
+    ->name('properties.plan-request');
 Route::get('/properties/{property}', [PropertyListingController::class, 'show'])->name('properties.show');
 
 Route::get('/about-us', [PagesController::class, 'about'])->name('pages.about');

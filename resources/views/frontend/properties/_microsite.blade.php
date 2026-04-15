@@ -6,7 +6,7 @@
   $cons = is_array($property->expert_cons) ? $property->expert_cons : [];
   $faqs = is_array($property->project_faqs) ? $property->project_faqs : [];
   $floorUrls = $property->floorPlanPublicUrls();
-  $masterUrl = $property->masterPlanUrl();
+  $masterUrls = $property->masterPlanPublicUrls();
 @endphp
 
 <div class="pu-proj-microsite pu-proj-microsite--detail">
@@ -113,13 +113,28 @@
     </section>
   @endif
 
-  @if($masterUrl || count($floorUrls))
-    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">
+  @if(count($masterUrls) || count($floorUrls))
+    <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5" id="pu-property-plans">
       <h2 class="pu-proj-heading h4 mb-3">Plans</h2>
-      @if($masterUrl)
-        <h3 class="pu-proj-subhead">Master plan</h3>
-        <div class="pu-proj-plan-frame mb-4">
-          <img src="{{ $masterUrl }}" alt="Master plan" class="img-fluid w-100 pu-proj-plan-img">
+      @if(session('property_plan_status'))
+        <div class="alert alert-success py-2 px-3 small mb-3" role="status">{{ session('property_plan_status') }}</div>
+      @endif
+      @if(count($masterUrls))
+        <h3 class="pu-proj-subhead">Master plans</h3>
+        <div class="row g-3 mb-4">
+          @foreach($masterUrls as $mu)
+            <div class="col-6 col-md-4 col-lg-3">
+              <a
+                href="{{ $mu }}"
+                class="pu-proj-plan-thumb pu-proj-zoom d-block"
+                data-pu-property-plan-open
+                data-plan-type="Master Plan"
+                data-plan-url="{{ $mu }}"
+              >
+                <img src="{{ $mu }}" alt="Master plan" class="w-100 pu-proj-plan-thumb__img">
+              </a>
+            </div>
+          @endforeach
         </div>
       @endif
       @if(count($floorUrls))
@@ -127,7 +142,13 @@
         <div class="row g-3">
           @foreach($floorUrls as $fu)
             <div class="col-6 col-md-4 col-lg-3">
-              <a href="{{ $fu }}" class="pu-proj-plan-thumb pu-proj-zoom d-block" target="_blank" rel="noopener noreferrer">
+              <a
+                href="{{ $fu }}"
+                class="pu-proj-plan-thumb pu-proj-zoom d-block"
+                data-pu-property-plan-open
+                data-plan-type="Floor Plan"
+                data-plan-url="{{ $fu }}"
+              >
                 <img src="{{ $fu }}" alt="Floor plan" class="w-100 pu-proj-plan-thumb__img">
               </a>
             </div>
@@ -136,6 +157,72 @@
       @endif
     </section>
   @endif
+
+  <div class="modal fade" id="puPropertyPlanModal" tabindex="-1" aria-labelledby="puPropertyPlanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h2 class="modal-title h5 mb-0" id="puPropertyPlanModalLabel">Request Plan Access</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="{{ route('properties.plan-request', $property) }}" novalidate>
+          @csrf
+          <input type="hidden" name="plan_type" id="pu-property-plan-type" value="{{ old('plan_type') }}">
+          <input type="hidden" name="plan_url" id="pu-property-plan-url" value="{{ old('plan_url') }}">
+          <div class="modal-body">
+            <p class="small text-muted mb-3">Share your details and our team will send this plan.</p>
+            <div class="mb-3">
+              <label for="pu-property-plan-name" class="form-label small fw-semibold text-muted mb-1">Name</label>
+              <input type="text" class="form-control @error('plan_name', 'propertyPlanAsset') is-invalid @enderror" id="pu-property-plan-name" name="plan_name" value="{{ old('plan_name') }}" required maxlength="120" autocomplete="name">
+              @error('plan_name', 'propertyPlanAsset')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-3">
+              <label for="pu-property-plan-email" class="form-label small fw-semibold text-muted mb-1">Email</label>
+              <input type="email" class="form-control @error('plan_email', 'propertyPlanAsset') is-invalid @enderror" id="pu-property-plan-email" name="plan_email" value="{{ old('plan_email') }}" required maxlength="255" autocomplete="email">
+              @error('plan_email', 'propertyPlanAsset')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-3">
+              <label for="pu-property-plan-phone" class="form-label small fw-semibold text-muted mb-1">Phone</label>
+              <input type="tel" class="form-control @error('plan_phone', 'propertyPlanAsset') is-invalid @enderror" id="pu-property-plan-phone" name="plan_phone" value="{{ old('plan_phone') }}" required maxlength="32" autocomplete="tel">
+              @error('plan_phone', 'propertyPlanAsset')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-0">
+              <label for="pu-property-plan-message" class="form-label small fw-semibold text-muted mb-1">Message</label>
+              <textarea class="form-control @error('plan_message', 'propertyPlanAsset') is-invalid @enderror" id="pu-property-plan-message" name="plan_message" rows="4" required maxlength="4000" placeholder="Please share this plan and details.">{{ old('plan_message') }}</textarea>
+              @error('plan_message', 'propertyPlanAsset')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn pu-pd-request__submit">Submit request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  @push('scripts')
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var modalEl = document.getElementById('puPropertyPlanModal');
+    if (!modalEl || typeof bootstrap === 'undefined' || !bootstrap.Modal) return;
+    var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    var typeInput = document.getElementById('pu-property-plan-type');
+    var urlInput = document.getElementById('pu-property-plan-url');
+    document.querySelectorAll('[data-pu-property-plan-open]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (typeInput) typeInput.value = el.getAttribute('data-plan-type') || 'Plan';
+        if (urlInput) urlInput.value = el.getAttribute('data-plan-url') || '';
+        modal.show();
+      });
+    });
+    @if($errors->propertyPlanAsset->any())
+      modal.show();
+    @endif
+  });
+  </script>
+  @endpush
 
   @if($property->description)
     <section class="pu-proj-section pu-proj-card mb-4 mb-lg-5">

@@ -78,17 +78,33 @@
 					<input type="text" name="maps_link_url" class="form-control" value="{{ old('maps_link_url', $p->maps_link_url) }}" maxlength="2000" placeholder="https://maps.google.com/...">
 				</div>
 				<div class="col-md-6">
-					<label class="form-label">Master plan image</label>
-					@if($p->masterPlanUrl())
-						<div class="mb-2">
-							<img src="{{ $p->masterPlanUrl() }}" alt="" class="img-thumbnail rounded" style="max-height: 160px; object-fit: cover;">
-						</div>
-					@endif
-					<input type="file" name="master_plan_image" class="form-control" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
-					@if($p->master_plan_path)
-						<div class="form-check mt-2">
-							<input class="form-check-input" type="checkbox" name="remove_master_plan" value="1" id="rm_master_plan" @checked(old('remove_master_plan'))>
-							<label class="form-check-label" for="rm_master_plan">Remove master plan file</label>
+					<label class="form-label">Master plan images</label>
+					<input type="file" name="master_plans[]" class="form-control" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" multiple>
+					<p class="text-muted small mt-1 mb-2">Up to {{ 12 }} new files per save; max {{ 24 }} stored.</p>
+					@php
+						$masterPaths = is_array($p->master_plan_paths ?? null) ? $p->master_plan_paths : [];
+						if (is_string($p->master_plan_path ?? null) && $p->master_plan_path !== '') {
+							array_unshift($masterPaths, $p->master_plan_path);
+						}
+						$masterPaths = array_values(array_unique(array_filter($masterPaths, fn ($path) => is_string($path) && $path !== '')));
+					@endphp
+					@if(count($masterPaths))
+						<p class="small text-muted mb-1">Existing — check to remove:</p>
+						<div class="row g-2">
+							@foreach($masterPaths as $path)
+								@php($mu = \App\Models\SiteSetting::resolvePublicUrl($path))
+								@if($mu)
+									<div class="col-6">
+										<div class="border rounded p-1">
+											<img src="{{ $mu }}" alt="" class="img-fluid rounded" style="max-height: 72px; width:100%; object-fit:cover;">
+											<div class="form-check small mt-1">
+												<input class="form-check-input" type="checkbox" name="remove_master_plan_paths[]" value="{{ $path }}" id="rm_mp_{{ md5($path) }}">
+												<label class="form-check-label" for="rm_mp_{{ md5($path) }}">Remove</label>
+											</div>
+										</div>
+									</div>
+								@endif
+							@endforeach
 						</div>
 					@endif
 				</div>

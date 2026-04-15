@@ -26,6 +26,10 @@ class PropertyController extends Controller
 
     private const FLOOR_PLAN_MAX_UPLOAD_BATCH = 12;
 
+    private const MASTER_PLAN_MAX_FILES = 24;
+
+    private const MASTER_PLAN_MAX_UPLOAD_BATCH = 12;
+
     public function index(): View
     {
         return view('backend.properties.index');
@@ -202,10 +206,7 @@ class PropertyController extends Controller
 
         $galleryPaths = $this->storeNewGalleryFiles($request, []);
 
-        $masterPlanPath = null;
-        if ($request->hasFile('master_plan_image')) {
-            $masterPlanPath = $request->file('master_plan_image')->store('properties/master-plans', 'public');
-        }
+        $masterPlanPaths = $this->storeNewMasterPlanFiles($request, []);
         $floorPlanPaths = $this->storeNewFloorPlanFiles($request, []);
 
         $property = Property::create(array_merge($data, [
@@ -213,7 +214,8 @@ class PropertyController extends Controller
             'published_at' => $publishedAt,
             'featured_image_path' => $featuredPath,
             'gallery_paths' => $galleryPaths,
-            'master_plan_path' => $masterPlanPath,
+            'master_plan_path' => null,
+            'master_plan_paths' => $masterPlanPaths,
             'floor_plan_paths' => $floorPlanPaths,
         ]));
 
@@ -284,19 +286,22 @@ class PropertyController extends Controller
         $merged = $this->storeNewGalleryFiles($request, $kept);
         $property->gallery_paths = $merged;
 
-        if ($request->boolean('remove_master_plan')) {
-            if ($property->master_plan_path) {
-                Storage::disk('public')->delete($property->master_plan_path);
-            }
-            $property->master_plan_path = null;
+        $existingMasterPlans = is_array($property->master_plan_paths) ? $property->master_plan_paths : [];
+        if (is_string($property->master_plan_path) && $property->master_plan_path !== '') {
+            array_unshift($existingMasterPlans, $property->master_plan_path);
         }
-
-        if ($request->hasFile('master_plan_image')) {
-            if ($property->master_plan_path) {
-                Storage::disk('public')->delete($property->master_plan_path);
-            }
-            $property->master_plan_path = $request->file('master_plan_image')->store('properties/master-plans', 'public');
+        $existingMasterPlans = array_values(array_unique(array_filter($existingMasterPlans, fn ($path) => is_string($path) && $path !== '')));
+        $removeMasterPlans = $request->input('remove_master_plan_paths', []);
+        if (! is_array($removeMasterPlans)) {
+            $removeMasterPlans = [];
         }
+        $removeMasterPlans = array_values(array_intersect($removeMasterPlans, $existingMasterPlans));
+        foreach ($removeMasterPlans as $path) {
+            Storage::disk('public')->delete($path);
+        }
+        $keptMasterPlans = array_values(array_diff($existingMasterPlans, $removeMasterPlans));
+        $property->master_plan_paths = $this->storeNewMasterPlanFiles($request, $keptMasterPlans);
+        $property->master_plan_path = null;
 
         $existingFloors = is_array($property->floor_plan_paths) ? $property->floor_plan_paths : [];
         $removeFloors = $request->input('remove_floor_plan_paths', []);
@@ -385,8 +390,10 @@ class PropertyController extends Controller
             'expert_pros_text' => 'nullable|string|max:10000',
             'expert_cons_text' => 'nullable|string|max:10000',
             'project_faqs_text' => 'nullable|string|max:50000',
-            'master_plan_image' => 'nullable|image|max:8192|mimes:jpeg,png,jpg,gif,webp',
-            'remove_master_plan' => 'nullable|boolean',
+            'master_plans' => 'nullable|array|max:'.self::MASTER_PLAN_MAX_UPLOAD_BATCH,
+            'master_plans.*' => 'image|max:8192|mimes:jpeg,png,jpg,gif,webp',
+            'remove_master_plan_paths' => 'nullable|array',
+            'remove_master_plan_paths.*' => 'string|max:500',
             'floor_plans' => 'nullable|array|max:'.self::FLOOR_PLAN_MAX_UPLOAD_BATCH,
             'floor_plans.*' => 'image|max:8192|mimes:jpeg,png,jpg,gif,webp',
             'remove_floor_plan_paths' => 'nullable|array',
@@ -440,8 +447,8 @@ class PropertyController extends Controller
             'remove_gallery_paths',
             'featured_image',
             'remove_featured_image',
-            'master_plan_image',
-            'remove_master_plan',
+            'master_plans',
+            'remove_master_plan_paths',
             'floor_plans',
             'remove_floor_plan_paths',
         ] as $strip) {
@@ -467,6 +474,25 @@ class PropertyController extends Controller
             'property_area_id' => $validated['property_area_id'] ?? null,
             'property_type_id' => $validated['property_type_id'] ?? null,
         ]);
+    }
+
+    /**
+     * @param  array<int, string>  $existingPaths
+     * @return array<int, string>
+     */
+    private function storeNewMasterPlanFiles(Request $request, array $existingPaths): array
+    {
+        $existingPaths = array_values(array_filter($existingPaths, fn ($p) => is_string($p) && $p !== ''));
+        $files = $request->file('master_plans', []) ?: [];
+
+        foreach ($files as $file) {
+            if (! $file || count($existingPaths) >= self::MASTER_PLAN_MAX_FILES) {
+                break;
+            }
+            $existingPaths[] = $file->store('properties/master-plans', 'public');
+        }
+
+        return $existingPaths;
     }
 
     /**
@@ -510,6 +536,12 @@ class PropertyController extends Controller
         }
         if ($property->master_plan_path) {
             Storage::disk('public')->delete($property->master_plan_path);
+        }
+        $masterPlans = is_array($property->master_plan_paths) ? $property->master_plan_paths : [];
+        foreach ($masterPlans as $path) {
+            if (is_string($path) && $path !== '') {
+                Storage::disk('public')->delete($path);
+            }
         }
         $paths = is_array($property->gallery_paths) ? $property->gallery_paths : [];
         foreach ($paths as $path) {
