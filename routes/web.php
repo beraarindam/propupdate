@@ -117,7 +117,7 @@ Route::post('/lead/consultation', function (Request $request) {
 
     return redirect()
         ->route('home')
-        ->fragment('why-propupdate')
+        ->withFragment('why-propupdate')
         ->with('consultation_status', 'Thank you — our team will call you shortly.');
 })->middleware('throttle:20,1')->name('lead.consultation');
 
@@ -145,6 +145,6 @@ Route::post('/lead/pre-register', function (Request $request) {
 
     return redirect()
         ->route('home')
-        ->fragment('pre-register')
+        ->withFragment('pre-register')
         ->with('pre_register_status', 'Thank you — we\'ll be in touch with launch access and updates.');
 })->name('lead.pre-register');
