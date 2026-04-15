@@ -245,6 +245,7 @@ class PropertyListingController extends Controller
         }
 
         $projectsNewLaunches = collect();
+        $searchProjects = collect();
         if ($newLaunchesOnly) {
             $projectsQuery = Project::query()->published()->newLaunch();
             if ($q !== '') {
@@ -286,6 +287,50 @@ class PropertyListingController extends Controller
                 ->orderByDesc('published_at')
                 ->limit(12)
                 ->get();
+        } elseif ($q !== '') {
+            $term = '%'.addcslashes($q, '%_\\').'%';
+            $projectsQuery = Project::query()
+                ->published()
+                ->where(function ($sub) use ($term) {
+                    $sub->where('title', 'like', $term)
+                        ->orWhere('summary', 'like', $term)
+                        ->orWhere('body', 'like', $term)
+                        ->orWhere('location', 'like', $term)
+                        ->orWhere('developer_name', 'like', $term)
+                        ->orWhere('locality', 'like', $term)
+                        ->orWhere('city', 'like', $term)
+                        ->orWhere('address_line1', 'like', $term);
+                });
+
+            if ($selectedAreaId !== null) {
+                $projectsQuery->where('property_area_id', $selectedAreaId);
+            }
+
+            if ($selectedCategoryId !== null) {
+                $cat = PropertyCategory::query()->where('is_published', true)->whereKey($selectedCategoryId)->first();
+                if ($cat) {
+                    $hasPublishedChildren = PropertyCategory::query()
+                        ->where('parent_id', $cat->id)
+                        ->where('is_published', true)
+                        ->exists();
+                    if ($hasPublishedChildren) {
+                        $branchIds = PropertyCategory::query()
+                            ->whereIn('id', $cat->branchIds())
+                            ->where('is_published', true)
+                            ->pluck('id')
+                            ->all();
+                        $projectsQuery->whereIn('property_category_id', $branchIds !== [] ? $branchIds : [$cat->id]);
+                    } else {
+                        $projectsQuery->where('property_category_id', $selectedCategoryId);
+                    }
+                }
+            }
+
+            $searchProjects = $projectsQuery
+                ->orderByDesc('is_featured')
+                ->orderByDesc('published_at')
+                ->limit(12)
+                ->get();
         }
 
         $launchItems = $properties->getCollection();
@@ -307,6 +352,7 @@ class PropertyListingController extends Controller
             'listingTopCategories' => $topCategories,
             'listingRoute' => $listingRoute,
             'projectsNewLaunches' => $projectsNewLaunches,
+            'searchProjects' => $searchProjects,
             'launchItems' => $launchItems,
             'launchTotal' => $launchTotal,
             'filters' => [
@@ -360,9 +406,31 @@ class PropertyListingController extends Controller
                 'price_on_request',
             ]);
 
+        $projects = Project::query()
+            ->published()
+            ->where(function ($sub) use ($term) {
+                $sub->where('title', 'like', $term)
+                    ->orWhere('summary', 'like', $term)
+                    ->orWhere('location', 'like', $term)
+                    ->orWhere('developer_name', 'like', $term)
+                    ->orWhere('locality', 'like', $term)
+                    ->orWhere('city', 'like', $term);
+            })
+            ->orderByDesc('is_featured')
+            ->orderByDesc('published_at')
+            ->limit(6)
+            ->get([
+                'id',
+                'slug',
+                'title',
+                'location',
+                'locality',
+                'city',
+            ]);
+
         $labels = Property::listingTypeOptions();
 
-        $results = $properties->map(function (Property $p) use ($labels) {
+        $propertyResults = $properties->map(function (Property $p) use ($labels) {
             $loc = collect([$p->locality, $p->city])->filter()->implode(', ');
             $priceLabel = $p->price_on_request
                 ? 'Price on request'
@@ -377,7 +445,24 @@ class PropertyListingController extends Controller
                 'price_label' => $priceLabel,
                 'deal' => $labels[$p->listing_type] ?? $p->listing_type,
             ];
-        })->values();
+        });
+
+        $projectResults = $projects->map(function (Project $p) {
+            $loc = collect([$p->location, $p->locality, $p->city])->filter()->implode(', ');
+
+            return [
+                'title' => $p->title,
+                'url' => route('projects.show', $p),
+                'location' => $loc !== '' ? $loc : null,
+                'price_label' => null,
+                'deal' => 'Project',
+            ];
+        });
+
+        $results = $propertyResults
+            ->concat($projectResults)
+            ->take(12)
+            ->values();
 
         return response()->json(['results' => $results]);
     }

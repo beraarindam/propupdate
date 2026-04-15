@@ -6,8 +6,15 @@
   $f = $filters ?? [];
   $listingRouteName = $listingRoute ?? 'properties.index';
   $listingLabels = Property::listingTypeOptions();
-  $resultsItems = ($listingRouteName === 'new-launches.index') ? ($launchItems ?? $properties->getCollection()) : $properties;
-  $resultsTotal = ($listingRouteName === 'new-launches.index') ? ($launchTotal ?? $resultsItems->count()) : $properties->total();
+  $keyword = trim((string) ($f['q'] ?? ''));
+  $projectSearchItems = collect($searchProjects ?? []);
+  $mixedSearch = $listingRouteName === 'properties.index' && $keyword !== '' && $projectSearchItems->isNotEmpty();
+  $resultsItems = ($listingRouteName === 'new-launches.index')
+    ? ($launchItems ?? $properties->getCollection())
+    : ($mixedSearch ? $properties->getCollection()->concat($projectSearchItems)->values() : $properties);
+  $resultsTotal = ($listingRouteName === 'new-launches.index')
+    ? ($launchTotal ?? $resultsItems->count())
+    : ($mixedSearch ? ($properties->total() + $projectSearchItems->count()) : $properties->total());
   $bannerBg = $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80';
   $bannerTitle = $page?->banner_title ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
   $crumbLabel = $page?->name ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
@@ -266,7 +273,7 @@
               @endforeach
             </div>
 
-            @if($listingRouteName !== 'new-launches.index')
+            @if($listingRouteName !== 'new-launches.index' && !$mixedSearch)
               <div class="mt-4 pt-2 d-flex justify-content-center pu-blog-pagination">
                 {{ $properties->withQueryString()->links() }}
               </div>
