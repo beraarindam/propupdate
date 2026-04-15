@@ -57,6 +57,7 @@
     @yield('content')
   @include('frontend.layouts.footer')
   @include('frontend.partials.promo-popup')
+  @include('frontend.partials.floating-brochure')
   <script src="{{ asset('frontend/assets/js/new-launches-mega.js') }}" defer></script>
   <script src="{{ asset('frontend/assets/js/cities-mega.js') }}" defer></script>
   @stack('scripts')

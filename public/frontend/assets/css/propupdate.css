@@ -6334,6 +6334,152 @@ body.pu-promo-modal-open {
   }
 }
 
+/* —— Floating brochure CTA + modal —— */
+body.pu-brochure-modal-open {
+  overflow: hidden;
+}
+
+.pu-floating-brochure {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10800;
+}
+
+.pu-floating-brochure__trigger {
+  border: none;
+  background: linear-gradient(135deg, var(--pu-gold) 0%, #d7b66a 100%);
+  color: var(--pu-navy);
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border-radius: 12px 0 0 12px;
+  padding: 1rem 0.55rem;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  box-shadow: 0 12px 30px rgba(0, 31, 63, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pu-floating-brochure__trigger:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 16px 34px rgba(0, 31, 63, 0.35);
+}
+
+.pu-brochure-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.pu-brochure-modal[hidden] {
+  display: none !important;
+}
+
+.pu-brochure-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(0, 31, 63, 0.7);
+  backdrop-filter: blur(3px);
+}
+
+.pu-brochure-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(0, 31, 63, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  padding: 1.35rem 1.2rem 1.2rem;
+}
+
+.pu-brochure-modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(0, 31, 63, 0.1);
+  color: var(--pu-navy);
+}
+
+.pu-brochure-modal__title {
+  margin: 0 2rem 0.3rem 0;
+  font-size: 1.5rem;
+  color: var(--pu-navy);
+}
+
+.pu-brochure-modal__subtitle {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  color: #4b5563;
+}
+
+.pu-brochure-form__row {
+  margin-bottom: 0.8rem;
+}
+
+.pu-brochure-form__row label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--pu-navy);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.pu-brochure-form__row input,
+.pu-brochure-form__row textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.92rem;
+}
+
+.pu-brochure-form__submit {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #001f3f 0%, #0b3768 100%);
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 767.98px) {
+  .pu-floating-brochure {
+    right: 0.5rem;
+    top: auto;
+    bottom: 5.2rem;
+    transform: none;
+  }
+
+  .pu-floating-brochure__trigger {
+    border-radius: 999px;
+    padding: 0.72rem 0.9rem;
+    font-size: 0.72rem;
+    writing-mode: horizontal-tb;
+    text-orientation: initial;
+  }
+}
+
 /* —— Project detail (listing-style layout + premium accents) —— */
 .pu-prj-strip {
   background: linear-gradient(105deg, rgba(0, 31, 63, 0.06) 0%, rgba(201, 169, 98, 0.12) 48%, rgba(0, 31, 63, 0.05) 100%);

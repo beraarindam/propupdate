@@ -148,3 +148,38 @@ Route::post('/lead/pre-register', function (Request $request) {
         ->withFragment('pre-register')
         ->with('pre_register_status', 'Thank you — we\'ll be in touch with launch access and updates.');
 })->name('lead.pre-register');
+
+Route::post('/lead/brochure', function (Request $request) {
+    $data = $request->validateWithBag('floatingBrochure', [
+        'brochure_name' => 'required|string|max:120',
+        'brochure_email' => 'required|email|max:255',
+        'brochure_phone' => 'required|string|max:32',
+        'brochure_message' => 'required|string|max:4000',
+        'page_url' => 'nullable|url|max:2048',
+    ]);
+
+    $sourcePageUrl = trim((string) ($data['page_url'] ?? ''));
+    if ($sourcePageUrl === '') {
+        $sourcePageUrl = (string) $request->headers->get('referer', '');
+    }
+
+    $enquiry = Enquiry::create([
+        'source' => Enquiry::SOURCE_CONTACT,
+        'name' => $data['brochure_name'],
+        'email' => $data['brochure_email'],
+        'phone' => $data['brochure_phone'],
+        'subject' => 'Get Free Brochure request',
+        'message' => $data['brochure_message'],
+        'ip_address' => $request->ip(),
+    ]);
+    app(LeadRatClient::class)->pushFromEnquiry($enquiry, [
+        'subsource' => 'Get Free Brochure',
+        'leadStatus' => 'Brochure Requested',
+        'page_url' => $sourcePageUrl !== '' ? $sourcePageUrl : $request->fullUrl(),
+    ]);
+
+    return redirect()
+        ->back()
+        ->withFragment('pu-floating-brochure')
+        ->with('floating_brochure_status', 'Thanks — brochure request received. Our team will contact you shortly.');
+})->middleware('throttle:20,1')->name('lead.brochure');
