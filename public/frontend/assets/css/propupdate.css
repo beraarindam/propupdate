@@ -5155,6 +5155,10 @@ body.homepage1-body {
   background-repeat: no-repeat;
 }
 
+.pu-page-banner--property .pu-page-banner__title {
+  text-align: center;
+}
+
 .pu-pd-strip {
   margin-top: -2.5rem;
   position: relative;

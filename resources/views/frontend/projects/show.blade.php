@@ -19,7 +19,7 @@
 @include('frontend.partials.page-banner', [
   'title' => $project->title,
   'crumbCurrent' => $project->title,
-  'lead' => $metaBits !== '' ? e($metaBits).' — '.$bannerLead : $bannerLead,
+  'showBreadcrumb' => false,
   'bgImage' => $project->featuredBannerUrl() ?? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80',
   'bannerClass' => 'pu-page-banner--property',
 ])
