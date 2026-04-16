@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ProjectDetailTextParsers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -340,20 +341,42 @@ class Property extends Model
 
     public function projectFaqsAsPlainText(): string
     {
-        if (! is_array($this->project_faqs) || $this->project_faqs === []) {
+        $faqs = $this->projectFaqsList();
+        if ($faqs === []) {
             return '';
         }
         $blocks = [];
-        foreach ($this->project_faqs as $f) {
-            $q = isset($f['question']) ? trim((string) $f['question']) : '';
-            $a = isset($f['answer']) ? trim((string) $f['answer']) : '';
-            if ($q === '') {
-                continue;
-            }
-            $blocks[] = $q.':::'."\n".$a;
+        foreach ($faqs as $f) {
+            $blocks[] = $f['question'].':::'."\n".$f['answer'];
         }
 
         return implode("\n---\n", $blocks);
+    }
+
+    /**
+     * @return array<int, array{question: string, answer: string}>
+     */
+    public function projectFaqsList(): array
+    {
+        if (! is_array($this->project_faqs) || $this->project_faqs === []) {
+            return [];
+        }
+
+        $blocks = [];
+        foreach ($this->project_faqs as $f) {
+            if (! is_array($f)) {
+                continue;
+            }
+            $q = isset($f['question']) ? trim((string) $f['question']) : '';
+            if ($q === '') {
+                continue;
+            }
+            $a = isset($f['answer']) ? trim((string) $f['answer']) : '';
+            $blocks[] = $q.':::'."\n".$a;
+        }
+
+        // Re-parse normalized plain text to repair older mixed rows.
+        return ProjectDetailTextParsers::parseFaqs(implode("\n---\n", $blocks), 80);
     }
 
     public function scopePublished(Builder $query): Builder

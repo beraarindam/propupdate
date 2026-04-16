@@ -97,7 +97,7 @@ final class ProjectDetailTextParsers
         if ($raw === '') {
             return [];
         }
-        $blocks = preg_split('/\n-{3,}\n/', $raw);
+        $blocks = preg_split('/\R\s*-{3,}\s*\R/', $raw);
         if (! is_array($blocks)) {
             return [];
         }

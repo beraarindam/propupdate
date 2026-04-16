@@ -4,7 +4,7 @@
   $specRows = is_array($property->specifications) ? $property->specifications : [];
   $pros = is_array($property->expert_pros) ? $property->expert_pros : [];
   $cons = is_array($property->expert_cons) ? $property->expert_cons : [];
-  $faqs = is_array($property->project_faqs) ? $property->project_faqs : [];
+  $faqs = $property->projectFaqsList();
   $floorUrls = $property->floorPlanPublicUrls();
   $masterUrls = $property->masterPlanPublicUrls();
 @endphp
@@ -126,10 +126,7 @@
             <div class="col-6 col-md-4 col-lg-3">
               <a
                 href="{{ $mu }}"
-                class="pu-proj-plan-thumb pu-proj-zoom d-block"
-                data-pu-property-plan-open
-                data-plan-type="Master Plan"
-                data-plan-url="{{ $mu }}"
+                class="pu-proj-plan-thumb pu-proj-zoom d-block pu-plan-mfp"
               >
                 <img src="{{ $mu }}" alt="Master plan" class="w-100 pu-proj-plan-thumb__img">
               </a>
@@ -162,7 +159,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header">
-          <h2 class="modal-title h5 mb-0" id="puPropertyPlanModalLabel">Request Plan Access</h2>
+          <h2 class="modal-title h5 mb-0" id="puPropertyPlanModalLabel">Request Master Plan Access</h2>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form method="post" action="{{ route('properties.plan-request', $property) }}" novalidate>
@@ -170,7 +167,7 @@
           <input type="hidden" name="plan_type" id="pu-property-plan-type" value="{{ old('plan_type') }}">
           <input type="hidden" name="plan_url" id="pu-property-plan-url" value="{{ old('plan_url') }}">
           <div class="modal-body">
-            <p class="small text-muted mb-3">Share your details and our team will send this plan.</p>
+            <p class="small text-muted mb-3">Share your details and our team will send this master plan.</p>
             <div class="mb-3">
               <label for="pu-property-plan-name" class="form-label small fw-semibold text-muted mb-1">Name</label>
               <input type="text" class="form-control @error('plan_name', 'propertyPlanAsset') is-invalid @enderror" id="pu-property-plan-name" name="plan_name" value="{{ old('plan_name') }}" required maxlength="120" autocomplete="name">
@@ -188,7 +185,7 @@
             </div>
             <div class="mb-0">
               <label for="pu-property-plan-message" class="form-label small fw-semibold text-muted mb-1">Message</label>
-              <textarea class="form-control @error('plan_message', 'propertyPlanAsset') is-invalid @enderror" id="pu-property-plan-message" name="plan_message" rows="4" required maxlength="4000" placeholder="Please share this plan and details.">{{ old('plan_message') }}</textarea>
+              <textarea class="form-control @error('plan_message', 'propertyPlanAsset') is-invalid @enderror" id="pu-property-plan-message" name="plan_message" rows="4" required maxlength="4000" placeholder="Please share this master plan and details.">{{ old('plan_message') }}</textarea>
               @error('plan_message', 'propertyPlanAsset')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
           </div>
@@ -204,6 +201,15 @@
   @push('scripts')
   <script>
   document.addEventListener('DOMContentLoaded', function () {
+    if (typeof jQuery !== 'undefined' && jQuery.fn && jQuery.fn.magnificPopup) {
+      jQuery('.pu-plan-mfp').magnificPopup({
+        type: 'image',
+        gallery: { enabled: true, navigateByImgClick: true, preload: [0, 1] },
+        mainClass: 'mfp-img-mobile',
+        removalDelay: 160
+      });
+    }
+
     var modalEl = document.getElementById('puPropertyPlanModal');
     if (!modalEl || typeof bootstrap === 'undefined' || !bootstrap.Modal) return;
     var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -212,7 +218,7 @@
     document.querySelectorAll('[data-pu-property-plan-open]').forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
-        if (typeInput) typeInput.value = el.getAttribute('data-plan-type') || 'Plan';
+        if (typeInput) typeInput.value = el.getAttribute('data-plan-type') || 'Master Plan';
         if (urlInput) urlInput.value = el.getAttribute('data-plan-url') || '';
         modal.show();
       });

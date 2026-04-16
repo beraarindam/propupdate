@@ -432,7 +432,8 @@ class PropertyController extends Controller
         $specifications = $this->parsePipeKeyValueRows((string) ($validated['specifications_text'] ?? ''), 60);
         $expertPros = $this->parseBulletLines((string) ($validated['expert_pros_text'] ?? ''), 40);
         $expertCons = $this->parseBulletLines((string) ($validated['expert_cons_text'] ?? ''), 40);
-        $projectFaqs = $this->parseProjectFaqs((string) ($validated['project_faqs_text'] ?? ''));
+        $editedFaqs = $this->parseProjectFaqs((string) ($validated['project_faqs_text'] ?? ''));
+        $projectFaqs = $this->mergeFaqRows([], $editedFaqs);
 
         foreach ([
             'amenities_text',
@@ -650,7 +651,7 @@ class PropertyController extends Controller
         if ($raw === '') {
             return [];
         }
-        $blocks = preg_split('/\n-{3,}\n/', $raw);
+        $blocks = preg_split('/\R\s*-{3,}\s*\R/', $raw);
         if (! is_array($blocks)) {
             return [];
         }
@@ -707,5 +708,37 @@ class PropertyController extends Controller
         }
 
         return $candidate;
+    }
+
+    /**
+     * @param  array<int, array{question:string,answer:string}>  $base
+     * @param  array<int, array{question:string,answer:string}>  $append
+     * @return array<int, array{question:string,answer:string}>
+     */
+    private function mergeFaqRows(array $base, array $append): array
+    {
+        $merged = [];
+        $seen = [];
+        foreach (array_merge($base, $append) as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+            $q = trim((string) ($row['question'] ?? ''));
+            $a = trim((string) ($row['answer'] ?? ''));
+            if ($q === '') {
+                continue;
+            }
+            $key = mb_strtolower($q."\n".$a);
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+            $merged[] = ['question' => $q, 'answer' => $a];
+            if (count($merged) >= 80) {
+                break;
+            }
+        }
+
+        return $merged;
     }
 }

@@ -178,10 +178,7 @@
             <div class="col-6 col-md-4 col-lg-3">
               <a
                 href="{{ $mu }}"
-                class="pu-proj-plan-thumb pu-proj-zoom d-block"
-                data-pu-plan-open
-                data-plan-type="Master Plan"
-                data-plan-url="{{ $mu }}"
+                class="pu-proj-plan-thumb pu-proj-zoom d-block pu-plan-mfp"
               >
                 <img src="{{ $mu }}" alt="Master plan — {{ e(\Illuminate\Support\Str::limit($project->title, 60)) }}" class="w-100 pu-proj-plan-thumb__img">
               </a>
@@ -214,11 +211,11 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title h5 mb-0" id="puProjectPlanModalLabel">Request Plan Access</h3>
+          <h3 class="modal-title h5 mb-0" id="puProjectPlanModalLabel">Request Master Plan Access</h3>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="text-muted small mb-3">Fill your details and our team will share this plan with you.</p>
+          <p class="text-muted small mb-3">Fill your details and our team will share this master plan with you.</p>
           <form method="post" action="{{ route('projects.plan-request', $project) }}" novalidate>
             @csrf
             <input type="hidden" name="plan_type" id="pu-project-plan-type" value="{{ old('plan_type') }}">
@@ -240,7 +237,7 @@
             </div>
             <div class="mb-0">
               <label for="pu-project-plan-message" class="form-label small fw-semibold text-muted mb-1">Message</label>
-              <textarea class="form-control @error('plan_message', 'projectPlanAsset') is-invalid @enderror" id="pu-project-plan-message" name="plan_message" rows="4" required maxlength="4000" placeholder="Please share this plan and details.">{{ old('plan_message') }}</textarea>
+              <textarea class="form-control @error('plan_message', 'projectPlanAsset') is-invalid @enderror" id="pu-project-plan-message" name="plan_message" rows="4" required maxlength="4000" placeholder="Please share this master plan and details.">{{ old('plan_message') }}</textarea>
               @error('plan_message', 'projectPlanAsset')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <button type="submit" class="btn pu-pd-request__submit w-100 mt-3">Submit request</button>
@@ -253,6 +250,15 @@
   @push('scripts')
   <script>
   document.addEventListener('DOMContentLoaded', function () {
+    if (typeof jQuery !== 'undefined' && jQuery.fn && jQuery.fn.magnificPopup) {
+      jQuery('.pu-plan-mfp').magnificPopup({
+        type: 'image',
+        gallery: { enabled: true, navigateByImgClick: true, preload: [0, 1] },
+        mainClass: 'mfp-img-mobile',
+        removalDelay: 160
+      });
+    }
+
     var modalEl = document.getElementById('puProjectPlanModal');
     if (!modalEl || typeof bootstrap === 'undefined' || !bootstrap.Modal) return;
     var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -261,7 +267,7 @@
     document.querySelectorAll('[data-pu-plan-open]').forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
-        if (typeInput) typeInput.value = el.getAttribute('data-plan-type') || 'Plan';
+        if (typeInput) typeInput.value = el.getAttribute('data-plan-type') || 'Master Plan';
         if (urlInput) urlInput.value = el.getAttribute('data-plan-url') || '';
         modal.show();
       });

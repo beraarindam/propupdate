@@ -111,12 +111,113 @@
 			</div>
 			<div class="mb-0">
 				<label class="form-label">FAQs</label>
-				<div class="font-monospace small text-muted mb-1">Each FAQ: question line ending with <code>:::</code> then answer (multiple lines). Separate FAQs with a line of <code>---</code>.</div>
-				<textarea name="project_faqs_text" class="form-control font-monospace small" rows="10" maxlength="50000" placeholder="What is the possession timeline?:::&#10;Target handover is …&#10;---&#10;Is this RERA registered?:::&#10;Yes, registration no. …">{{ old('project_faqs_text', $project->projectFaqsAsPlainText()) }}</textarea>
+				@php
+					$projectFaqRows = [];
+					$projectFaqSource = trim((string) old('project_faqs_text', $project->projectFaqsAsPlainText()));
+					if ($projectFaqSource !== '') {
+						$projectFaqBlocks = preg_split('/\R---\R/', $projectFaqSource) ?: [];
+						foreach ($projectFaqBlocks as $b) {
+							$b = trim((string) $b);
+							if ($b === '' || !str_contains($b, ':::')) continue;
+							[$q, $a] = explode(':::', $b, 2);
+							$q = trim((string) $q);
+							$a = trim((string) $a);
+							if ($q !== '') $projectFaqRows[] = ['q' => $q, 'a' => $a];
+						}
+					}
+					if (count($projectFaqRows) === 0) {
+						$projectFaqRows[] = ['q' => '', 'a' => ''];
+					}
+				@endphp
+				<div id="pu-project-faq-builder" class="border rounded p-2 bg-light-subtle">
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<small class="text-muted">Click + to add FAQ item</small>
+						<button type="button" class="btn btn-sm btn-primary" id="pu-project-faq-add">
+							<i class="fa-solid fa-plus me-1"></i>Add FAQ
+						</button>
+					</div>
+					<div id="pu-project-faq-rows">
+						@foreach($projectFaqRows as $row)
+							<div class="border rounded p-2 mb-2 bg-white pu-faq-row">
+								<div class="mb-2">
+									<label class="form-label mb-1">Question</label>
+									<input type="text" class="form-control pu-faq-question" value="{{ $row['q'] }}" placeholder="What is the possession timeline?">
+								</div>
+								<div class="mb-0">
+									<label class="form-label mb-1">Answer</label>
+									<textarea class="form-control pu-faq-answer" rows="3" placeholder="Expected handover timeline is...">{{ $row['a'] }}</textarea>
+								</div>
+								<div class="text-end mt-2">
+									<button type="button" class="btn btn-sm btn-outline-danger pu-faq-remove">
+										<i class="fa-solid fa-minus me-1"></i>Remove
+									</button>
+								</div>
+							</div>
+						@endforeach
+					</div>
+				</div>
+				<textarea name="project_faqs_text" id="pu-project-faq-hidden" class="d-none">{{ $projectFaqSource }}</textarea>
 			</div>
 		</div>
 	</div>
 </div>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var wrap = document.getElementById('pu-project-faq-builder');
+  var rows = document.getElementById('pu-project-faq-rows');
+  var addBtn = document.getElementById('pu-project-faq-add');
+  var hidden = document.getElementById('pu-project-faq-hidden');
+  if (!wrap || !rows || !addBtn || !hidden) return;
+
+  function bindRemove(btn) {
+    btn.addEventListener('click', function () {
+      var row = btn.closest('.pu-faq-row');
+      if (!row) return;
+      if (rows.querySelectorAll('.pu-faq-row').length <= 1) {
+        row.querySelector('.pu-faq-question').value = '';
+        row.querySelector('.pu-faq-answer').value = '';
+        return;
+      }
+      row.remove();
+      serialize();
+    });
+  }
+
+  function serialize() {
+    var blocks = [];
+    rows.querySelectorAll('.pu-faq-row').forEach(function (row) {
+      var q = (row.querySelector('.pu-faq-question')?.value || '').trim();
+      var a = (row.querySelector('.pu-faq-answer')?.value || '').trim();
+      if (!q) return;
+      blocks.push(q + ':::\n' + a);
+    });
+    hidden.value = blocks.join('\n---\n');
+  }
+
+  addBtn.addEventListener('click', function () {
+    var div = document.createElement('div');
+    div.className = 'border rounded p-2 mb-2 bg-white pu-faq-row';
+    div.innerHTML =
+      '<div class="mb-2"><label class="form-label mb-1">Question</label><input type="text" class="form-control pu-faq-question" placeholder="Enter question"></div>' +
+      '<div class="mb-0"><label class="form-label mb-1">Answer</label><textarea class="form-control pu-faq-answer" rows="3" placeholder="Enter answer"></textarea></div>' +
+      '<div class="text-end mt-2"><button type="button" class="btn btn-sm btn-outline-danger pu-faq-remove"><i class="fa-solid fa-minus me-1"></i>Remove</button></div>';
+    rows.appendChild(div);
+    bindRemove(div.querySelector('.pu-faq-remove'));
+    serialize();
+  });
+
+  rows.querySelectorAll('.pu-faq-remove').forEach(bindRemove);
+  rows.addEventListener('input', serialize);
+
+  var form = wrap.closest('form');
+  if (form) {
+    form.addEventListener('submit', serialize);
+  }
+  serialize();
+});
+</script>
+@endpush
 
 <div class="col-12 mb-4">
 	<div class="card radius-10 border shadow-none">

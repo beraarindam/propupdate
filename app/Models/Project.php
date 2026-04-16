@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ProjectDetailTextParsers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -316,7 +317,7 @@ class Project extends Model
         if (! is_array($rows)) {
             return [];
         }
-        $out = [];
+        $blocks = [];
         foreach ($rows as $r) {
             if (! is_array($r)) {
                 continue;
@@ -325,10 +326,11 @@ class Project extends Model
             if ($q === '') {
                 continue;
             }
-            $out[] = ['question' => $q, 'answer' => trim((string) ($r['answer'] ?? ''))];
+            $blocks[] = $q.':::'."\n".trim((string) ($r['answer'] ?? ''));
         }
 
-        return $out;
+        // Re-parse normalized text to split any previously combined entries.
+        return ProjectDetailTextParsers::parseFaqs(implode("\n---\n", $blocks), 80);
     }
 
     public function developerAboutHtml(): ?string

@@ -366,6 +366,8 @@ class ProjectPageController extends Controller
         $mapsUrl = isset($validated['maps_link_url']) ? trim((string) $validated['maps_link_url']) : '';
         $rera = isset($validated['rera_number']) ? trim((string) $validated['rera_number']) : '';
 
+        $editedFaqs = ProjectDetailTextParsers::parseFaqs((string) ($validated['project_faqs_text'] ?? ''));
+
         $extras = [
             'quick_facts' => ProjectDetailTextParsers::parsePipeKeyValueRows((string) ($validated['quick_facts_text'] ?? '')),
             'unit_pricing' => ProjectDetailTextParsers::parseUnitPricingRows((string) ($validated['unit_pricing_text'] ?? '')),
@@ -374,7 +376,7 @@ class ProjectPageController extends Controller
             'specifications' => ProjectDetailTextParsers::parsePipeKeyValueRows((string) ($validated['specifications_text'] ?? ''), 80),
             'expert_pros' => ProjectDetailTextParsers::parseBulletLines((string) ($validated['expert_pros_text'] ?? '')),
             'expert_cons' => ProjectDetailTextParsers::parseBulletLines((string) ($validated['expert_cons_text'] ?? '')),
-            'faqs' => ProjectDetailTextParsers::parseFaqs((string) ($validated['project_faqs_text'] ?? '')),
+            'faqs' => $this->mergeFaqRows([], $editedFaqs),
             'developer_about_html' => (string) ($validated['developer_about_html'] ?? ''),
             'location_address' => isset($validated['location_address']) ? trim((string) $validated['location_address']) : '',
             'cta_headline' => isset($validated['cta_headline']) ? trim((string) $validated['cta_headline']) : '',
@@ -520,5 +522,37 @@ class ProjectPageController extends Controller
         }
 
         return $candidate;
+    }
+
+    /**
+     * @param  array<int, array{question:string,answer:string}>  $base
+     * @param  array<int, array{question:string,answer:string}>  $append
+     * @return array<int, array{question:string,answer:string}>
+     */
+    private function mergeFaqRows(array $base, array $append): array
+    {
+        $merged = [];
+        $seen = [];
+        foreach (array_merge($base, $append) as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+            $q = trim((string) ($row['question'] ?? ''));
+            $a = trim((string) ($row['answer'] ?? ''));
+            if ($q === '') {
+                continue;
+            }
+            $key = mb_strtolower($q."\n".$a);
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+            $merged[] = ['question' => $q, 'answer' => $a];
+            if (count($merged) >= 80) {
+                break;
+            }
+        }
+
+        return $merged;
     }
 }
