@@ -32,6 +32,7 @@
       <div class="row g-4">
         @foreach($posts as $item)
           @php($featured = $item->featuredBannerUrl())
+          @php($blogExcerpt = $item->excerpt ? strip_tags($item->excerpt) : strip_tags($item->body))
           <div class="col-md-6 col-lg-4">
             <article class="pu-blog-card">
               @if($featured)
@@ -44,11 +45,7 @@
                 <h2 class="pu-blog-card__title">
                   <a href="{{ route('blog.show', $item) }}">{{ $item->title }}</a>
                 </h2>
-                @if($item->excerpt)
-                  <p class="pu-blog-card__excerpt">{{ $item->excerpt }}</p>
-                @else
-                  <p class="pu-blog-card__excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->body), 140) }}</p>
-                @endif
+                <p class="pu-blog-card__excerpt">{{ \Illuminate\Support\Str::limit($blogExcerpt, 140) }}</p>
                 <a href="{{ route('blog.show', $item) }}" class="pu-blog-card__more">Read more</a>
               </div>
             </article>
