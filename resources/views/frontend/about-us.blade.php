@@ -190,4 +190,9 @@
     </div>
   </div>
 </section>
+
+@include('frontend.partials.trustindex-reviews', [
+  'title' => 'Trusted by buyers across Bangalore',
+  'lead' => 'Read verified Google feedback from clients who chose PropUpdate for new launches, resale opportunities, and property guidance.'
+])
 @endsection

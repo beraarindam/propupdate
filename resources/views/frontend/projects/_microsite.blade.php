@@ -173,17 +173,16 @@
       @endif
       @if(count($masterUrls))
         <h3 class="pu-proj-subhead">Master plans</h3>
-        <div class="row g-3 mb-4">
-          @foreach($masterUrls as $mu)
-            <div class="col-6 col-md-4 col-lg-3">
-              <a
-                href="{{ $mu }}"
-                class="pu-proj-plan-thumb pu-proj-zoom d-block pu-plan-mfp"
-              >
-                <img src="{{ $mu }}" alt="Master plan — {{ e(\Illuminate\Support\Str::limit($project->title, 60)) }}" class="w-100 pu-proj-plan-thumb__img">
-              </a>
-            </div>
-          @endforeach
+        <div class="mb-4">
+          <a
+            href="{{ $masterUrls[0] }}"
+            class="pu-proj-plan-thumb pu-proj-zoom d-block"
+            data-pu-plan-open
+            data-plan-type="Master Plan"
+            data-plan-url="{{ $masterUrls[0] }}"
+          >
+            <img src="{{ $masterUrls[0] }}" alt="Master plan — {{ e(\Illuminate\Support\Str::limit($project->title, 60)) }}" class="w-100 pu-proj-plan-thumb__img">
+          </a>
         </div>
       @endif
       @if(count($floorUrls))
@@ -250,15 +249,6 @@
   @push('scripts')
   <script>
   document.addEventListener('DOMContentLoaded', function () {
-    if (typeof jQuery !== 'undefined' && jQuery.fn && jQuery.fn.magnificPopup) {
-      jQuery('.pu-plan-mfp').magnificPopup({
-        type: 'image',
-        gallery: { enabled: true, navigateByImgClick: true, preload: [0, 1] },
-        mainClass: 'mfp-img-mobile',
-        removalDelay: 160
-      });
-    }
-
     var modalEl = document.getElementById('puProjectPlanModal');
     if (!modalEl || typeof bootstrap === 'undefined' || !bootstrap.Modal) return;
     var modal = bootstrap.Modal.getOrCreateInstance(modalEl);

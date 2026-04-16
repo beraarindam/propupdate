@@ -377,7 +377,10 @@
   </div>
 </section>
 
-@include('frontend.partials.google-reviews')
+@include('frontend.partials.trustindex-reviews', [
+  'title' => 'Google reviews from real clients',
+  'lead' => 'See what home buyers, investors, and resale clients say about their PropUpdate experience.'
+])
 
 @php
   $rsHeading = $homePage?->section('resale.heading') ?: 'Exclusive resale deals in North Bangalore';
