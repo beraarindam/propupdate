@@ -176,12 +176,12 @@
         <div class="mb-4">
           <a
             href="{{ $masterUrls[0] }}"
-            class="pu-proj-plan-thumb pu-proj-zoom d-block"
+            class="pu-proj-plan-thumb pu-proj-plan-thumb--master pu-proj-zoom d-block"
             data-pu-plan-open
             data-plan-type="Master Plan"
             data-plan-url="{{ $masterUrls[0] }}"
           >
-            <img src="{{ $masterUrls[0] }}" alt="Master plan — {{ e(\Illuminate\Support\Str::limit($project->title, 60)) }}" class="w-100 pu-proj-plan-thumb__img">
+            <img src="{{ $masterUrls[0] }}" alt="Master plan — {{ e(\Illuminate\Support\Str::limit($project->title, 60)) }}" class="w-100 pu-proj-plan-thumb__img pu-proj-plan-thumb__img--master">
           </a>
         </div>
       @endif

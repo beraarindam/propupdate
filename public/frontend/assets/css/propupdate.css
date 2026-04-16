@@ -4588,6 +4588,16 @@ body.homepage1-body {
   display: block;
 }
 
+.pu-proj-microsite--detail .pu-proj-plan-thumb--master {
+  border-radius: 16px;
+}
+
+.pu-proj-microsite--detail .pu-proj-plan-thumb__img--master {
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
+
 .pu-proj-microsite--detail .pu-proj-body {
   font-size: 0.98rem;
   line-height: 1.75;
@@ -6428,7 +6438,7 @@ body.pu-brochure-modal-open {
 .pu-floating-brochure {
   position: fixed;
   right: 0;
-  top: 50%;
+  top: 38%;
   transform: translateY(-50%);
   z-index: 10800;
 }
@@ -6551,18 +6561,17 @@ body.pu-brochure-modal-open {
 
 @media (max-width: 767.98px) {
   .pu-floating-brochure {
-    right: 0.5rem;
-    top: auto;
-    bottom: 5.2rem;
-    transform: none;
+    right: 0;
+    top: 36%;
+    transform: translateY(-50%);
   }
 
   .pu-floating-brochure__trigger {
-    border-radius: 999px;
-    padding: 0.72rem 0.9rem;
+    border-radius: 12px 0 0 12px;
+    padding: 0.9rem 0.5rem;
     font-size: 0.72rem;
-    writing-mode: horizontal-tb;
-    text-orientation: initial;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
   }
 }
 
