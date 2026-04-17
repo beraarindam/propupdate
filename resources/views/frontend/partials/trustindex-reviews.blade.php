@@ -14,14 +14,8 @@
       </div>
 
       <div class="pu-ti-reviews__widget">
-        <div src="https://cdn.trustindex.io/loader.js?{{ $trustindexWidgetId }}">[trustindex data-widget-id={{ $trustindexWidgetId }}]</div>
+        <script defer async src="https://cdn.trustindex.io/loader.js?{{ $trustindexWidgetId }}"></script>
       </div>
     </div>
   </div>
 </section>
-
-@once
-  @push('scripts')
-    <script defer async src="https://cdn.trustindex.io/loader.js?51d81de69bc9767673768ee6470"></script>
-  @endpush
-@endonce
