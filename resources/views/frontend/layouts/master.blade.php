@@ -712,6 +712,28 @@ body.homepage1-body {
   color: var(--pu-navy);
 }
 
+/* Areas mega: equal-width cards fill the row (up to 5 areas) */
+.pu-nav-mega--cities .pu-nav-mega__viewport {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.pu-nav-mega--cities .pu-nav-mega__track {
+  overflow-x: hidden;
+  scroll-snap-type: none;
+}
+
+.pu-nav-mega--cities .pu-nav-mega__card {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  scroll-snap-align: none;
+}
+
+.pu-nav-mega--cities .pu-nav-mega__arrow {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pu-nav-mega,
   .pu-nav-mega__chev,
@@ -6681,7 +6703,6 @@ body.pu-brochure-modal-open {
     @include('frontend.partials.floating-brochure')
   @endif
   <script src="{{ asset('frontend/assets/js/new-launches-mega.js') }}" defer></script>
-  <script src="{{ asset('frontend/assets/js/cities-mega.js') }}" defer></script>
   @stack('scripts')
 
   <script type="text/javascript">
