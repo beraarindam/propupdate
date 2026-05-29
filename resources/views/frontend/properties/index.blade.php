@@ -16,8 +16,28 @@
     ? ($launchTotal ?? $resultsItems->count())
     : ($mixedSearch ? ($properties->total() + $projectSearchItems->count()) : $properties->total());
   $bannerBg = $page?->bannerBackgroundUrl() ?? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80';
-  $bannerTitle = $page?->banner_title ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
-  $crumbLabel = $page?->name ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
+  $baseBannerTitle = $page?->banner_title ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
+  $baseCrumbLabel = $page?->name ?: ($listingRouteName === 'new-launches.index' ? 'New launches' : 'Properties');
+  $bannerTitle = $baseBannerTitle;
+  $crumbLabel = $baseCrumbLabel;
+  $crumbTrail = [];
+
+  if ($listingRouteName === 'properties.index' && ($selectedCategory ?? null)) {
+    $bannerTitle = $selectedCategory->name;
+    $crumbLabel = $selectedCategory->name;
+    $crumbTrail = [
+      ['label' => $baseCrumbLabel, 'url' => route('properties.index')],
+    ];
+    if ($selectedCategory->parent) {
+      $crumbTrail[] = [
+        'label' => $selectedCategory->parent->name,
+        'url' => route('properties.index', ['category_id' => $selectedCategory->parent->id]),
+      ];
+    }
+    if ($selectedCategory->bannerImageUrl()) {
+      $bannerBg = $selectedCategory->bannerImageUrl();
+    }
+  }
 @endphp
 
 @section('title', $page?->browserTitle() ?? 'Properties')
@@ -26,6 +46,7 @@
 @include('frontend.partials.page-banner', [
   'title' => $bannerTitle,
   'crumbCurrent' => $crumbLabel,
+  'crumbTrail' => $crumbTrail,
   'lead' => $page?->banner_lead ?? 'Refine by <strong>deal type</strong>, location, and size — then explore listings tailored to you.',
   'bgImage' => $bannerBg,
 ])

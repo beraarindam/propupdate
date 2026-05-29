@@ -2,6 +2,7 @@
   $bgImage = $bgImage ?? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80';
   $bannerClass = trim($bannerClass ?? '');
   $showBreadcrumb = $showBreadcrumb ?? true;
+  $crumbTrail = is_array($crumbTrail ?? null) ? $crumbTrail : [];
 @endphp
 <header class="pu-page-banner{{ $bannerClass !== '' ? ' '.$bannerClass : '' }}">
   <div
@@ -18,6 +19,18 @@
           <li class="pu-breadcrumb__item">
             <a href="{{ route('home') }}">Home</a>
           </li>
+          @foreach($crumbTrail as $crumb)
+            @if(filled($crumb['label'] ?? null))
+              <li class="pu-breadcrumb__sep" aria-hidden="true"><i class="fa-solid fa-angle-right"></i></li>
+              <li class="pu-breadcrumb__item">
+                @if(filled($crumb['url'] ?? null))
+                  <a href="{{ $crumb['url'] }}">{{ $crumb['label'] }}</a>
+                @else
+                  {{ $crumb['label'] }}
+                @endif
+              </li>
+            @endif
+          @endforeach
           <li class="pu-breadcrumb__sep" aria-hidden="true"><i class="fa-solid fa-angle-right"></i></li>
           <li class="pu-breadcrumb__item pu-breadcrumb__item--current" aria-current="page">{{ $crumbCurrent }}</li>
         </ol>

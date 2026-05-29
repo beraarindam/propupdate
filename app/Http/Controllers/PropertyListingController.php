@@ -100,12 +100,16 @@ class PropertyListingController extends Controller
             ? (int) $categoryId
             : null;
 
+        $selectedCategory = null;
+
         if ($selectedCategoryId !== null) {
             $cat = PropertyCategory::query()
                 ->where('is_published', true)
+                ->with('parent')
                 ->whereKey($selectedCategoryId)
                 ->first();
             if ($cat) {
+                $selectedCategory = $cat;
                 $hasPublishedChildren = PropertyCategory::query()
                     ->where('parent_id', $cat->id)
                     ->where('is_published', true)
@@ -205,28 +209,23 @@ class PropertyListingController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        if ($selectedCategoryId !== null) {
-            $sel = PropertyCategory::query()
+        if ($selectedCategory !== null) {
+            $sel = $selectedCategory;
+            if (PropertyCategory::query()
+                ->where('parent_id', $sel->id)
                 ->where('is_published', true)
-                ->whereKey($selectedCategoryId)
-                ->first();
-            if ($sel) {
-                if (PropertyCategory::query()
-                    ->where('parent_id', $sel->id)
+                ->exists()) {
+                $categoryDropdownParent = $sel;
+            } elseif ($sel->parent_id) {
+                $par = PropertyCategory::query()
+                    ->where('is_published', true)
+                    ->whereKey($sel->parent_id)
+                    ->first();
+                if ($par && PropertyCategory::query()
+                    ->where('parent_id', $par->id)
                     ->where('is_published', true)
                     ->exists()) {
-                    $categoryDropdownParent = $sel;
-                } elseif ($sel->parent_id) {
-                    $par = PropertyCategory::query()
-                        ->where('is_published', true)
-                        ->whereKey($sel->parent_id)
-                        ->first();
-                    if ($par && PropertyCategory::query()
-                        ->where('parent_id', $par->id)
-                        ->where('is_published', true)
-                        ->exists()) {
-                        $categoryDropdownParent = $par;
-                    }
+                    $categoryDropdownParent = $par;
                 }
             }
         }
@@ -355,6 +354,7 @@ class PropertyListingController extends Controller
             'searchProjects' => $searchProjects,
             'launchItems' => $launchItems,
             'launchTotal' => $launchTotal,
+            'selectedCategory' => $selectedCategory,
             'filters' => [
                 'deal' => $deal,
                 'q' => $q,
