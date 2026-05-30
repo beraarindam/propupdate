@@ -519,3 +519,27 @@ ALTER TABLE `properties`
 
 ALTER TABLE `projects`
   ADD COLUMN `master_plan_paths` JSON NULL AFTER `master_plan_path`;
+
+  -- 30-05-2026
+
+  -- Manual Google reviews (Admin → Google reviews). Migration: 2026_05_29_100000_create_client_reviews_table.php
+
+CREATE TABLE `client_reviews` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `reviewer_name` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `rating` tinyint UNSIGNED NOT NULL DEFAULT 5,
+  `image_path` varchar(255) NULL,
+  `image_url` varchar(2000) NULL,
+  `sort_order` int UNSIGNED NOT NULL DEFAULT 0,
+  `is_published` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- “See All Review” button URL. Migration: 2026_05_29_100001_add_google_reviews_all_url_to_site_settings_table.php
+
+ALTER TABLE `site_settings`
+  ADD COLUMN `google_reviews_all_url` varchar(2000) NULL AFTER `google_place_id`;
