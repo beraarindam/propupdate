@@ -3693,31 +3693,42 @@ body.homepage1-body {
 }
 
 .pu-ti-reviews__foot {
-  margin-top: 1.35rem;
+  margin-top: 1.5rem;
+  padding-top: 0.25rem;
 }
 
-.pu-ti-reviews__all-btn {
+.pu-ti-reviews__foot .pu-ti-reviews__all-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  padding: 0.72rem 1.55rem;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: var(--pu-navy);
-  background: linear-gradient(145deg, #fff 0%, #f8f5ee 100%);
-  border: 2px solid rgba(0, 31, 63, 0.12);
-  text-decoration: none;
-  box-shadow: 0 10px 28px rgba(0, 31, 63, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.02em;
+  color: #fff !important;
+  background: linear-gradient(135deg, #001f3f 0%, #0a3a6b 100%);
+  border: 2px solid transparent;
+  text-decoration: none !important;
+  box-shadow: 0 12px 32px rgba(0, 31, 63, 0.25);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-.pu-ti-reviews__all-btn:hover {
+.pu-ti-reviews__foot .pu-ti-reviews__all-btn:hover,
+.pu-ti-reviews__foot .pu-ti-reviews__all-btn:focus {
+  color: #fff !important;
+  text-decoration: none !important;
   transform: translateY(-2px);
-  border-color: rgba(201, 169, 98, 0.55);
-  box-shadow: 0 14px 34px rgba(0, 31, 63, 0.12);
-  color: var(--pu-navy);
+  box-shadow: 0 16px 40px rgba(0, 31, 63, 0.32);
+  background: linear-gradient(135deg, #0a3a6b 0%, #001f3f 100%);
+}
+
+.pu-ti-reviews__foot .pu-ti-reviews__all-btn i {
+  font-size: 0.85em;
 }
 
 @media (max-width: 575.98px) {
