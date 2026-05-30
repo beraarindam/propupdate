@@ -175,30 +175,18 @@
 				<div class="col-12">
 					<div class="card radius-10 settings-card">
 						<div class="card-body p-4">
-							<h5 class="card-title">Google reviews <span class="fw-normal text-muted small">(homepage)</span></h5>
+							<h5 class="card-title">Google reviews <span class="fw-normal text-muted small">(homepage &amp; About)</span></h5>
 							<p class="text-muted small mb-3">
-								Shows a reviews strip on the <strong>home</strong> page (summary + carousel). Uses Google <strong>Places API (New)</strong> — enable billing, create an API key, and restrict it to Places API. Find your <strong>Place ID</strong> with Google’s
-								<a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer">Place ID tool</a>.
-								The API key is stored encrypted and never sent to browsers.
+								Add reviews under <a href="{{ route('admin.client_reviews.index') }}">Admin → Google reviews</a>. They appear on the home and About Us pages instead of a third-party widget.
 							</p>
-							<div class="form-check form-switch mb-3">
-								<input class="form-check-input" type="checkbox" name="google_reviews_enabled" value="1" id="google_reviews_enabled" @checked(old('google_reviews_enabled', $settings->google_reviews_enabled ?? false))>
-								<label class="form-check-label" for="google_reviews_enabled">Show Google reviews on homepage</label>
-							</div>
 							<div class="mb-3">
-								<label class="form-label fw-semibold">Google Place ID</label>
+								<label class="form-label fw-semibold">View all Google reviews URL</label>
+								<input type="url" name="google_reviews_all_url" class="form-control" value="{{ old('google_reviews_all_url', $settings->google_reviews_all_url ?? '') }}" placeholder="https://g.page/.../review or Google Maps reviews link">
+								<p class="text-muted small mt-1 mb-0">Used by the <strong>View All Google review</strong> button. If empty, a link is built from Place ID below.</p>
+							</div>
+							<div class="mb-0">
+								<label class="form-label fw-semibold">Google Place ID <span class="text-muted fw-normal">(optional fallback)</span></label>
 								<input type="text" name="google_place_id" class="form-control font-monospace" value="{{ old('google_place_id', $settings->google_place_id ?? '') }}" placeholder="ChIJ..." autocomplete="off">
-							</div>
-							<div class="mb-3">
-								<label class="form-label fw-semibold">Places API key</label>
-								@if(filled($settings->google_places_api_key ?? null))
-									<p class="small text-success mb-1">A key is saved. Leave the field empty to keep it, or paste a new key to replace.</p>
-								@endif
-								<input type="password" name="google_places_api_key" class="form-control font-monospace" value="" placeholder="Paste API key (server-side only)" autocomplete="new-password">
-							</div>
-							<div class="form-check mb-0">
-								<input class="form-check-input" type="checkbox" name="clear_google_places_api_key" value="1" id="clear_google_places_api_key">
-								<label class="form-check-label text-muted small" for="clear_google_places_api_key">Remove saved API key on save</label>
 							</div>
 						</div>
 					</div>

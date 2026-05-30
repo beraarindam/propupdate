@@ -160,20 +160,7 @@ class PropertyListingController extends Controller
 
         $properties = $query->paginate($perPage)->withQueryString();
 
-        $areas = PropertyArea::query()
-            ->where('is_published', true)
-            ->when($newLaunchesOnly, function ($q) {
-                $q->whereHas('properties', function ($pq) {
-                    $pq->published()->newLaunch();
-                });
-            }, function ($q) {
-                $q->whereHas('properties', function ($pq) {
-                    $pq->published();
-                });
-            })
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->get(['id', 'name']);
+        $areas = PropertyArea::publishedForFilters();
 
         $categoryDropdownParent = null;
 

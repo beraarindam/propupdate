@@ -42,6 +42,7 @@ class SiteSetting extends Model
         'promo_popup_link_url',
         'google_reviews_enabled',
         'google_place_id',
+        'google_reviews_all_url',
         'google_places_api_key',
     ];
 
@@ -93,6 +94,23 @@ class SiteSetting extends Model
     public function faviconUrl(): ?string
     {
         return static::resolvePublicUrl($this->favicon_path);
+    }
+
+    /**
+     * Link for “View all Google reviews” on the homepage / About page.
+     */
+    public function googleReviewsAllUrl(): ?string
+    {
+        $custom = $this->google_reviews_all_url ? trim((string) $this->google_reviews_all_url) : '';
+        if ($custom !== '') {
+            return $custom;
+        }
+        $placeId = $this->google_place_id ? trim((string) $this->google_place_id) : '';
+        if ($placeId !== '') {
+            return 'https://search.google.com/local/reviews?placeid='.rawurlencode($placeId);
+        }
+
+        return null;
     }
 
     /**

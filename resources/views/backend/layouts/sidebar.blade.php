@@ -2,10 +2,14 @@
 <div class="sidebar-wrapper" data-simplebar="true">
 	<div class="sidebar-header">
 		<div>
-			<img src="{{ asset('backend/assets/images/logo-icon.png') }}" class="logo-icon" alt="" onerror="this.style.display='none'">
+			@if($siteSettings?->logoUrl())
+				<img src="{{ $siteSettings->logoUrl() }}" class="logo-icon" alt="{{ $siteSettings->site_name ?: 'PropUpdate' }}" style="max-height:40px;max-width:40px;object-fit:contain;">
+			@else
+				<img src="{{ asset('backend/assets/images/logo-icon.png') }}" class="logo-icon" alt="" onerror="this.style.display='none'">
+			@endif
 		</div>
 		<div>
-			<h4 class="logo-text">PropUpdate</h4>
+			<h4 class="logo-text">{{ $siteSettings?->site_name ?: 'PropUpdate' }}</h4>
 		</div>
 		<div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i></div>
 	</div>
@@ -79,6 +83,12 @@
 			<a href="{{ route('admin.awards.index') }}">
 				<div class="parent-icon"><i class='bx bx-award'></i></div>
 				<div class="menu-title">Awards</div>
+			</a>
+		</li>
+		<li class="{{ request()->routeIs('admin.client_reviews.*') ? 'mm-active' : '' }}">
+			<a href="{{ route('admin.client_reviews.index') }}">
+				<div class="parent-icon"><i class='bx bx-star'></i></div>
+				<div class="menu-title">Google reviews</div>
 			</a>
 		</li>
 		<li class="{{ request()->routeIs('admin.faqs.*') ? 'mm-active' : '' }}">

@@ -6,6 +6,7 @@ use App\Models\Enquiry;
 use App\Models\Page;
 use App\Models\Project;
 use App\Models\PropertyCategory;
+use App\Models\PropertyArea;
 use App\Support\LeadRatClient;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -18,8 +19,11 @@ class ProjectController extends Controller
     public function index(Request $request): View
     {
         $q = trim((string) $request->query('q', ''));
-        $location = trim((string) $request->query('location', ''));
         $developer = trim((string) $request->query('developer', ''));
+        $areaIdRaw = $request->query('area_id');
+        $selectedAreaId = ($areaIdRaw !== null && $areaIdRaw !== '' && ctype_digit((string) $areaIdRaw))
+            ? (int) $areaIdRaw
+            : null;
         $categoryId = $request->query('category_id');
         $featured = (string) $request->query('featured', '');
         if (! in_array($featured, ['', '1'], true)) {
@@ -81,8 +85,8 @@ class ProjectController extends Controller
             });
         }
 
-        if ($location !== '') {
-            $query->where('location', $location);
+        if ($selectedAreaId !== null) {
+            $query->where('property_area_id', $selectedAreaId);
         }
 
         if ($developer !== '') {
@@ -102,14 +106,7 @@ class ProjectController extends Controller
 
         $projects = $query->paginate($perPage)->withQueryString();
 
-        $filterLocations = Project::query()
-            ->published()
-            ->whereNotNull('location')
-            ->where('location', '!=', '')
-            ->distinct()
-            ->orderBy('location')
-            ->pluck('location')
-            ->values();
+        $filterAreas = PropertyArea::publishedForFilters();
 
         $filterDevelopers = Project::query()
             ->published()
@@ -143,7 +140,7 @@ class ProjectController extends Controller
             'listingTopCategories' => $topCategories,
             'filters' => [
                 'q' => $q,
-                'location' => $location,
+                'area_id' => $selectedAreaId ? (string) $selectedAreaId : '',
                 'developer' => $developer,
                 'category_id' => $categoryId !== null && $categoryId !== '' ? (string) $categoryId : '',
                 'featured' => $featured,
@@ -151,7 +148,7 @@ class ProjectController extends Controller
                 'sort' => $sort,
                 'view' => $view,
             ],
-            'filterLocations' => $filterLocations,
+            'filterAreas' => $filterAreas,
             'filterDevelopers' => $filterDevelopers,
         ]);
     }

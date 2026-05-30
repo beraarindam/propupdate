@@ -46,6 +46,7 @@ class SiteSettingsController extends Controller
             'remove_promo_popup_image' => 'nullable|boolean',
             'google_reviews_enabled' => 'nullable|boolean',
             'google_place_id' => 'nullable|string|max:512',
+            'google_reviews_all_url' => 'nullable|string|max:2000',
             'google_places_api_key' => 'nullable|string|max:5000',
             'clear_google_places_api_key' => 'nullable|boolean',
         ]);
@@ -101,6 +102,7 @@ class SiteSettingsController extends Controller
             'promo_popup_link_url' => $validated['promo_popup_link_url'] ?? null,
             'google_reviews_enabled' => $request->boolean('google_reviews_enabled'),
             'google_place_id' => isset($validated['google_place_id']) ? trim((string) $validated['google_place_id']) : null,
+            'google_reviews_all_url' => isset($validated['google_reviews_all_url']) ? trim((string) $validated['google_reviews_all_url']) : null,
         ]);
 
         if ($request->boolean('clear_google_places_api_key')) {

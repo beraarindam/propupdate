@@ -78,11 +78,11 @@
                 <input type="text" name="q" id="proj-q" class="pu-pl-input" value="{{ $f['q'] ?? '' }}" placeholder="Project, summary, developer..." autocomplete="off">
               </div>
               <div class="pu-pl-field">
-                <label class="pu-pl-label" for="proj-location">Location</label>
-                <select name="location" id="proj-location" class="pu-pl-select">
-                  <option value="">All locations</option>
-                  @foreach(($filterLocations ?? collect()) as $loc)
-                    <option value="{{ $loc }}" @selected(($f['location'] ?? '') === $loc)>{{ $loc }}</option>
+                <label class="pu-pl-label" for="proj-area">Area</label>
+                <select name="area_id" id="proj-area" class="pu-pl-select">
+                  <option value="">All areas</option>
+                  @foreach(($filterAreas ?? collect()) as $area)
+                    <option value="{{ $area->id }}" @selected((string)($f['area_id'] ?? '') === (string) $area->id)>{{ $area->name }}</option>
                   @endforeach
                 </select>
               </div>

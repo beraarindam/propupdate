@@ -33,19 +33,34 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
 
-        View::composer('frontend.layouts.master', function ($view): void {
-            if (! Schema::hasTable('site_settings')) {
-                $view->with('siteSettings', null);
-            } else {
-                $view->with('siteSettings', SiteSetting::query()->first());
+        $shareSiteSettings = function ($view): void {
+            if (! array_key_exists('siteSettings', $view->getData())) {
+                if (! Schema::hasTable('site_settings')) {
+                    $view->with('siteSettings', null);
+                } else {
+                    $view->with('siteSettings', SiteSetting::query()->first());
+                }
             }
+        };
 
+        View::composer('frontend.*', $shareSiteSettings);
+
+        View::composer('frontend.layouts.master', function ($view) use ($shareSiteSettings): void {
+            $shareSiteSettings($view);
             $view->with('footerGalleryItems', FooterGallery::latestItems());
             $view->with('footerAwardItems', FooterAwards::latestItems());
             $view->with('newLaunchesMegaCards', NewLaunchesMegaMenu::cards());
             $view->with('projectsMegaCards', ProjectsMegaMenu::cards());
             $view->with('propertiesMegaCards', PropertiesMegaMenu::cards());
             $view->with('citiesMega', CitiesMegaMenu::data());
+        });
+
+        View::composer('backend.layouts.*', function ($view): void {
+            if (! Schema::hasTable('site_settings')) {
+                $view->with('siteSettings', null);
+            } else {
+                $view->with('siteSettings', SiteSetting::query()->first());
+            }
         });
     }
 }

@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\AwardController;
-use App\Http\Controllers\Admin\BlogPostController;
+use App\Http\Controllers\Admin\ClientReviewController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\ExclusiveResaleListingController;
@@ -91,6 +91,14 @@ Route::middleware('auth')->group(function () {
     Route::get('awards/{award}/edit', [AwardController::class, 'edit'])->name('awards.edit');
     Route::put('awards/{award}', [AwardController::class, 'update'])->name('awards.update');
     Route::delete('awards/{award}', [AwardController::class, 'destroy'])->name('awards.destroy');
+
+    Route::get('client-reviews/data', [ClientReviewController::class, 'data'])->name('client_reviews.data');
+    Route::get('client-reviews', [ClientReviewController::class, 'index'])->name('client_reviews.index');
+    Route::get('client-reviews/create', [ClientReviewController::class, 'create'])->name('client_reviews.create');
+    Route::post('client-reviews', [ClientReviewController::class, 'store'])->name('client_reviews.store');
+    Route::get('client-reviews/{client_review}/edit', [ClientReviewController::class, 'edit'])->name('client_reviews.edit');
+    Route::put('client-reviews/{client_review}', [ClientReviewController::class, 'update'])->name('client_reviews.update');
+    Route::delete('client-reviews/{client_review}', [ClientReviewController::class, 'destroy'])->name('client_reviews.destroy');
 
     Route::get('property-categories/data', [PropertyCategoryController::class, 'data'])->name('property_categories.data');
     Route::get('property-categories', [PropertyCategoryController::class, 'index'])->name('property_categories.index');

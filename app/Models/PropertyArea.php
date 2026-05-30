@@ -50,6 +50,20 @@ class PropertyArea extends Model
     }
 
     /**
+     * Published areas for listing filters (all areas, not only those with listings).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, static>
+     */
+    public static function publishedForFilters()
+    {
+        return static::query()
+            ->where('is_published', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
+    /**
      * Options for property assign &lt;select&gt;: id =&gt; name, with empty “None” first.
      *
      * @return array<int|string, string>
