@@ -3,6 +3,13 @@
 <html lang="en">
 
 <head>
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TF7GH625');</script>
+<!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title')@if($siteSettings?->site_name) | {{ $siteSettings->site_name }} @endif</title>
@@ -21,6 +28,16 @@
   @if(!empty($__seoKw))
   <meta name="keywords" content="{{ $__seoKw }}">
   @endif
+ 
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JFDTQ356H3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-JFDTQ356H3');
+</script>
 
   <!--=====FAB ICON=======-->
   <link rel="shortcut icon" href="{{ $siteSettings?->faviconUrl() ?? asset('frontend/assets/img/logo/fav-logo1.png') }}" type="image/x-icon">
@@ -3692,45 +3709,6 @@ body.homepage1-body {
   min-height: 120px;
 }
 
-.pu-ti-reviews__foot {
-  margin-top: 1.5rem;
-  padding-top: 0.25rem;
-}
-
-.pu-ti-reviews__foot .pu-ti-reviews__all-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.85rem 2rem;
-  border-radius: 999px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: #fff !important;
-  background: linear-gradient(135deg, #001f3f 0%, #0a3a6b 100%);
-  border: 2px solid transparent;
-  text-decoration: none !important;
-  box-shadow: 0 12px 32px rgba(0, 31, 63, 0.25);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
-}
-
-.pu-ti-reviews__foot .pu-ti-reviews__all-btn:hover,
-.pu-ti-reviews__foot .pu-ti-reviews__all-btn:focus {
-  color: #fff !important;
-  text-decoration: none !important;
-  transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(0, 31, 63, 0.32);
-  background: linear-gradient(135deg, #0a3a6b 0%, #001f3f 100%);
-}
-
-.pu-ti-reviews__foot .pu-ti-reviews__all-btn i {
-  font-size: 0.85em;
-}
-
 @media (max-width: 575.98px) {
   .pu-about-page-badge {
     right: 0.5rem;
@@ -6726,10 +6704,14 @@ body.pu-brochure-modal-open {
 }
 
   </style>
+  
 </head>
 
 <body class="homepage1-body">
-
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TF7GH625"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
   <!--===== PRELOADER STARTS =======-->
   
   <!--===== PRELOADER ENDS =======-->
